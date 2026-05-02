@@ -1,0 +1,1716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 1: Advanced Control Theory</title>
+    
+    <!-- MathJax for rendering LaTeX equations -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --secondary: #3b82f6;
+            --accent: #f59e0b;
+            --bg-color: #f8fafc;
+            --text-main: #334155;
+        }
+
+        body { 
+            font-family: 'Inter', system-ui, -apple-system, sans-serif; 
+            scroll-behavior: smooth; 
+            background-color: var(--bg-color); 
+            color: var(--text-main);
+            line-height: 1.7;
+        }
+        
+        /* Typography & Layout */
+        h1, h2, h3, h4, h5 { color: #0f172a; letter-spacing: -0.025em; font-weight: 700; }
+        h2 { 
+            scroll-margin-top: 6rem; 
+            border-bottom: 3px solid #e2e8f0; 
+            padding-bottom: 0.75rem; 
+            margin-top: 4rem; 
+            margin-bottom: 2rem; 
+            display: flex; 
+            align-items: center; 
+            gap: 1rem; 
+        }
+        h3 { 
+            scroll-margin-top: 6rem; 
+            margin-top: 2.5rem; 
+            margin-bottom: 1.25rem; 
+            color: var(--primary); 
+        }
+        
+        /* Mathematical Blocks */
+        .math-block { 
+            overflow-x: auto; 
+            padding: 1.5rem; 
+            background: #ffffff; 
+            border: 1px solid #e2e8f0; 
+            border-radius: 0.75rem; 
+            box-shadow: inset 0 2px 4px 0 rgb(0 0 0 / 0.02); 
+            margin: 1.5rem 0; 
+            text-align: center; 
+            font-size: 1.1rem;
+        }
+        
+        .equation-box { 
+            background: #eff6ff; 
+            border-left: 4px solid var(--secondary); 
+            padding: 1.5rem; 
+            margin: 1.5rem 0; 
+            border-radius: 0 0.75rem 0.75rem 0; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05); 
+        }
+
+        .derivation-box { 
+            background: #ffffff; 
+            border: 1px dashed #cbd5e1; 
+            padding: 2rem; 
+            border-radius: 0.75rem; 
+            margin-top: 1.5rem; 
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);
+        }
+        
+        /* Diagrams & SVGs */
+        .diagram-container { 
+            border: 1px solid #cbd5e1; 
+            border-radius: 1rem; 
+            padding: 2.5rem; 
+            background: #ffffff; 
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.05); 
+            margin: 2.5rem 0; 
+            overflow-x: auto; 
+            position: relative; 
+        }
+        .svg-grid { stroke: #f1f5f9; stroke-width: 1; }
+        .svg-grid-major { stroke: #e2e8f0; stroke-width: 1.5; stroke-dasharray: 4,4; }
+        .svg-axis { stroke: #475569; stroke-width: 2; }
+        .svg-text { font-family: 'Inter', sans-serif; font-size: 13px; fill: #475569; }
+        .svg-text-bold { font-weight: 700; fill: #0f172a; font-size: 14px; }
+        .svg-text-math { font-family: 'Times New Roman', Times, serif; font-style: italic; font-size: 16px; }
+        .svg-curve-mag { stroke: #ea580c; stroke-width: 3; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+        .svg-curve-phase { stroke: #2563eb; stroke-width: 3; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+        .svg-circuit-wire { stroke: #0f172a; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+        .svg-circuit-comp { stroke: #0f172a; stroke-width: 2; fill: #ffffff; }
+        .svg-annotation { stroke: #94a3b8; stroke-width: 1.5; stroke-dasharray: 4,4; fill: none; }
+        
+        /* UI Components */
+        .step-card { 
+            border: 1px solid #e2e8f0; 
+            padding: 2rem; 
+            border-radius: 1rem; 
+            margin-bottom: 1.5rem; 
+            background: #ffffff; 
+            transition: all 0.3s ease; 
+            border-left: 5px solid var(--secondary); 
+            position: relative;
+        }
+        .step-card:hover { 
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1); 
+            transform: translateY(-3px); 
+        }
+        
+        /* Sidebar Navigation */
+        .toc-link { 
+            display: block; 
+            padding: 0.6rem 1.2rem; 
+            color: #475569; 
+            text-decoration: none; 
+            border-radius: 0.5rem; 
+            transition: all 0.2s; 
+            border-left: 3px solid transparent; 
+            font-weight: 500;
+        }
+        .toc-link:hover, .toc-link.active { 
+            background: #eff6ff; 
+            color: var(--secondary); 
+            border-left-color: var(--secondary); 
+        }
+        
+        /* Badges */
+        .badge-important { 
+            display: inline-flex; 
+            align-items: center; 
+            padding: 0.25rem 0.85rem; 
+            border-radius: 9999px; 
+            font-size: 0.75rem; 
+            font-weight: 800; 
+            background-color: #fef2f2; 
+            color: #dc2626; 
+            border: 1px solid #fca5a5; 
+            margin-bottom: 1rem; 
+            text-transform: uppercase; 
+            letter-spacing: 0.05em; 
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        .badge-qp { 
+            display: inline-flex; 
+            align-items: center; 
+            padding: 0.25rem 0.75rem; 
+            border-radius: 0.375rem; 
+            font-size: 0.75rem; 
+            font-weight: 700; 
+            background-color: #eff6ff; 
+            color: #1d4ed8; 
+            border: 1px solid #bfdbfe; 
+            margin-left: 0.75rem; 
+            margin-bottom: 1rem;
+        }
+
+        .highlight-box {
+            background-color: #fefce8;
+            border-left: 4px solid #eab308;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-blue-200 selection:text-blue-900">
+
+    <!-- Top Navigation / Header -->
+    <header class="bg-white/95 border-b border-slate-200 sticky top-0 z-50 shadow-sm backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="bg-blue-600 p-2 rounded-lg shadow-inner">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-extrabold text-blue-950 tracking-tight leading-none">ACT: Module 1</h1>
+                    <p class="text-sm text-slate-500 font-medium mt-1">Control Schemes & Compensator Design</p>
+                </div>
+            </div>
+            <div class="hidden lg:flex space-x-1 text-sm font-semibold">
+                <a href="#types-of-controllers" class="text-slate-600 hover:text-blue-700 px-4 py-2.5 rounded-lg hover:bg-blue-50 transition-all">1. Topologies</a>
+                <a href="#pid-actions" class="text-slate-600 hover:text-blue-700 px-4 py-2.5 rounded-lg hover:bg-blue-50 transition-all">2. P, I, PI, PID</a>
+                <a href="#compensator-theory" class="text-slate-600 hover:text-blue-700 px-4 py-2.5 rounded-lg hover:bg-blue-50 transition-all">3. Compensators</a>
+                <a href="#bode-design" class="text-blue-700 bg-blue-50 px-4 py-2.5 rounded-lg transition-all shadow-sm">4. Bode Design</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col xl:flex-row gap-12">
+        
+        <!-- Main Content -->
+        <main class="flex-1 w-full max-w-5xl mx-auto">
+            
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 mb-12">
+                <h3 class="text-xl font-bold text-slate-800 mb-4 mt-0">Syllabus Covered in this Document</h3>
+                <p class="text-slate-600"><strong>Module I:</strong> Types of controller - Feedforward, feedback, cascade, P, PI and PID. Compensator design: Realization of compensators – lag, lead and lag-lead. Design of compensator using bode plot.</p>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- SECTION 1: TYPES OF CONTROLLERS            -->
+            <!-- ========================================== -->
+            <section id="types-of-controllers" class="mb-24">
+                <h2>
+                    <span class="bg-gradient-to-br from-blue-600 to-blue-800 text-white w-12 h-12 rounded-xl flex items-center justify-center font-extrabold text-2xl shadow-lg shrink-0">1</span>
+                    Types of Controllers & Compensation Schemes
+                </h2>
+                
+                <div class="mb-4">
+                    <span class="badge-important">Fundamental Concept</span>
+                    <span class="badge-qp">May 2019</span>
+                </div>
+
+                <p class="text-lg text-slate-700 mb-8">In industrial control systems, various control architectures are employed based on the requirement of disturbance rejection, stability, and process dynamics. Furthermore, compensators can be introduced into these systems using different topological schemes.</p>
+
+                <!-- 1.1 Compensation Topologies -->
+                <div class="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm mb-10">
+                    <h3 class="text-2xl font-bold text-blue-900 mt-0 mb-4">1.1 Series vs Feedback Compensation</h3>
+                    <p class="text-slate-700 mb-6">When introducing a compensator \( G_c(s) \) into a control loop to meet desired specifications, two primary locations are commonly used:</p>
+                    
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div class="bg-blue-50 border border-blue-100 p-6 rounded-xl">
+                            <h4 class="font-bold text-lg text-blue-900 mb-2">Series (Cascade) Compensation</h4>
+                            <p class="text-sm text-slate-700 mb-4">The compensator is placed directly in the forward path, in series with the plant.</p>
+                            <ul class="list-disc ml-5 text-sm text-slate-700 space-y-1">
+                                <li>Energy transfer is from lower to higher energy levels.</li>
+                                <li>Requires additional amplifiers for isolation and gain recovery.</li>
+                                <li>The most common and straightforward method for Lead/Lag design.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-green-50 border border-green-100 p-6 rounded-xl">
+                            <h4 class="font-bold text-lg text-green-900 mb-2">Feedback (Parallel) Compensation</h4>
+                            <p class="text-sm text-slate-700 mb-4">The compensator is placed in a minor inner feedback loop around the plant or a portion of the plant.</p>
+                            <ul class="list-disc ml-5 text-sm text-slate-700 space-y-1">
+                                <li>Energy transfer is from higher to lower energy levels.</li>
+                                <li>Often does not require additional amplifiers.</li>
+                                <li>Provides robust control against plant parameter variations.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 1.2 Feedback Controller -->
+                <div class="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm mb-10 hover:shadow-md transition-shadow">
+                    <h3 class="text-2xl font-bold text-blue-900 mt-0 mb-4 flex items-center gap-3">
+                        <svg class="w-7 h-7 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                        1.2 Feedback Controller
+                    </h3>
+                    
+                    <p class="text-slate-700 mb-6">The idea behind the basic feedback controller is that the output of the controlled process (plant), also called the <strong>measured variable</strong> or the <strong>process variable</strong>, is compared to the set point or the desired value. The difference between the two is the <strong>error</strong>, which is the input to the controller. The controller generates an output based on this error so as to minimize the error signal to zero. The controller output is fed to the actuator which will then act on the plant.</p>
+                    
+                    <div class="diagram-container bg-slate-50">
+                        <h4 class="text-center font-bold text-slate-800 mb-6">Standard Feedback Control Loop</h4>
+                        <svg viewBox="0 0 800 200" class="w-full h-auto">
+                            <!-- Summing Junction -->
+                            <circle cx="150" cy="60" r="18" fill="#fef08a" stroke="#ca8a04" stroke-width="2.5"/>
+                            <text x="150" y="66" text-anchor="middle" font-size="20" font-weight="bold">Σ</text>
+                            
+                            <!-- Blocks -->
+                            <rect x="230" y="35" width="120" height="50" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="2.5"/>
+                            <text x="290" y="65" text-anchor="middle" font-size="15" font-weight="bold" fill="#1e3a8a">Controller</text>
+                            
+                            <rect x="410" y="35" width="120" height="50" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="2.5"/>
+                            <text x="470" y="65" text-anchor="middle" font-size="15" font-weight="bold" fill="#14532d">Actuator</text>
+                            
+                            <rect x="590" y="35" width="100" height="50" rx="8" fill="#fee2e2" stroke="#dc2626" stroke-width="2.5"/>
+                            <text x="640" y="65" text-anchor="middle" font-size="15" font-weight="bold" fill="#7f1d1d">Plant</text>
+                            
+                            <rect x="350" y="130" width="120" height="50" rx="8" fill="#f3f4f6" stroke="#475569" stroke-width="2.5"/>
+                            <text x="410" y="160" text-anchor="middle" font-size="15" font-weight="bold" fill="#1e293b">Sensor</text>
+
+                            <!-- Arrows -->
+                            <!-- Input -->
+                            <path d="M 30 60 L 125 60" class="svg-circuit-wire" marker-end="url(#arrow-head)"/>
+                            <text x="80" y="50" text-anchor="middle" class="svg-text-bold">Set point</text>
+                            <text x="135" y="45" class="svg-text-bold">+</text>
+
+                            <!-- Error -->
+                            <path d="M 168 60 L 225 60" class="svg-circuit-wire" marker-end="url(#arrow-head)"/>
+                            <text x="196" y="50" text-anchor="middle" class="svg-text-bold">error</text>
+
+                            <!-- Controller Output -->
+                            <path d="M 350 60 L 405 60" class="svg-circuit-wire" marker-end="url(#arrow-head)"/>
+                            <text x="380" y="40" text-anchor="middle" class="svg-text">controller</text>
+                            <text x="380" y="55" text-anchor="middle" class="svg-text">output</text>
+
+                            <!-- Actuator to Plant -->
+                            <path d="M 530 60 L 585 60" class="svg-circuit-wire" marker-end="url(#arrow-head)"/>
+
+                            <!-- Output -->
+                            <path d="M 690 60 L 780 60" class="svg-circuit-wire" marker-end="url(#arrow-head)"/>
+                            <text x="735" y="50" text-anchor="middle" class="svg-text-bold">Output</text>
+
+                            <!-- Feedback Path -->
+                            <path d="M 730 60 L 730 155 L 475 155" class="svg-circuit-wire" marker-end="url(#arrow-head)"/>
+                            <path d="M 345 155 L 150 155 L 150 83" class="svg-circuit-wire" marker-end="url(#arrow-head)"/>
+                            <text x="580" y="145" text-anchor="middle" class="svg-text-bold">Measured variable</text>
+                            <text x="165" y="95" class="svg-text-bold">-</text>
+
+                            <!-- Defs -->
+                            <defs>
+                                <marker id="arrow-head" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+                                    <path d="M0,0 L0,6 L9,3 z" fill="#0f172a"/>
+                                </marker>
+                            </defs>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- 1.3 Cascade Controller -->
+                <div class="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm mb-10 hover:shadow-md transition-shadow">
+                    <h3 class="text-2xl font-bold text-blue-900 mt-0 mb-4 flex items-center gap-3">
+                        <svg class="w-7 h-7 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                        1.3 Cascade Controller
+                    </h3>
+                    
+                    <p class="text-slate-700 mb-6">Cascade controller is the technique of <strong>nesting one control loop inside another</strong>. It allows the workload to be shared between the two loops. The name derives from the fact that the output of the outer controller is cascaded into the set point of the inner controller.</p>
+                    
+                    <div class="highlight-box">
+                        <h4 class="font-bold text-yellow-900 mb-2">Example: Steam-fed Water Heater</h4>
+                        <p class="text-slate-700 mb-2">Consider a tank where water is heated by steam. In a simple feedback loop, a temperature sensor measures tank water temperature and a single controller adjusts the steam valve. If the steam supply pressure drops, the controller won't know until the water temperature actually falls.</p>
+                        <p class="text-slate-700"><strong>Cascade Solution:</strong> We use two controllers. </p>
+                        <ul class="list-disc ml-6 mt-2 text-slate-700">
+                            <li><strong>Controller 1 (Primary/Outer):</strong> Monitors tank temperature and outputs a <em>desired steam flow rate</em> (setpoint for Controller 2).</li>
+                            <li><strong>Controller 2 (Secondary/Inner):</strong> Monitors the actual steam flow rate and adjusts the steam valve.</li>
+                        </ul>
+                        <p class="text-slate-700 mt-2 font-medium">Thus, if steam pressure drops, Controller 2 immediately opens the valve wider to maintain the required flow rate <em>before</em> the water temperature even begins to change.</p>
+                    </div>
+
+                    <div class="diagram-container bg-slate-50 mt-6">
+                        <h4 class="text-center font-bold text-slate-800 mb-6">Cascade Control Block Diagram</h4>
+                        <svg viewBox="0 0 900 250" class="w-full h-auto">
+                            <!-- Primary Loop -->
+                            <text x="30" y="45" class="svg-text-bold">Setpoint</text>
+                            <path d="M 20 55 L 75 55" class="svg-circuit-wire" marker-end="url(#arrow-head)"/>
+                            
+                            <circle cx="95" cy="55" r="16" fill="#fef08a" stroke="#ca8a04" stroke-width="2"/>
+                            <text x="95" y="60" text-anchor="middle" font-size="16" font-weight="bold">Σ</text>
+                            
+                            <path d="M 111 55 L 145 55" class="svg-circuit-wire" marker-end="url(#arrow-head)"/>
+                            
+                            <rect x="145" y="30" width="110" height="50" rx="6" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+                            <text x="200" y="55" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e3a8a">Primary</text>
+                            <text x="200" y="70" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e3a8a">Controller</text>
+
+                            <path d="M 255 55 L 295 55" class="svg-circuit-wire" marker-end="url(#arrow-head)"/>
+
+                            <!-- Secondary Loop -->
+                            <circle cx="315" cy="55" r="16" fill="#fef08a" stroke="#ca8a04" stroke-width="2"/>
+                            <text x="315" y="60" text-anchor="middle" font-size="16" font-weight="bold">Σ</text>
+
+                            <path d="M 331 55 L 365 55" class="svg-circuit-wire" marker-end="url(#arrow-head)"/>
+                            
+                            <rect x="365" y="30" width="110" height="50" rx="6" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+                            <text x="420" y="55" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e3a8a">Secondary</text>
+                            <text x="420" y="70" text-anchor="middle" font-size="13" font-weight="bold" fill="#1e3a8a">Controller</text>
+
+                            <path d="M 475 55 L 505 55" class="svg-circuit-wire" marker-end="url(#arrow-head)"/>
+
+                            <rect x="505" y="30" width="90" height="50" rx="6" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+                            <text x="550" y="60" text-anchor="middle" font-size="13" font-weight="bold" fill="#14532d">Actuator</text>
+
+                            <path d="M 595 55 L 625 55" class="svg-circuit-wire" marker-end="url(#arrow-head)"/>
+
+                            <rect x="625" y="30" width="100" height="50" rx="6" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
+                            <text x="675" y="55" text-anchor="middle" font-size="13" font-weight="bold" fill="#7f1d1d">Secondary</text>
+                            <text x="675" y="70" text-anchor="middle" font-size="13" font-weight="bold" fill="#7f1d1d">Process</text>
+
+                            <path d="M 725 55 L 765 55" class="svg-circuit-wire" marker-end="url(#arrow-head)"/>
+
+                            <rect x="765" y="30" width="100" height="50" rx="6" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
+                            <text x="815" y="55" text-anchor="middle" font-size="13" font-weight="bold" fill="#7f1d1d">Primary</text>
+                            <text x="815" y="70" text-anchor="middle" font-size="13" font-weight="bold" fill="#7f1d1d">Process</text>
+
+                            <path d="M 865 55 L 895 55" class="svg-circuit-wire" marker-end="url(#arrow-head)"/>
+
+                            <!-- Secondary Feedback -->
+                            <path d="M 745 55 L 745 130 L 315 130 L 315 75" class="svg-circuit-wire" marker-end="url(#arrow-head)"/>
+                            <text x="530" y="120" text-anchor="middle" class="svg-text-bold">Secondary process variable</text>
+
+                            <!-- Primary Feedback -->
+                            <path d="M 880 55 L 880 200 L 95 200 L 95 75" class="svg-circuit-wire" marker-end="url(#arrow-head)"/>
+                            <text x="480" y="190" text-anchor="middle" class="svg-text-bold">Primary process variable</text>
+                        </svg>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6 mt-8">
+                        <div>
+                            <h4 class="font-bold text-green-700 border-b border-green-200 pb-2 mb-3">Advantages</h4>
+                            <ul class="list-disc ml-5 text-slate-700 space-y-2">
+                                <li>The load of the control task is shared between the two controllers.</li>
+                                <li>Control is faster and more accurate because inner loop corrects disturbances quickly.</li>
+                                <li>Reduces the effect of nonlinearities in the secondary process.</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-red-700 border-b border-red-200 pb-2 mb-3">Drawbacks</h4>
+                            <ul class="list-disc ml-5 text-slate-700 space-y-2">
+                                <li>The extra sensor and the extra controller increases the overall cost.</li>
+                                <li>The overall control system becomes complex.</li>
+                                <li>Requires twice as much tuning effort (must tune secondary loop first, then primary).</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 1.4 Feedforward Controller -->
+                <div class="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm hover:shadow-md transition-shadow">
+                    <h3 class="text-2xl font-bold text-blue-900 mt-0 mb-4 flex items-center gap-3">
+                        <svg class="w-7 h-7 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"></path></svg>
+                        1.4 Feedforward Controller
+                    </h3>
+                    
+                    <p class="text-slate-700 mb-4">In this technique, the control action is based on the <strong>disturbance input</strong> into the process without considering the condition of the process output. In concept, feedforward control yields much faster correction than feedback control and is applied in such a way that the disturbance is ideally never seen in the controlled variable.</p>
+                    
+                    <p class="text-slate-700 mb-6">For example, if the inlet water temperature to a tank drops, a feedforward controller detects this incoming disturbance and immediately opens the steam valve to add more heat, perfectly offsetting the disturbance before the tank's overall temperature falls.</p>
+                    
+                    <div class="bg-slate-800 text-white rounded-xl p-6">
+                        <h4 class="font-bold text-yellow-400 mb-3">Limitations of Feedforward Control</h4>
+                        <ul class="list-disc ml-5 space-y-2 text-slate-200">
+                            <li>It is usually very difficult to measure all possible disturbances accurately.</li>
+                            <li>The controller will fail if the process model is inaccurate (it operates "blind" to the actual output).</li>
+                            <li>Therefore, it is almost always combined with a feedback controller to handle unmeasured disturbances and modeling errors.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========================================== -->
+            <!-- SECTION 2: P, I, PI, PID ACTIONS           -->
+            <!-- ========================================== -->
+            <section id="pid-actions" class="mb-24">
+                <h2>
+                    <span class="bg-gradient-to-br from-blue-600 to-blue-800 text-white w-12 h-12 rounded-xl flex items-center justify-center font-extrabold text-2xl shadow-lg shrink-0">2</span>
+                    Basic Control Actions: P, I, PI, PID
+                </h2>
+
+                <div class="mb-6">
+                    <span class="badge-important">VERY IMPORTANT</span>
+                    <span class="badge-qp">Apr 2018</span><span class="badge-qp">May 2019</span><span class="badge-qp">Sep 2020</span><span class="badge-qp">May 2023</span>
+                </div>
+
+                <p class="text-lg text-slate-700 mb-8">A controller computes a corrective signal \( u(t) \) based on the error \( e(t) \) (the difference between the desired setpoint \( r(t) \) and measured output \( c(t) \)). Standard industrial controllers use combinations of Proportional, Integral, and Derivative actions.</p>
+
+                <!-- 2.1 Proportional Controller -->
+                <div class="bg-white border-l-4 border-l-blue-500 border-y border-r border-slate-200 rounded-r-2xl p-8 shadow-sm mb-12">
+                    <h3 class="text-2xl font-bold text-blue-900 mt-0 mb-4">2.1 Proportional Controller (P-Controller)</h3>
+                    <p class="text-slate-700 mb-6">The proportional controller produces a control signal \( u(t) \) that is strictly proportional to the error signal \( e(t) \).</p>
+                    
+                    <div class="diagram-container bg-slate-50 border-blue-100">
+                        <svg viewBox="0 0 700 150" class="w-full h-auto">
+                            <!-- Input -->
+                            <path d="M 50 75 L 140 75" class="svg-circuit-wire" marker-end="url(#arrow-head)"/>
+                            <text x="95" y="65" class="svg-text-math font-bold">r(t)</text>
+                            
+                            <!-- Summing Junction -->
+                            <circle cx="160" cy="75" r="18" fill="#ffffff" stroke="#0f172a" stroke-width="2"/>
+                            <text x="160" y="82" text-anchor="middle" font-size="22" font-weight="bold">+</text>
+                            <text x="160" y="110" text-anchor="middle" font-size="22" font-weight="bold">-</text>
+                            
+                            <!-- Error -->
+                            <path d="M 178 75 L 250 75" class="svg-circuit-wire" marker-end="url(#arrow-head)"/>
+                            <text x="214" y="65" class="svg-text-math font-bold">e(t)</text>
+                            
+                            <!-- Kp Block -->
+                            <rect x="250" y="45" width="80" height="60" fill="#ffffff" stroke="#0f172a" stroke-width="3"/>
+                            <text x="290" y="80" text-anchor="middle" font-size="18" font-weight="bold">Kp</text>
+                            
+                            <!-- u(t) -->
+                            <path d="M 330 75 L 420 75" class="svg-circuit-wire" marker-end="url(#arrow-head)"/>
+                            <text x="375" y="65" class="svg-text-math font-bold">u(t)</text>
+                            
+                            <!-- Plant Block -->
+                            <rect x="420" y="35" width="130" height="80" fill="#ffffff" stroke="#0f172a" stroke-width="3"/>
+                            <text x="485" y="65" text-anchor="middle" font-size="18" font-weight="bold">K</text>
+                            <path d="M 440 75 L 530 75" stroke="#0f172a" stroke-width="2"/>
+                            <text x="485" y="100" text-anchor="middle" font-size="18" font-weight="bold">1 + Ts</text>
+                            
+                            <!-- Output -->
+                            <path d="M 550 75 L 680 75" class="svg-circuit-wire" marker-end="url(#arrow-head)"/>
+                            <text x="650" y="65" class="svg-text-math font-bold">c(t)</text>
+                            
+                            <!-- Feedback -->
+                            <path d="M 600 75 L 600 135 L 160 135 L 160 93" class="svg-circuit-wire" marker-end="url(#arrow-head)"/>
+                            
+                            <!-- Arrow Def -->
+                            <defs>
+                                <marker id="arrow-head" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+                                    <path d="M0,0 L0,6 L9,3 z" fill="#0f172a"/>
+                                </marker>
+                            </defs>
+                        </svg>
+                        <p class="text-center text-sm text-slate-500 mt-2 italic">Block Diagram of P-Control Action</p>
+                    </div>
+
+                    <div class="math-block bg-white text-lg">
+                        $$u(t) = K_p e(t) \implies G_c(s) = K_p$$
+                    </div>
+
+                    <div class="derivation-box mt-6">
+                        <h4 class="font-bold text-slate-800 mb-4 border-b pb-2">Analysis of a P-Controller</h4>
+                        <p class="text-slate-700 mb-4">Let the plant under consideration be a general first-order system: \( G(s) = \frac{K}{1+Ts} \)</p>
+                        <p class="text-slate-700 mb-2">The closed-loop transfer function is:</p>
+                        <div class="math-block bg-white text-lg py-4 border-blue-100">
+                            $$\frac{C(s)}{R(s)} = \frac{K_p \left( \frac{K}{1+Ts} \right)}{1 + K_p \left( \frac{K}{1+Ts} \right)} = \frac{K K_p}{1 + K K_p + Ts} = \left( \frac{K K_p}{1 + K K_p} \right) \frac{1}{1 + \frac{T s}{1 + K K_p}}$$
+                        </div>
+                        <p class="text-slate-700 my-4">Let \( T_1 = \frac{T}{1 + K K_p} \) and \( K_1 = \frac{K K_p}{1 + K K_p} \). <br>The resulting system is a first-order system with a <strong>lower time constant</strong> (\( T_1 < T \)), which means P-control results in a <strong>faster response</strong>.</p>
+                        
+                        <p class="text-slate-700 font-bold mb-2">Steady State Error Analysis:</p>
+                        <p class="text-slate-700 mb-2">For a step input \( R(s) = A/s \):</p>
+                        <div class="math-block bg-white text-lg py-4 border-blue-100">
+                            $$E(s) = R(s) - C(s) = R(s) \left[ 1 - \frac{K K_p}{1 + K K_p + Ts} \right] = \frac{A}{s} \left[ \frac{1 + Ts}{1 + K K_p + Ts} \right]$$
+                            $$e_{ss} = \lim_{s \to 0} s E(s) = \lim_{s \to 0} s \frac{A}{s} \left[ \frac{1 + Ts}{1 + K K_p + Ts} \right] = \frac{A}{1 + K K_p}$$
+                        </div>
+                        <div class="bg-blue-50 p-4 rounded-lg mt-4 border border-blue-200 shadow-sm">
+                            <p class="text-blue-900 font-medium"><strong>Conclusion for P-Control:</strong> As the value of \( K_p \) is increased, the steady state error (\( e_{ss} \)) decreases. However, it <strong>never reaches zero</strong> (there is always an offset). Furthermore, increasing \( K_p \) excessively for higher-order plants will cause large oscillations and eventually instability.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2.2 Integral Controller -->
+                <div class="bg-white border-l-4 border-l-green-500 border-y border-r border-slate-200 rounded-r-2xl p-8 shadow-sm mb-12">
+                    <h3 class="text-2xl font-bold text-green-900 mt-0 mb-4">2.2 Integral Control (I-Controller)</h3>
+                    <p class="text-slate-700 mb-6">In integral control, the output of the controller is proportional to the integral of the error signal. This means it accumulates past errors over time.</p>
+                    
+                    <div class="diagram-container bg-slate-50 border-green-100">
+                        <svg viewBox="0 0 750 160" class="w-full h-auto">
+                            <!-- Input -->
+                            <path d="M 50 80 L 140 80" class="svg-circuit-wire" marker-end="url(#arrow-head)"/>
+                            <text x="95" y="70" class="svg-text-math font-bold">r(t)</text>
+                            
+                            <!-- Summing Junction -->
+                            <circle cx="160" cy="80" r="18" fill="#ffffff" stroke="#0f172a" stroke-width="2"/>
+                            <text x="160" y="87" text-anchor="middle" font-size="22" font-weight="bold">+</text>
+                            <text x="160" y="115" text-anchor="middle" font-size="22" font-weight="bold">-</text>
+                            
+                            <!-- Error -->
+                            <path d="M 178 80 L 250 80" class="svg-circuit-wire" marker-end="url(#arrow-head)"/>
+                            <text x="214" y="70" class="svg-text-math font-bold">e(t)</text>
+                            
+                            <!-- Integral Block -->
+                            <rect x="250" y="45" width="80" height="70" fill="#ffffff" stroke="#0f172a" stroke-width="3"/>
+                            <text x="290" y="70" text-anchor="middle" font-size="18" font-weight="bold">1</text>
+                            <path d="M 265 80 L 315 80" stroke="#0f172a" stroke-width="2"/>
+                            <text x="290" y="105" text-anchor="middle" font-size="18" font-weight="bold">Ki s</text>
+                            
+                            <!-- u(t) -->
+                            <path d="M 330 80 L 420 80" class="svg-circuit-wire" marker-end="url(#arrow-head)"/>
+                            <text x="375" y="70" class="svg-text-math font-bold">u(t)</text>
+                            
+                            <!-- Plant Block -->
+                            <rect x="420" y="45" width="100" height="70" fill="#ffffff" stroke="#0f172a" stroke-width="3"/>
+                            <text x="470" y="88" text-anchor="middle" font-size="20" font-weight="bold">Plant</text>
+                            
+                            <!-- Output -->
+                            <path d="M 520 80 L 680 80" class="svg-circuit-wire" marker-end="url(#arrow-head)"/>
+                            <text x="640" y="70" class="svg-text-math font-bold">c(t)</text>
+                            
+                            <!-- Feedback -->
+                            <path d="M 580 80 L 580 145 L 160 145 L 160 98" class="svg-circuit-wire" marker-end="url(#arrow-head)"/>
+                            
+                            <!-- Annotation -->
+                            <text x="580" y="130" class="svg-text-bold" font-size="14">Ki is called the integral time</text>
+                        </svg>
+                        <p class="text-center text-sm text-slate-500 mt-2 italic">Block Diagram of I-Control Action</p>
+                    </div>
+
+                    <div class="math-block bg-white text-lg">
+                        $$u(t) = K_i \int e(t) dt \implies G_c(s) = \frac{K_i}{s}$$
+                    </div>
+
+                    <div class="derivation-box mt-6">
+                        <h4 class="font-bold text-slate-800 mb-4 border-b pb-2">Analysis of an I-Controller</h4>
+                        <p class="text-slate-700 mb-4">Let the plant be \( G(s) = \frac{K}{1+Ts} \).</p>
+                        <p class="text-slate-700 mb-2">The closed-loop transfer function with an Integral controller \( \frac{K_i}{s} \) is:</p>
+                        <div class="math-block bg-white text-lg py-4 border-green-100">
+                            $$\frac{C(s)}{R(s)} = \frac{\frac{K_i}{s} \left( \frac{K}{1+Ts} \right)}{1 + \frac{K_i}{s} \left( \frac{K}{1+Ts} \right)} = \frac{K K_i}{s(1+Ts) + K K_i} = \frac{K K_i}{T s^2 + s + K K_i}$$
+                        </div>
+                        <p class="text-slate-700 my-4">It is profoundly clear that the inclusion of an integral controller has <strong>increased the order of the closed-loop system by one</strong> (from a 1st order plant to a 2nd order closed-loop system). This increase in order may cause instability if the process is already of higher order dynamics.</p>
+                        
+                        <p class="text-slate-700 font-bold mb-2">Steady State Error Analysis:</p>
+                        <p class="text-slate-700 mb-2">For a step input \( R(s) = A/s \):</p>
+                        <div class="math-block bg-white text-lg py-4 border-green-100">
+                            $$E(s) = R(s) - C(s) = R(s) \left[ 1 - \frac{K K_i}{T s^2 + s + K K_i} \right] = \frac{A}{s} \left[ \frac{T s^2 + s}{T s^2 + s + K K_i} \right]$$
+                            $$e_{ss} = \lim_{s \to 0} s E(s) = \lim_{s \to 0} s \cdot \frac{A}{s} \left[ \frac{T s^2 + s}{T s^2 + s + K K_i} \right] = 0$$
+                        </div>
+                        <div class="bg-green-50 p-4 rounded-lg mt-4 border border-green-200 shadow-sm">
+                            <p class="text-green-900 font-medium"><strong>Conclusion for I-Control:</strong> The major advantage of the integral action is that the <strong>steady state error due to step input is exactly zero</strong>. However, the system response becomes generally slow and oscillatory.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2.3 PI Controller -->
+                <div class="bg-white border-l-4 border-l-purple-500 border-y border-r border-slate-200 rounded-r-2xl p-8 shadow-sm mb-12">
+                    <h3 class="text-2xl font-bold text-purple-900 mt-0 mb-4">2.3 Proportional-Integral Controller (PI Controller)</h3>
+                    <p class="text-slate-700 mb-6">The PI controller provides the dual advantage of fast response due to P-action and zero steady-state error due to I-action.</p>
+
+                    <div class="diagram-container bg-slate-50 border-purple-100">
+                        <svg viewBox="0 0 750 160" class="w-full h-auto">
+                            <!-- Input -->
+                            <path d="M 40 80 L 120 80" class="svg-circuit-wire" marker-end="url(#arrow-head)"/>
+                            <text x="80" y="70" class="svg-text-math font-bold">r(t)</text>
+                            
+                            <!-- Summing Junction -->
+                            <circle cx="140" cy="80" r="18" fill="#ffffff" stroke="#0f172a" stroke-width="2"/>
+                            <text x="140" y="87" text-anchor="middle" font-size="22" font-weight="bold">+</text>
+                            <text x="140" y="115" text-anchor="middle" font-size="22" font-weight="bold">-</text>
+                            
+                            <!-- Error -->
+                            <path d="M 158 80 L 230 80" class="svg-circuit-wire" marker-end="url(#arrow-head)"/>
+                            <text x="194" y="70" class="svg-text-math font-bold">e(t)</text>
+                            
+                            <!-- PI Block -->
+                            <rect x="230" y="45" width="160" height="70" fill="#ffffff" stroke="#0f172a" stroke-width="3"/>
+                            
+                            <text x="255" y="88" font-size="20" font-weight="bold">Kp</text>
+                            <text x="290" y="88" font-size="24" font-weight="normal">[</text>
+                            <text x="310" y="88" font-size="18" font-weight="bold">1 +</text>
+                            
+                            <text x="360" y="70" text-anchor="middle" font-size="18" font-weight="bold">1</text>
+                            <path d="M 345 80 L 375 80" stroke="#0f172a" stroke-width="2"/>
+                            <text x="360" y="105" text-anchor="middle" font-size="18" font-weight="bold">Ki s</text>
+
+                            <text x="385" y="88" font-size="24" font-weight="normal">]</text>
+                            
+                            <!-- u(t) -->
+                            <path d="M 390 80 L 480 80" class="svg-circuit-wire" marker-end="url(#arrow-head)"/>
+                            <text x="435" y="70" class="svg-text-math font-bold">u(t)</text>
+                            
+                            <!-- Plant Block -->
+                            <rect x="480" y="45" width="100" height="70" fill="#ffffff" stroke="#0f172a" stroke-width="3"/>
+                            <text x="530" y="88" text-anchor="middle" font-size="20" font-weight="bold">Plant</text>
+                            
+                            <!-- Output -->
+                            <path d="M 580 80 L 720 80" class="svg-circuit-wire" marker-end="url(#arrow-head)"/>
+                            <text x="680" y="70" class="svg-text-math font-bold">c(t)</text>
+                            
+                            <!-- Feedback -->
+                            <path d="M 640 80 L 640 145 L 140 145 L 140 98" class="svg-circuit-wire" marker-end="url(#arrow-head)"/>
+                        </svg>
+                        <p class="text-center text-sm text-slate-500 mt-2 italic">Block Diagram of PI-Controller</p>
+                    </div>
+
+                    <div class="math-block bg-white text-lg">
+                        <p class="mb-4">Here the control signal is given by:</p>
+                        $$u(t) = K_p e(t) + \frac{K_p}{K_i} \int e(t) dt$$
+                        $$G_c(s) = K_p \left( 1 + \frac{1}{K_i s} \right)$$
+                    </div>
+                </div>
+
+                <!-- 2.4 PID Controller -->
+                <div class="bg-white border-l-4 border-l-red-500 border-y border-r border-slate-200 rounded-r-2xl p-8 shadow-sm mb-12">
+                    <h3 class="text-2xl font-bold text-red-900 mt-0 mb-4">2.4 Proportional-Integral-Derivative (PID) Controller</h3>
+                    <p class="text-slate-700 mb-6">PID control combines the features of each of the three individual control actions to provide the optimal overall performance.</p>
+
+                    <div class="diagram-container bg-slate-50 border-red-100">
+                        <svg viewBox="0 0 800 160" class="w-full h-auto">
+                            <!-- Input -->
+                            <path d="M 30 80 L 110 80" class="svg-circuit-wire" marker-end="url(#arrow-head)"/>
+                            <text x="70" y="70" class="svg-text-math font-bold">r(t)</text>
+                            
+                            <!-- Summing Junction -->
+                            <circle cx="130" cy="80" r="18" fill="#ffffff" stroke="#0f172a" stroke-width="2"/>
+                            <text x="130" y="87" text-anchor="middle" font-size="22" font-weight="bold">+</text>
+                            <text x="130" y="115" text-anchor="middle" font-size="22" font-weight="bold">-</text>
+                            
+                            <!-- Error -->
+                            <path d="M 148 80 L 220 80" class="svg-circuit-wire" marker-end="url(#arrow-head)"/>
+                            <text x="184" y="70" class="svg-text-math font-bold">e(t)</text>
+                            
+                            <!-- PID Block -->
+                            <rect x="220" y="45" width="220" height="70" fill="#ffffff" stroke="#0f172a" stroke-width="3"/>
+                            
+                            <text x="245" y="88" font-size="20" font-weight="bold">Kp</text>
+                            <text x="280" y="88" font-size="24" font-weight="normal">[</text>
+                            <text x="300" y="88" font-size="18" font-weight="bold">1 +</text>
+                            
+                            <text x="345" y="70" text-anchor="middle" font-size="18" font-weight="bold">1</text>
+                            <path d="M 330 80 L 360 80" stroke="#0f172a" stroke-width="2"/>
+                            <text x="345" y="105" text-anchor="middle" font-size="18" font-weight="bold">Ki s</text>
+
+                            <text x="400" y="88" text-anchor="middle" font-size="18" font-weight="bold">+ Kd s</text>
+
+                            <text x="430" y="88" font-size="24" font-weight="normal">]</text>
+                            
+                            <!-- u(t) -->
+                            <path d="M 440 80 L 530 80" class="svg-circuit-wire" marker-end="url(#arrow-head)"/>
+                            <text x="485" y="70" class="svg-text-math font-bold">u(t)</text>
+                            
+                            <!-- Plant Block -->
+                            <rect x="530" y="45" width="100" height="70" fill="#ffffff" stroke="#0f172a" stroke-width="3"/>
+                            <text x="580" y="88" text-anchor="middle" font-size="20" font-weight="bold">Plant</text>
+                            
+                            <!-- Output -->
+                            <path d="M 630 80 L 760 80" class="svg-circuit-wire" marker-end="url(#arrow-head)"/>
+                            <text x="730" y="70" class="svg-text-math font-bold">c(t)</text>
+                            
+                            <!-- Feedback -->
+                            <path d="M 690 80 L 690 145 L 130 145 L 130 98" class="svg-circuit-wire" marker-end="url(#arrow-head)"/>
+                        </svg>
+                        <p class="text-center text-sm text-slate-500 mt-2 italic">Block Diagram of PID-Controller</p>
+                    </div>
+
+                    <div class="math-block bg-white text-lg">
+                        <p class="mb-4">Here the control signal is given by:</p>
+                        $$u(t) = K_p e(t) + \frac{K_p}{K_i} \int e(t) dt + K_p K_d \frac{d}{dt}e(t)$$
+                        $$G_c(s) = K_p \left( 1 + \frac{1}{K_i s} + K_d s \right)$$
+                    </div>
+                    
+                    <div class="bg-red-50 p-6 rounded-xl mt-6 border border-red-100 shadow-inner">
+                        <h4 class="font-bold text-red-900 mb-4 text-lg">Summary of PID Features</h4>
+                        <ul class="list-disc ml-6 text-slate-800 space-y-2">
+                            <li><strong>P-control:</strong> Improves the speed of response (reduces rise time).</li>
+                            <li><strong>I-control:</strong> Reduces or eliminates the steady-state error completely.</li>
+                            <li><strong>D-control:</strong> Reduces the rate of change of error, improving damping and reducing peak overshoot.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Graphical Comparison -->
+                <div class="diagram-container mt-12 bg-slate-50 shadow-md">
+                    <h4 class="text-center font-extrabold text-2xl mb-8 text-slate-800">Time-Domain Output Responses</h4>
+                    <svg viewBox="0 0 800 450" class="w-full h-auto max-w-3xl mx-auto">
+                        <!-- Background Grid -->
+                        <g class="svg-grid-major">
+                            <line x1="100" y1="200" x2="750" y2="200"/> <!-- Setpoint Line -->
+                        </g>
+
+                        <!-- Axes -->
+                        <path d="M 100 400 L 750 400" class="svg-axis" marker-end="url(#arrow-head)"/>
+                        <path d="M 100 400 L 100 50" class="svg-axis" marker-end="url(#arrow-head)"/>
+                        <text x="730" y="430" class="svg-text-bold" font-size="16">Time (t)</text>
+                        <text x="30" y="60" class="svg-text-bold" font-size="16">Output c(t)</text>
+                        
+                        <!-- Setpoint line Text-->
+                        <text x="50" y="205" class="svg-text-bold" font-size="16" fill="#475569">Setpoint (A)</text>
+
+                        <!-- P-Control Curve -->
+                        <path d="M 100 400 Q 200 240, 700 250" stroke="#3b82f6" stroke-width="3" fill="none"/>
+                        <path d="M 650 200 L 650 250" stroke="#0f172a" stroke-width="1.5" marker-start="url(#arrow-head)" marker-end="url(#arrow-head)"/>
+                        <text x="660" y="230" class="svg-text" fill="#3b82f6" font-weight="bold">Steady State Error</text>
+                        <text x="550" y="270" class="svg-text-bold" fill="#3b82f6" font-size="14">P - Control</text>
+
+                        <!-- I-Control Curve -->
+                        <path d="M 100 400 C 200 100, 250 50, 350 250 S 500 150, 600 200 S 700 200, 750 200" stroke="#16a34a" stroke-width="3" fill="none" stroke-dasharray="6,4"/>
+                        <text x="350" y="80" class="svg-text-bold" fill="#16a34a" font-size="14">I - Control (Oscillatory)</text>
+
+                        <!-- PI-Control Curve -->
+                        <path d="M 100 400 C 180 50, 250 100, 350 220 S 450 180, 550 200 S 650 200, 750 200" stroke="#9333ea" stroke-width="4" fill="none"/>
+                        <text x="200" y="100" class="svg-text-bold" fill="#9333ea" font-size="14">PI - Control</text>
+
+                        <!-- PD-Control Curve -->
+                        <path d="M 100 400 C 150 260, 250 270, 700 280" stroke="#f59e0b" stroke-width="3" fill="none" stroke-dasharray="10,5"/>
+                        <text x="300" y="300" class="svg-text-bold" fill="#f59e0b" font-size="14">PD - Control</text>
+                    </svg>
+                    <p class="text-sm text-slate-500 mt-6 text-center italic">Figure: Comparison of time-domain responses for various control actions (Ref: May 2019 QP)</p>
+                </div>
+            </section>
+
+            <!-- ========================================== -->
+            <!-- SECTION 3: COMPENSATOR DESIGN              -->
+            <!-- ========================================== -->
+            <section id="compensator-theory" class="mb-24">
+                <h2>
+                    <span class="bg-gradient-to-br from-blue-600 to-blue-800 text-white w-12 h-12 rounded-xl flex items-center justify-center font-extrabold text-2xl shadow-lg shrink-0">3</span>
+                    Compensator Analysis & Realization
+                </h2>
+
+                <div class="mb-6">
+                    <span class="badge-important">MOST IMPORTANT (10 MARKS)</span>
+                    <span class="badge-qp">Apr 2018</span><span class="badge-qp">May 2019</span><span class="badge-qp">Dec 2019</span><span class="badge-qp">Sep 2020</span><span class="badge-qp">Jul 2021</span>
+                </div>
+
+                <p class="text-lg text-slate-700 mb-8">Compensators are corrective subsystems introduced to compensate for plant deficiencies. We will deeply analyze the Lead, Lag, and Lag-Lead compensators in the frequency domain, including their electrical RC realizations, transfer functions, pole-zero plots, and Bode plots.</p>
+
+                <!-- ========================================== -->
+                <!-- 3.1 LEAD COMPENSATOR                       -->
+                <!-- ========================================== -->
+                <div id="lead-compensator" class="bg-white border-2 border-blue-200 rounded-3xl overflow-hidden shadow-lg mb-16 relative">
+                    <div class="absolute top-0 right-0 bg-blue-600 text-white px-5 py-1.5 rounded-bl-xl font-bold tracking-wider text-sm shadow-sm">HIGH-PASS FILTER</div>
+                    <div class="p-8 md:p-10">
+                        <h3 class="text-3xl font-bold text-blue-950 mt-0 mb-6 border-none">3.1 Lead Compensator</h3>
+                        
+                        <div class="text-slate-700 text-lg mb-8 space-y-4">
+                            <p>For a sinusoidal input, if the sinusoidal output <strong>leads</strong> the input, it is known as a lead compensator. It essentially acts as a High-Pass filter.</p>
+                            <p><strong>Primary Function:</strong> It is used to improve the <strong>transient response</strong> (speed up the system, decrease overshoot) and increase the stability margins (specifically, it increases Phase Margin).</p>
+                        </div>
+                        
+                        <!-- Theory Grid -->
+                        <div class="grid xl:grid-cols-2 gap-10 mb-10">
+                            
+                            <!-- RC Network -->
+                            <div>
+                                <h4 class="font-bold text-xl text-slate-800 mb-4 flex items-center gap-2">
+                                    <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                                    Electrical RC Realization
+                                </h4>
+                                <div class="diagram-container !p-6 !m-0 !bg-slate-50 border-blue-100">
+                                    <svg viewBox="0 0 400 220" class="w-full h-auto">
+                                        <!-- Terminals -->
+                                        <circle cx="30" cy="60" r="4" fill="#0f172a"/>
+                                        <circle cx="30" cy="180" r="4" fill="#0f172a"/>
+                                        <path d="M 30 65 L 30 175" class="svg-annotation" marker-start="url(#arrow-head)" marker-end="url(#arrow-head)"/>
+                                        <text x="15" y="125" class="svg-text-bold" font-size="16" text-anchor="end">ei</text>
+                                        
+                                        <circle cx="370" cy="60" r="4" fill="#0f172a"/>
+                                        <circle cx="370" cy="180" r="4" fill="#0f172a"/>
+                                        <path d="M 370 65 L 370 175" class="svg-annotation" marker-start="url(#arrow-head)" marker-end="url(#arrow-head)"/>
+                                        <text x="385" y="125" class="svg-text-bold" font-size="16">eo</text>
+
+                                        <!-- Top Wire -->
+                                        <path d="M 30 60 L 80 60" class="svg-circuit-wire"/>
+                                        <path d="M 45 60 L 65 60" stroke="red" stroke-width="1.5" marker-end="url(#arrow-red)"/>
+                                        <text x="55" y="50" fill="red" font-size="12" text-anchor="middle">i</text>
+                                        
+                                        <path d="M 280 60 L 370 60" class="svg-circuit-wire"/>
+                                        
+                                        <!-- Bottom Wire -->
+                                        <path d="M 30 180 L 370 180" class="svg-circuit-wire"/>
+                                        <path d="M 200 180 L 150 180" stroke="red" stroke-width="1.5" marker-end="url(#arrow-red)"/>
+                                        <text x="175" y="170" fill="red" font-size="12" text-anchor="middle">i</text>
+
+                                        <!-- Parallel R1, C1 Group -->
+                                        <!-- Top split C -->
+                                        <path d="M 80 60 L 80 30 L 140 30" class="svg-circuit-wire"/>
+                                        <path d="M 100 30 L 120 30" stroke="red" stroke-width="1.5" marker-end="url(#arrow-red)"/>
+                                        <text x="110" y="20" fill="red" font-size="12" text-anchor="middle">i1</text>
+                                        
+                                        <path d="M 140 15 L 140 45" stroke="#0f172a" stroke-width="3"/>
+                                        <path d="M 160 15 L 160 45" stroke="#0f172a" stroke-width="3"/>
+                                        <text x="150" y="10" class="svg-text-bold" text-anchor="middle">C</text>
+                                        <path d="M 160 30 L 240 30 L 240 60 L 280 60" class="svg-circuit-wire"/>
+                                        
+                                        <!-- Bottom split R1 -->
+                                        <path d="M 80 60 L 80 90 L 120 90" class="svg-circuit-wire"/>
+                                        <path d="M 100 90 L 115 90" stroke="red" stroke-width="1.5" marker-end="url(#arrow-red)"/>
+                                        <text x="107" y="105" fill="red" font-size="12" text-anchor="middle">i2</text>
+                                        
+                                        <path d="M 120 90 L 125 80 L 135 100 L 145 80 L 155 100 L 165 80 L 175 100 L 180 90 L 190 90" class="svg-circuit-wire"/>
+                                        <text x="155" y="115" class="svg-text-bold" text-anchor="middle">R1</text>
+                                        <path d="M 190 90 L 240 90 L 240 60" class="svg-circuit-wire"/>
+                                        
+                                        <path d="M 250 60 L 270 60" stroke="red" stroke-width="1.5" marker-end="url(#arrow-red)"/>
+                                        <text x="260" y="50" fill="red" font-size="12" text-anchor="middle">i</text>
+
+                                        <!-- Node dot -->
+                                        <circle cx="280" cy="60" r="4" fill="#0f172a"/>
+                                        
+                                        <!-- Shunt R2 -->
+                                        <path d="M 280 60 L 280 90" class="svg-circuit-wire"/>
+                                        <path d="M 280 70 L 280 85" stroke="red" stroke-width="1.5" marker-end="url(#arrow-red)"/>
+                                        <text x="270" y="80" fill="red" font-size="12" text-anchor="middle">i</text>
+                                        
+                                        <path d="M 280 90 L 270 95 L 290 105 L 270 115 L 290 125 L 280 130 L 280 180" class="svg-circuit-wire"/>
+                                        <text x="305" y="115" class="svg-text-bold">R2</text>
+                                        <circle cx="280" cy="180" r="4" fill="#0f172a"/>
+
+                                        <!-- Defs -->
+                                        <defs>
+                                            <marker id="arrow-red" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                                                <path d="M0,0 L0,6 L6,3 z" fill="red"/>
+                                            </marker>
+                                        </defs>
+                                    </svg>
+                                </div>
+                                <p class="text-sm text-slate-500 mt-2 text-center italic">Figure: Realization of Lead Compensator</p>
+                            </div>
+
+                            <!-- Math Model & Derivation -->
+                            <div>
+                                <h4 class="font-bold text-xl text-slate-800 mb-4 flex items-center gap-2">
+                                    <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                                    Transfer Function Derivation
+                                </h4>
+                                <div class="bg-blue-50 border border-blue-100 rounded-xl p-6">
+                                    <p class="text-sm text-slate-700 mb-2">Using voltage divider rule:</p>
+                                    <div class="math-block !bg-white !p-3">
+                                        $$\frac{E_o(s)}{E_i(s)} = \frac{R_2}{R_2 + \left( \frac{R_1 \cdot \frac{1}{Cs}}{R_1 + \frac{1}{Cs}} \right)}$$
+                                    </div>
+                                    <p class="text-sm text-slate-700 mt-4 mb-2">Simplifying the expression yields:</p>
+                                    <div class="math-block !bg-white !p-3">
+                                        $$G_c(s) = \frac{E_o(s)}{E_i(s)} = \frac{R_2 (R_1 Cs + 1)}{R_1 R_2 Cs + R_2 + R_1}$$
+                                    </div>
+                                    <p class="text-sm text-slate-700 mt-4 mb-2">Let \( T = R_1 C \) and \( \alpha = \frac{R_2}{R_1 + R_2} \):</p>
+                                    <div class="math-block !bg-white !p-3 !border-blue-400 !border-2">
+                                        $$G_c(s) = \alpha \left( \frac{Ts + 1}{\alpha Ts + 1} \right) = \frac{s + \frac{1}{T}}{s + \frac{1}{\alpha T}}$$
+                                    </div>
+                                    <p class="text-sm text-slate-700 mt-3 text-center font-medium">Since \( R_1 \) and \( R_2 \) are positive, \( 0 < \alpha < 1 \).</p>
+                                </div>
+                            </div>
+                            
+                        </div>
+
+                        <!-- Graphical Plots -->
+                        <div class="grid xl:grid-cols-2 gap-10">
+                            <!-- Pole Zero -->
+                            <div>
+                                <h4 class="font-bold text-xl text-slate-800 mb-4 text-center border-b pb-2">Pole-Zero Plot</h4>
+                                <div class="diagram-container !p-6 !m-0 !bg-slate-50 border-blue-100">
+                                    <p class="text-sm text-slate-600 mb-6 text-center">The lead compensator has a dominant <strong>zero at \(-1/T\)</strong> and a <strong>pole at \(-1/\alpha T\)</strong>. Because \( \alpha < 1 \), the pole is located further to the left (farther from the origin) than the zero.</p>
+                                    <svg viewBox="0 0 400 200" class="w-full h-auto">
+                                        <!-- Grid -->
+                                        <g class="svg-grid">
+                                            <line x1="20" y1="50" x2="380" y2="50"/>
+                                            <line x1="20" y1="150" x2="380" y2="150"/>
+                                            <line x1="120" y1="20" x2="120" y2="180"/>
+                                            <line x1="220" y1="20" x2="220" y2="180"/>
+                                        </g>
+                                        
+                                        <!-- Axes -->
+                                        <path d="M 20 100 L 380 100" class="svg-axis" marker-end="url(#arrow-head)"/>
+                                        <path d="M 320 180 L 320 20" class="svg-axis" marker-end="url(#arrow-head)"/>
+                                        <text x="370" y="90" class="svg-text-bold" font-size="14">σ</text>
+                                        <text x="330" y="30" class="svg-text-bold" font-size="14">jω</text>
+                                        
+                                        <!-- Zero -->
+                                        <circle cx="220" cy="100" r="8" fill="white" stroke="#2563eb" stroke-width="3"/>
+                                        <text x="220" y="130" class="svg-text-bold" fill="#2563eb" text-anchor="middle" font-size="14">-1/T</text>
+                                        
+                                        <!-- Pole -->
+                                        <path d="M 72 92 L 88 108 M 88 92 L 72 108" stroke="#dc2626" stroke-width="3"/>
+                                        <text x="80" y="130" class="svg-text-bold" fill="#dc2626" text-anchor="middle" font-size="14">-1/αT</text>
+                                        
+                                        <!-- Annotations -->
+                                        <path d="M 80 100 L 320 100" stroke="#dc2626" stroke-width="2" stroke-dasharray="4,4" fill="none"/>
+                                        <path d="M 220 100 L 320 100" stroke="#2563eb" stroke-width="2" stroke-dasharray="4,4" fill="none"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            
+                            <!-- Bode Plot -->
+                            <div>
+                                <h4 class="font-bold text-xl text-slate-800 mb-4 text-center border-b pb-2">Frequency Response (Bode Plot)</h4>
+                                <div class="diagram-container !p-6 !m-0 !bg-slate-50 border-blue-100">
+                                    <svg viewBox="0 0 450 350" class="w-full h-auto">
+                                        <!-- Mag Grid -->
+                                        <path d="M 60 50 L 400 50" stroke="#cbd5e1" stroke-dasharray="2,2"/>
+                                        <path d="M 60 140 L 400 140" stroke="#cbd5e1" stroke-dasharray="2,2"/>
+                                        <path d="M 160 30 L 160 320" class="svg-annotation"/>
+                                        <path d="M 300 30 L 300 320" class="svg-annotation"/>
+                                        
+                                        <!-- Mag Axis -->
+                                        <path d="M 60 140 L 420 140" class="svg-axis" marker-end="url(#arrow-head)"/>
+                                        <path d="M 60 160 L 60 30" class="svg-axis" marker-end="url(#arrow-head)"/>
+                                        <text x="25" y="145" class="svg-text-bold">0 dB</text>
+                                        <text x="10" y="55" class="svg-text-bold" font-size="11">20log(1/α)</text>
+                                        <text x="10" y="90" class="svg-text-bold" fill="#ea580c">|Gc(jω)|</text>
+                                        
+                                        <!-- Mag Curve -->
+                                        <path d="M 60 140 L 160 140 L 300 50 L 400 50" class="svg-curve-mag"/>
+                                        <text x="180" y="85" class="svg-text-bold" fill="#ea580c">+20 dB/dec</text>
+                                        
+                                        <!-- Phase Grid -->
+                                        <path d="M 60 320 L 400 320" stroke="#cbd5e1" stroke-dasharray="2,2"/>
+                                        <path d="M 60 210 L 400 210" stroke="#cbd5e1" stroke-dasharray="2,2"/>
+                                        <path d="M 230 180 L 230 320" class="svg-annotation"/>
+                                        
+                                        <!-- Phase Axis -->
+                                        <path d="M 60 320 L 420 320" class="svg-axis" marker-end="url(#arrow-head)"/>
+                                        <path d="M 60 340 L 60 190" class="svg-axis" marker-end="url(#arrow-head)"/>
+                                        <text x="35" y="325" class="svg-text-bold">0°</text>
+                                        <text x="10" y="250" class="svg-text-bold" fill="#2563eb">∠Gc(jω)</text>
+                                        
+                                        <!-- Phase Curve -->
+                                        <path d="M 60 320 C 130 320, 170 210, 230 210 C 290 210, 330 320, 400 320" class="svg-curve-phase"/>
+                                        
+                                        <!-- Annotations -->
+                                        <path d="M 230 210 L 230 320" stroke="#2563eb" stroke-width="2" marker-start="url(#arrow-blue)" marker-end="url(#arrow-blue)"/>
+                                        <text x="240" y="270" class="svg-text-bold" fill="#2563eb" font-size="16">φm</text>
+                                        
+                                        <!-- Frequencies -->
+                                        <text x="150" y="340" class="svg-text-bold" font-size="14">1/T</text>
+                                        <text x="220" y="340" class="svg-text-bold text-blue-700" font-size="14">ωm</text>
+                                        <text x="290" y="340" class="svg-text-bold" font-size="14">1/αT</text>
+                                        <text x="405" y="340" class="svg-text">log ω</text>
+
+                                        <!-- Defs for blue arrow -->
+                                        <defs>
+                                            <marker id="arrow-blue" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+                                                <path d="M0,0 L8,4 L0,8 z" fill="#2563eb"/>
+                                            </marker>
+                                        </defs>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Mathematical Derivations -->
+                        <div class="derivation-box mt-10 border-blue-200">
+                            <h4 class="font-bold text-xl text-blue-900 mb-4 border-b border-blue-100 pb-3">Derivation of Maximum Phase Lead Angle (\(\phi_m\))</h4>
+                            <p class="text-slate-700 mb-4">Let us evaluate the sinusoidal transfer function of the lead compensator (assuming the attenuation \( \alpha \) is compensated by an amplifier, giving unit DC gain):</p>
+                            <div class="math-block bg-white py-4 text-lg border-blue-100">
+                                $$G_c(j\omega) = \frac{j\omega T + 1}{j\alpha \omega T + 1}$$
+                            </div>
+                            <p class="text-slate-700 mb-4">The phase angle \(\phi\) is given by:</p>
+                            <div class="math-block bg-white py-4 text-lg border-blue-100">
+                                $$\phi = \angle G_c(j\omega) = \tan^{-1}(\omega T) - \tan^{-1}(\alpha \omega T)$$
+                            </div>
+                            <p class="text-slate-700 mb-4">To find the maximum phase angle \(\phi_m\), we take the derivative with respect to \(\omega\) and equate it to zero:</p>
+                            <div class="math-block bg-white py-4 border-blue-100">
+                                $$\frac{d\phi}{d\omega} = \frac{T}{1 + \omega^2 T^2} - \frac{\alpha T}{1 + \alpha^2 \omega^2 T^2} = 0$$
+                                $$\frac{T}{1 + \omega^2 T^2} = \frac{\alpha T}{1 + \alpha^2 \omega^2 T^2} \implies 1 + \alpha^2 \omega^2 T^2 = \alpha + \alpha \omega^2 T^2$$
+                                $$\omega^2 T^2 (\alpha^2 - \alpha) = \alpha - 1 \implies \omega^2 T^2 \alpha(\alpha - 1) = -(1 - \alpha)$$
+                                $$\omega^2 = \frac{1}{\alpha T^2}$$
+                            </div>
+                            <p class="text-slate-700 mb-4">This gives the frequency \(\omega_m\) at which maximum phase lead occurs (the geometric mean of the two corner frequencies):</p>
+                            <div class="math-block bg-blue-50 py-4 font-bold border-blue-300 border-2">
+                                $$\omega_m = \frac{1}{T\sqrt{\alpha}}$$
+                            </div>
+                            <p class="text-slate-700 mb-4">Substituting \(\omega_m\) back into the phase equation to find \( \sin \phi_m \):</p>
+                            <div class="math-block bg-white py-4 border-blue-100">
+                                $$\tan \phi_m = \frac{\omega_m T - \alpha \omega_m T}{1 + \alpha \omega_m^2 T^2} = \frac{\frac{T}{T\sqrt{\alpha}} - \frac{\alpha T}{T\sqrt{\alpha}}}{1 + \alpha \left(\frac{1}{\alpha T^2}\right) T^2} = \frac{\frac{1}{\sqrt{\alpha}} - \sqrt{\alpha}}{1 + 1} = \frac{1 - \alpha}{2\sqrt{\alpha}}$$
+                            </div>
+                            <p class="text-slate-700 mb-4">Using trigonometric identities (\( \sin\theta = \frac{\tan\theta}{\sqrt{1+\tan^2\theta}} \)):</p>
+                            <div class="math-block bg-blue-50 py-4 font-bold border-blue-300 border-2 text-xl">
+                                $$\sin \phi_m = \frac{1 - \alpha}{1 + \alpha} \implies \alpha = \frac{1 - \sin \phi_m}{1 + \sin \phi_m}$$
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========================================== -->
+                <!-- 3.2 LAG COMPENSATOR                        -->
+                <!-- ========================================== -->
+                <div id="lag-compensator" class="bg-white border-2 border-orange-200 rounded-3xl overflow-hidden shadow-lg mb-16 relative">
+                    <div class="absolute top-0 right-0 bg-orange-600 text-white px-5 py-1.5 rounded-bl-xl font-bold tracking-wider text-sm shadow-sm">LOW-PASS FILTER</div>
+                    <div class="p-8 md:p-10">
+                        <h3 class="text-3xl font-bold text-orange-950 mt-0 mb-6 border-none">3.2 Lag Compensator</h3>
+                        
+                        <div class="text-slate-700 text-lg mb-8 space-y-4">
+                            <p>For a sinusoidal input, if the sinusoidal output <strong>lags</strong> the input, it is known as a lag compensator. It essentially acts as a Low-Pass filter.</p>
+                            <p><strong>Primary Function:</strong> It is used to provide high gain at low frequencies to <strong>improve steady-state performance (reduce steady-state error)</strong>. It accomplishes this through its high-frequency attenuation property, which allows the crossover frequency to be shifted to a lower value where the uncompensated system has a sufficient phase margin.</p>
+                        </div>
+                        
+                        <!-- Theory Grid -->
+                        <div class="grid xl:grid-cols-2 gap-10 mb-10">
+                            
+                            <!-- RC Network -->
+                            <div>
+                                <h4 class="font-bold text-xl text-slate-800 mb-4 flex items-center gap-2">
+                                    <svg class="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                                    Electrical RC Realization
+                                </h4>
+                                <div class="diagram-container !p-6 !m-0 !bg-slate-50 border-orange-100">
+                                    <svg viewBox="0 0 400 220" class="w-full h-auto">
+                                        <!-- Terminals -->
+                                        <circle cx="30" cy="60" r="4" fill="#0f172a"/>
+                                        <circle cx="30" cy="180" r="4" fill="#0f172a"/>
+                                        <path d="M 30 65 L 30 175" class="svg-annotation" marker-start="url(#arrow-head)" marker-end="url(#arrow-head)"/>
+                                        <text x="15" y="125" class="svg-text-bold" font-size="16" text-anchor="end">ei</text>
+                                        
+                                        <circle cx="370" cy="60" r="4" fill="#0f172a"/>
+                                        <circle cx="370" cy="180" r="4" fill="#0f172a"/>
+                                        <path d="M 370 65 L 370 175" class="svg-annotation" marker-start="url(#arrow-head)" marker-end="url(#arrow-head)"/>
+                                        <text x="385" y="125" class="svg-text-bold" font-size="16">eo</text>
+
+                                        <!-- Top Wire & Series R1 -->
+                                        <path d="M 30 60 L 100 60" class="svg-circuit-wire"/>
+                                        <path d="M 50 60 L 80 60" stroke="red" stroke-width="1.5" marker-end="url(#arrow-red)"/>
+                                        <text x="65" y="50" fill="red" font-size="12" text-anchor="middle">i</text>
+                                        
+                                        <path d="M 100 60 L 110 50 L 130 70 L 150 50 L 170 70 L 190 50 L 210 70 L 220 60 L 280 60" class="svg-circuit-wire" fill="none"/>
+                                        <text x="160" y="40" class="svg-text-bold" font-size="16" text-anchor="middle">R1</text>
+                                        
+                                        <path d="M 280 60 L 370 60" class="svg-circuit-wire"/>
+                                        
+                                        <!-- Bottom Wire -->
+                                        <path d="M 30 180 L 370 180" class="svg-circuit-wire"/>
+
+                                        <!-- Node dot -->
+                                        <circle cx="280" cy="60" r="4" fill="#0f172a"/>
+                                        
+                                        <!-- Shunt Branch R2 + C -->
+                                        <path d="M 280 60 L 280 80" class="svg-circuit-wire"/>
+                                        <path d="M 280 65 L 280 75" stroke="red" stroke-width="1.5" marker-end="url(#arrow-red)"/>
+                                        <text x="270" y="75" fill="red" font-size="12" text-anchor="middle">i</text>
+                                        
+                                        <!-- Shunt R2 -->
+                                        <path d="M 280 80 L 270 90 L 290 110 L 270 130 L 290 150 L 280 160" class="svg-circuit-wire" fill="none"/>
+                                        <text x="310" y="125" class="svg-text-bold" font-size="16">R2</text>
+                                        
+                                        <path d="M 280 160 L 280 175" stroke="red" stroke-width="1.5" marker-end="url(#arrow-red)"/>
+                                        <text x="270" y="172" fill="red" font-size="12" text-anchor="middle">i</text>
+
+                                        <!-- Shunt C -->
+                                        <path d="M 280 160 L 280 170" class="svg-circuit-wire"/>
+                                        <path d="M 260 170 L 300 170" stroke="#0f172a" stroke-width="3"/>
+                                        <path d="M 260 180 L 300 180" stroke="#0f172a" stroke-width="3"/>
+                                        <path d="M 280 180 L 280 180" class="svg-circuit-wire"/>
+                                        <text x="310" y="180" class="svg-text-bold" font-size="16">C</text>
+                                        
+                                        <circle cx="280" cy="180" r="4" fill="#0f172a"/>
+                                    </svg>
+                                </div>
+                                <p class="text-sm text-slate-500 mt-2 text-center italic">Figure: Realization of Lag Compensator</p>
+                            </div>
+
+                            <!-- Math Model & Derivation -->
+                            <div>
+                                <h4 class="font-bold text-xl text-slate-800 mb-4 flex items-center gap-2">
+                                    <svg class="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                                    Transfer Function Derivation
+                                </h4>
+                                <div class="bg-orange-50 border border-orange-100 rounded-xl p-6">
+                                    <p class="text-sm text-slate-700 mb-2">Using voltage divider rule:</p>
+                                    <div class="math-block !bg-white !p-3">
+                                        $$\frac{E_o(s)}{E_i(s)} = \frac{R_2 + \frac{1}{Cs}}{R_1 + R_2 + \frac{1}{Cs}}$$
+                                    </div>
+                                    <p class="text-sm text-slate-700 mt-4 mb-2">Simplifying the expression yields:</p>
+                                    <div class="math-block !bg-white !p-3">
+                                        $$G_c(s) = \frac{E_o(s)}{E_i(s)} = \frac{R_2 Cs + 1}{(R_1 + R_2)Cs + 1}$$
+                                    </div>
+                                    <p class="text-sm text-slate-700 mt-4 mb-2">Let \( T = R_2 C \) and \( \beta = \frac{R_1 + R_2}{R_2} \):</p>
+                                    <div class="math-block !bg-white !p-3 !border-orange-400 !border-2">
+                                        $$G_c(s) = \frac{Ts + 1}{\beta Ts + 1} = \frac{1}{\beta} \left( \frac{s + \frac{1}{T}}{s + \frac{1}{\beta T}} \right)$$
+                                    </div>
+                                    <p class="text-sm text-slate-700 mt-3 text-center font-medium">Since \( R_1 \) and \( R_2 \) are positive, \( \beta > 1 \).</p>
+                                </div>
+                            </div>
+                            
+                        </div>
+
+                        <!-- Graphical Plots -->
+                        <div class="grid xl:grid-cols-2 gap-10">
+                            <!-- Pole Zero -->
+                            <div>
+                                <h4 class="font-bold text-xl text-slate-800 mb-4 text-center border-b pb-2">Pole-Zero Plot</h4>
+                                <div class="diagram-container !p-6 !m-0 !bg-slate-50 border-orange-100">
+                                    <p class="text-sm text-slate-600 mb-6 text-center">The lag compensator has a <strong>zero at \(-1/T\)</strong> and a dominant <strong>pole at \(-1/\beta T\)</strong>. Because \( \beta > 1 \), the pole is located closer to the origin than the zero.</p>
+                                    <svg viewBox="0 0 400 200" class="w-full h-auto">
+                                        <!-- Grid -->
+                                        <g class="svg-grid">
+                                            <line x1="20" y1="50" x2="380" y2="50"/>
+                                            <line x1="20" y1="150" x2="380" y2="150"/>
+                                            <line x1="120" y1="20" x2="120" y2="180"/>
+                                            <line x1="220" y1="20" x2="220" y2="180"/>
+                                        </g>
+                                        
+                                        <!-- Axes -->
+                                        <path d="M 20 100 L 380 100" class="svg-axis" marker-end="url(#arrow-head)"/>
+                                        <path d="M 320 180 L 320 20" class="svg-axis" marker-end="url(#arrow-head)"/>
+                                        <text x="370" y="90" class="svg-text-bold" font-size="14">σ</text>
+                                        <text x="330" y="30" class="svg-text-bold" font-size="14">jω</text>
+                                        
+                                        <!-- Pole (Closer to origin) -->
+                                        <path d="M 192 92 L 208 108 M 208 92 L 192 108" stroke="#dc2626" stroke-width="3"/>
+                                        <text x="200" y="130" class="svg-text-bold" fill="#dc2626" text-anchor="middle" font-size="14">-1/βT</text>
+
+                                        <!-- Zero (Further left) -->
+                                        <circle cx="80" cy="100" r="8" fill="white" stroke="#2563eb" stroke-width="3"/>
+                                        <text x="80" y="130" class="svg-text-bold" fill="#2563eb" text-anchor="middle" font-size="14">-1/T</text>
+                                        
+                                        <!-- Annotations -->
+                                        <path d="M 80 100 L 320 100" stroke="#2563eb" stroke-width="2" stroke-dasharray="4,4" fill="none"/>
+                                        <path d="M 200 100 L 320 100" stroke="#dc2626" stroke-width="2" stroke-dasharray="4,4" fill="none"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            
+                            <!-- Bode Plot -->
+                            <div>
+                                <h4 class="font-bold text-xl text-slate-800 mb-4 text-center border-b pb-2">Frequency Response (Bode Plot)</h4>
+                                <div class="diagram-container !p-6 !m-0 !bg-slate-50 border-orange-100">
+                                    <svg viewBox="0 0 450 350" class="w-full h-auto">
+                                        <!-- Mag Grid -->
+                                        <path d="M 60 50 L 400 50" stroke="#cbd5e1" stroke-dasharray="2,2"/>
+                                        <path d="M 60 140 L 400 140" stroke="#cbd5e1" stroke-dasharray="2,2"/>
+                                        <path d="M 160 30 L 160 320" class="svg-annotation"/>
+                                        <path d="M 300 30 L 300 320" class="svg-annotation"/>
+                                        
+                                        <!-- Mag Axis -->
+                                        <path d="M 60 50 L 420 50" class="svg-axis" marker-end="url(#arrow-head)"/>
+                                        <path d="M 60 160 L 60 30" class="svg-axis" marker-end="url(#arrow-head)"/>
+                                        <text x="25" y="55" class="svg-text-bold">0 dB</text>
+                                        <text x="10" y="145" class="svg-text-bold" font-size="11">-20logβ</text>
+                                        <text x="10" y="30" class="svg-text-bold" fill="#ea580c">|Gc(jω)|</text>
+                                        
+                                        <!-- Mag Curve -->
+                                        <path d="M 60 50 L 160 50 L 300 140 L 400 140" class="svg-curve-mag"/>
+                                        <text x="175" y="115" class="svg-text-bold" fill="#ea580c">-20 dB/dec</text>
+                                        
+                                        <!-- Phase Grid -->
+                                        <path d="M 60 320 L 400 320" stroke="#cbd5e1" stroke-dasharray="2,2"/>
+                                        <path d="M 60 210 L 400 210" stroke="#cbd5e1" stroke-dasharray="2,2"/>
+                                        <path d="M 230 180 L 230 320" class="svg-annotation"/>
+                                        
+                                        <!-- Phase Axis -->
+                                        <path d="M 60 210 L 420 210" class="svg-axis" marker-end="url(#arrow-head)"/>
+                                        <path d="M 60 340 L 60 190" class="svg-axis" marker-end="url(#arrow-head)"/>
+                                        <text x="35" y="215" class="svg-text-bold">0°</text>
+                                        <text x="10" y="335" class="svg-text-bold" fill="#2563eb">∠Gc(jω)</text>
+                                        
+                                        <!-- Phase Curve (Dips downwards) -->
+                                        <path d="M 60 210 C 130 210, 170 320, 230 320 C 290 320, 330 210, 400 210" class="svg-curve-phase"/>
+                                        
+                                        <!-- Annotations -->
+                                        <path d="M 230 210 L 230 320" stroke="#2563eb" stroke-width="2" marker-start="url(#arrow-blue)" marker-end="url(#arrow-blue)"/>
+                                        <text x="240" y="270" class="svg-text-bold" fill="#2563eb" font-size="16">φm</text>
+                                        
+                                        <!-- Frequencies -->
+                                        <text x="150" y="340" class="svg-text-bold" font-size="14">1/βT</text>
+                                        <text x="220" y="340" class="svg-text-bold text-blue-700" font-size="14">ωm</text>
+                                        <text x="290" y="340" class="svg-text-bold" font-size="14">1/T</text>
+                                        <text x="405" y="225" class="svg-text">log ω</text>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Mathematical Derivations -->
+                        <div class="derivation-box mt-10 border-orange-200">
+                            <h4 class="font-bold text-xl text-orange-900 mb-4 border-b border-orange-100 pb-3">High Frequency Attenuation Analysis</h4>
+                            <p class="text-slate-700 mb-4">Unlike the Lead Compensator, which is primarily used for its phase addition property, the Lag Compensator is primarily used for its <strong>high-frequency attenuation</strong> property. This allows us to increase the low-frequency gain (which improves steady-state error) without destroying the high-frequency stability margins.</p>
+                            
+                            <p class="text-slate-700 mb-2">The magnitude of the lag compensator at high frequencies (\(\omega \to \infty\)) is:</p>
+                            <div class="math-block bg-white py-4 border-orange-100 text-lg">
+                                $$|G_c(j\omega)|_{\omega \to \infty} = \left| \frac{j\omega T + 1}{j\beta\omega T + 1} \right| \approx \left| \frac{j\omega T}{j\beta\omega T} \right| = \frac{1}{\beta}$$
+                            </div>
+                            
+                            <p class="text-slate-700 mb-2">Expressed in decibels, the high-frequency attenuation is:</p>
+                            <div class="math-block bg-orange-50 py-4 font-bold border-orange-300 border-2 text-xl">
+                                $$\text{Attenuation} = 20 \log_{10} \left(\frac{1}{\beta}\right) = -20 \log_{10} \beta \text{ dB}$$
+                            </div>
+                            
+                            <p class="text-slate-700 mt-6 mb-2">Similar to the lead compensator, the frequency at which maximum phase lag occurs is the geometric mean of the corner frequencies:</p>
+                            <div class="math-block bg-white py-3 border-orange-100">
+                                $$\omega_m = \frac{1}{T\sqrt{\beta}}$$
+                            </div>
+                            <p class="text-slate-700 mb-2">And the maximum phase lag angle is given by:</p>
+                            <div class="math-block bg-white py-3 border-orange-100">
+                                $$\sin \phi_m = \frac{1 - \beta}{1 + \beta}$$
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========================================== -->
+                <!-- 3.3 LAG-LEAD COMPENSATOR                   -->
+                <!-- ========================================== -->
+                <div id="lag-lead-compensator" class="bg-white border-2 border-emerald-200 rounded-3xl overflow-hidden shadow-lg mb-16 relative">
+                    <div class="absolute top-0 right-0 bg-emerald-600 text-white px-5 py-1.5 rounded-bl-xl font-bold tracking-wider text-sm shadow-sm">BAND-REJECT / DUAL</div>
+                    <div class="p-8 md:p-10">
+                        <h3 class="text-3xl font-bold text-emerald-950 mt-0 mb-6 border-none">3.3 Lag-Lead Compensator</h3>
+                        
+                        <div class="text-slate-700 text-lg mb-8 space-y-4">
+                            <p>In a lag-lead network, when a sinusoidal signal is applied, both phase lag and phase lead occur in the output, but in different frequency regions. <strong>Phase lag occurs in the low-frequency region</strong> (improving steady-state error) and <strong>phase lead occurs in the high-frequency region</strong> (improving transient response and stability).</p>
+                        </div>
+                        
+                        <!-- Theory Grid -->
+                        <div class="grid xl:grid-cols-2 gap-10 mb-10">
+                            
+                            <!-- RC Network -->
+                            <div>
+                                <h4 class="font-bold text-xl text-slate-800 mb-4 flex items-center gap-2">
+                                    <svg class="w-6 h-6 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                                    Electrical RC Realization
+                                </h4>
+                                <div class="diagram-container !p-6 !m-0 !bg-slate-50 border-emerald-100">
+                                    <svg viewBox="0 0 400 250" class="w-full h-auto">
+                                        <!-- Terminals -->
+                                        <circle cx="30" cy="80" r="4" fill="#0f172a"/>
+                                        <circle cx="30" cy="200" r="4" fill="#0f172a"/>
+                                        <path d="M 30 85 L 30 195" class="svg-annotation" marker-start="url(#arrow-head)" marker-end="url(#arrow-head)"/>
+                                        <text x="15" y="145" class="svg-text-bold" font-size="16" text-anchor="end">ei</text>
+                                        
+                                        <circle cx="370" cy="80" r="4" fill="#0f172a"/>
+                                        <circle cx="370" cy="200" r="4" fill="#0f172a"/>
+                                        <path d="M 370 85 L 370 195" class="svg-annotation" marker-start="url(#arrow-head)" marker-end="url(#arrow-head)"/>
+                                        <text x="385" y="145" class="svg-text-bold" font-size="16">eo</text>
+
+                                        <!-- Top Wire -->
+                                        <path d="M 30 80 L 80 80" class="svg-circuit-wire"/>
+                                        
+                                        <!-- Bottom Wire -->
+                                        <path d="M 30 200 L 370 200" class="svg-circuit-wire"/>
+
+                                        <!-- Series Branch: Parallel R1, C1 Group (Lead part) -->
+                                        <!-- Top split C1 -->
+                                        <path d="M 80 80 L 80 40 L 140 40" class="svg-circuit-wire"/>
+                                        <path d="M 140 25 L 140 55" stroke="#0f172a" stroke-width="3"/>
+                                        <path d="M 160 25 L 160 55" stroke="#0f172a" stroke-width="3"/>
+                                        <text x="150" y="20" class="svg-text-bold" text-anchor="middle">C1</text>
+                                        <path d="M 160 40 L 240 40 L 240 80 L 280 80" class="svg-circuit-wire"/>
+                                        
+                                        <!-- Bottom split R1 -->
+                                        <path d="M 80 80 L 80 120 L 120 120" class="svg-circuit-wire"/>
+                                        <path d="M 120 120 L 125 110 L 135 130 L 145 110 L 155 130 L 165 110 L 175 130 L 180 120 L 190 120" class="svg-circuit-wire"/>
+                                        <text x="155" y="150" class="svg-text-bold" text-anchor="middle">R1</text>
+                                        <path d="M 190 120 L 240 120 L 240 80" class="svg-circuit-wire"/>
+                                        
+                                        <!-- Connection to output -->
+                                        <path d="M 280 80 L 370 80" class="svg-circuit-wire"/>
+
+                                        <!-- Node dot -->
+                                        <circle cx="280" cy="80" r="4" fill="#0f172a"/>
+                                        
+                                        <!-- Shunt Branch R2 + C2 (Lag part) -->
+                                        <path d="M 280 80 L 280 100" class="svg-circuit-wire"/>
+                                        
+                                        <!-- Shunt R2 -->
+                                        <path d="M 280 100 L 270 110 L 290 130 L 270 150 L 280 160" class="svg-circuit-wire" fill="none"/>
+                                        <text x="310" y="135" class="svg-text-bold" font-size="16">R2</text>
+                                        
+                                        <!-- Shunt C2 -->
+                                        <path d="M 280 160 L 280 175" class="svg-circuit-wire"/>
+                                        <path d="M 260 175 L 300 175" stroke="#0f172a" stroke-width="3"/>
+                                        <path d="M 260 185 L 300 185" stroke="#0f172a" stroke-width="3"/>
+                                        <path d="M 280 185 L 280 200" class="svg-circuit-wire"/>
+                                        <text x="310" y="185" class="svg-text-bold" font-size="16">C2</text>
+                                        
+                                        <circle cx="280" cy="200" r="4" fill="#0f172a"/>
+                                    </svg>
+                                </div>
+                                <p class="text-sm text-slate-500 mt-2 text-center italic">Figure: Realization of Lag-Lead Compensator</p>
+                            </div>
+
+                            <!-- Math Model & Derivation -->
+                            <div>
+                                <h4 class="font-bold text-xl text-slate-800 mb-4 flex items-center gap-2">
+                                    <svg class="w-6 h-6 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+                                    Transfer Function Derivation
+                                </h4>
+                                <div class="bg-emerald-50 border border-emerald-100 rounded-xl p-6 h-full flex flex-col justify-center">
+                                    <p class="text-sm text-slate-700 mb-2">The circuit is a voltage divider with series impedance \( Z_1 \) and shunt impedance \( Z_2 \):</p>
+                                    <div class="math-block !bg-white !p-3">
+                                        $$Z_1 = \frac{R_1 \frac{1}{C_1 s}}{R_1 + \frac{1}{C_1 s}} = \frac{R_1}{R_1 C_1 s + 1}$$
+                                        $$Z_2 = R_2 + \frac{1}{C_2 s} = \frac{R_2 C_2 s + 1}{C_2 s}$$
+                                    </div>
+                                    <p class="text-sm text-slate-700 mt-4 mb-2">The transfer function is:</p>
+                                    <div class="math-block !bg-white !p-3">
+                                        $$G_c(s) = \frac{E_o(s)}{E_i(s)} = \frac{Z_2}{Z_1 + Z_2}$$
+                                    </div>
+                                    <p class="text-sm text-slate-700 mt-4 mb-2">Substituting and simplifying yields:</p>
+                                    <div class="math-block !bg-white !p-3 !border-emerald-400 !border-2">
+                                        $$G_c(s) = \frac{(R_1 C_1 s + 1)(R_2 C_2 s + 1)}{(R_1 C_1 s + 1)(R_2 C_2 s + 1) + R_1 C_2 s}$$
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-6 mb-10">
+                            <h4 class="font-bold text-emerald-900 mb-3 text-lg">Standard Form Translation</h4>
+                            <p class="text-slate-700 mb-4">Let \( T_1 = R_1 C_1 \) and \( T_2 = R_2 C_2 \). The transfer function can be expressed in the standard pole-zero form:</p>
+                            <div class="math-block bg-white text-xl">
+                                $$G_c(s) = K_c \frac{\left(s + \frac{1}{T_1}\right)\left(s + \frac{1}{T_2}\right)}{\left(s + \frac{1}{\beta T_1}\right)\left(s + \frac{1}{\alpha T_2}\right)}$$
+                            </div>
+                            <p class="text-slate-700 mt-4">By matching the coefficients of the actual RC network to the standard form, we establish the critical relationship for a passive lag-lead network:</p>
+                            <div class="math-block bg-white font-bold text-xl text-emerald-700 border border-emerald-300">
+                                $$\alpha \beta = 1 \implies \alpha = \frac{1}{\beta}$$
+                            </div>
+                            <p class="text-slate-700 mt-4">Where the first term \( \left( \frac{s + \frac{1}{T_1}}{s + \frac{1}{\beta T_1}} \right) \) provides the <strong>Lag effect</strong> (\(\beta > 1\)), and the second term \( \left( \frac{s + \frac{1}{T_2}}{s + \frac{1}{\alpha T_2}} \right) \) provides the <strong>Lead effect</strong> (\(\alpha < 1\)).</p>
+                        </div>
+
+                        <!-- Graphical Plots -->
+                        <div class="grid xl:grid-cols-2 gap-10">
+                            <!-- Pole Zero -->
+                            <div>
+                                <h4 class="font-bold text-xl text-slate-800 mb-4 text-center border-b pb-2">Pole-Zero Plot</h4>
+                                <div class="diagram-container !p-6 !m-0 !bg-slate-50 border-emerald-100">
+                                    <p class="text-sm text-slate-600 mb-6 text-center">Contains two zeros and two poles. The <strong>Lag</strong> pole-zero pair is closer to the origin. The <strong>Lead</strong> pole-zero pair is further out.</p>
+                                    <svg viewBox="0 0 400 200" class="w-full h-auto">
+                                        <!-- Grid -->
+                                        <g class="svg-grid">
+                                            <line x1="20" y1="50" x2="380" y2="50"/>
+                                            <line x1="20" y1="150" x2="380" y2="150"/>
+                                        </g>
+                                        
+                                        <!-- Axes -->
+                                        <path d="M 20 100 L 380 100" class="svg-axis" marker-end="url(#arrow-head)"/>
+                                        <path d="M 360 180 L 360 20" class="svg-axis" marker-end="url(#arrow-head)"/>
+                                        <text x="385" y="90" class="svg-text-bold" font-size="14">σ</text>
+                                        <text x="345" y="30" class="svg-text-bold" font-size="14">jω</text>
+                                        
+                                        <!-- Lag Part (closer to origin) -->
+                                        <!-- Lag Pole -->
+                                        <path d="M 292 92 L 308 108 M 308 92 L 292 108" stroke="#dc2626" stroke-width="3"/>
+                                        <text x="300" y="130" class="svg-text-bold" fill="#dc2626" text-anchor="middle" font-size="14">-1/βT1</text>
+                                        
+                                        <!-- Lag Zero -->
+                                        <circle cx="230" cy="100" r="8" fill="white" stroke="#2563eb" stroke-width="3"/>
+                                        <text x="230" y="130" class="svg-text-bold" fill="#2563eb" text-anchor="middle" font-size="14">-1/T1</text>
+
+                                        <!-- Lead Part (further from origin) -->
+                                        <!-- Lead Zero -->
+                                        <circle cx="120" cy="100" r="8" fill="white" stroke="#2563eb" stroke-width="3"/>
+                                        <text x="120" y="80" class="svg-text-bold" fill="#2563eb" text-anchor="middle" font-size="14">-1/T2</text>
+                                        
+                                        <!-- Lead Pole -->
+                                        <path d="M 42 92 L 58 108 M 58 92 L 42 108" stroke="#dc2626" stroke-width="3"/>
+                                        <text x="50" y="80" class="svg-text-bold" fill="#dc2626" text-anchor="middle" font-size="14">-1/αT2</text>
+                                        
+                                        <!-- Grouping Annotations -->
+                                        <path d="M 230 150 L 230 160 L 300 160 L 300 150" stroke="#f59e0b" stroke-width="2" fill="none"/>
+                                        <text x="265" y="180" class="svg-text-bold" fill="#d97706" text-anchor="middle">Lag Part</text>
+
+                                        <path d="M 50 50 L 50 40 L 120 40 L 120 50" stroke="#f59e0b" stroke-width="2" fill="none"/>
+                                        <text x="85" y="30" class="svg-text-bold" fill="#d97706" text-anchor="middle">Lead Part</text>
+                                    </svg>
+                                </div>
+                            </div>
+                            
+                            <!-- Bode Plot -->
+                            <div>
+                                <h4 class="font-bold text-xl text-slate-800 mb-4 text-center border-b pb-2">Frequency Response (Bode Plot)</h4>
+                                <div class="diagram-container !p-6 !m-0 !bg-slate-50 border-emerald-100">
+                                    <p class="text-sm text-slate-600 mb-6 text-center">Shows characteristic magnitude dip (lag) and subsequent phase swing from negative to positive.</p>
+                                    <svg viewBox="0 0 500 350" class="w-full h-auto">
+                                        <!-- Vertical Guides -->
+                                        <path d="M 120 30 L 120 320" class="svg-annotation"/>
+                                        <path d="M 220 30 L 220 320" class="svg-annotation"/>
+                                        <path d="M 320 30 L 320 320" class="svg-annotation"/>
+                                        <path d="M 420 30 L 420 320" class="svg-annotation"/>
+
+                                        <!-- Mag Axis -->
+                                        <path d="M 50 120 L 470 120" class="svg-axis" stroke-dasharray="2,2" stroke-width="1"/>
+                                        <path d="M 50 60 L 470 60" class="svg-axis" marker-end="url(#arrow-head)"/>
+                                        <path d="M 50 140 L 50 20" class="svg-axis" marker-end="url(#arrow-head)"/>
+                                        <text x="15" y="65" class="svg-text-bold">0 dB</text>
+                                        <text x="15" y="125" class="svg-text-bold">-db</text>
+                                        
+                                        <!-- Mag Curve -->
+                                        <path d="M 50 60 L 120 60 L 220 120 L 320 120 L 420 60 L 470 60" class="svg-curve-mag"/>
+                                        
+                                        <!-- Mag Annotations -->
+                                        <text x="125" y="110" class="svg-text-bold" fill="#ea580c" font-size="11">-20 dB/dec</text>
+                                        <text x="330" y="110" class="svg-text-bold" fill="#ea580c" font-size="11">+20 dB/dec</text>
+                                        <path d="M 270 60 L 270 120" stroke="#ea580c" stroke-width="1.5" marker-start="url(#arrow-orange)" marker-end="url(#arrow-orange)"/>
+                                        <text x="280" y="90" class="svg-text-bold" font-size="12">20log(1/β)</text>
+
+                                        <!-- Phase Axis -->
+                                        <path d="M 50 220 L 470 220" class="svg-axis" marker-end="url(#arrow-head)"/>
+                                        <path d="M 50 320 L 50 160" class="svg-axis" marker-end="url(#arrow-head)"/>
+                                        <text x="25" y="225" class="svg-text-bold">0°</text>
+                                        <text x="15" y="285" class="svg-text-bold">-45°</text>
+                                        <path d="M 50 280 L 470 280" stroke="#cbd5e1" stroke-dasharray="2,2"/>
+                                        
+                                        <!-- Phase Curve (Lag then Lead) -->
+                                        <path d="M 50 230 C 120 230, 150 310, 190 280 C 230 250, 260 220, 270 220 C 300 220, 330 130, 380 150 C 430 170, 450 215, 470 215" class="svg-curve-phase"/>
+                                        
+                                        <!-- Axis Labels -->
+                                        <text x="-15" y="40" class="svg-text-bold" fill="#ea580c">|Gc(jω)|</text>
+                                        <text x="-15" y="190" class="svg-text-bold" fill="#2563eb">∠Gc(jω)</text>
+                                        <text x="450" y="340" class="svg-text">log ω</text>
+
+                                        <!-- Frequencies -->
+                                        <text x="115" y="340" class="svg-text-bold" font-size="12" text-anchor="middle">1/βT1</text>
+                                        <text x="220" y="340" class="svg-text-bold" font-size="12" text-anchor="middle">1/T1</text>
+                                        <text x="320" y="340" class="svg-text-bold" font-size="12" text-anchor="middle">1/T2</text>
+                                        <text x="420" y="340" class="svg-text-bold" font-size="12" text-anchor="middle">1/αT2</text>
+                                        
+                                        <!-- Defs for orange arrow -->
+                                        <defs>
+                                            <marker id="arrow-orange" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+                                                <path d="M0,0 L8,4 L0,8 z" fill="#ea580c"/>
+                                            </marker>
+                                        </defs>
+                                    </svg>
+                                </div>
+                                <p class="text-sm text-slate-500 mt-2 text-center italic">Figure: Bode plot of lag-lead compensator</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- ========================================== -->
+            <!-- SECTION 4: BODE DESIGN STEPS               -->
+            <!-- ========================================== -->
+            <section id="bode-design" class="mb-24">
+                <h2>
+                    <span class="bg-gradient-to-br from-blue-600 to-blue-800 text-white w-12 h-12 rounded-xl flex items-center justify-center font-extrabold text-2xl shadow-lg shrink-0">4</span>
+                    Step-by-Step Bode Design
+                </h2>
+
+                <div class="mb-4">
+                    <span class="badge-important">FREQUENTLY ASKED ESSAY</span>
+                    <span class="badge-qp">Apr 2018</span><span class="badge-qp">Dec 2019</span><span class="badge-qp">Jul 2021</span>
+                </div>
+
+                <p class="text-lg text-slate-700 mb-8">The most common university examination questions involve designing Lead or Lag compensators using Bode plot techniques. Below are the definitive, step-by-step algorithms required to solve these numerical problems.</p>
+
+                <div class="grid lg:grid-cols-2 gap-12 mt-8">
+                    <!-- Lead Procedure -->
+                    <div class="bg-white border-t-8 border-t-blue-500 rounded-2xl shadow-lg overflow-hidden relative">
+                        <div class="p-8">
+                            <h3 class="text-2xl font-bold text-blue-900 mt-0 mb-8 flex items-center gap-3 border-b border-slate-100 pb-4">
+                                <div class="bg-blue-100 p-2 rounded-lg">
+                                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                                </div>
+                                Lead Compensator Design
+                            </h3>
+                            
+                            <div class="space-y-6 relative before:absolute before:inset-0 before:ml-[1.125rem] before:-translate-x-px before:h-full before:w-1 before:bg-gradient-to-b before:from-blue-200 before:via-blue-100 before:to-transparent">
+                                
+                                <div class="relative flex items-start group">
+                                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-blue-500 text-white font-bold shadow-md shrink-0 z-10 mt-1 transition-transform group-hover:scale-110">1</div>
+                                    <div class="ml-6 p-5 rounded-xl border border-slate-100 bg-slate-50 shadow-sm w-full">
+                                        <p class="text-base font-bold mb-2 text-slate-800">Determine open-loop gain \( K \)</p>
+                                        <p class="text-sm text-slate-600">Determine the value of the open-loop gain \( K \) in order to satisfy the given requirement on the static error constant (e.g., \( K_v = \lim_{s \to 0} sG(s) \)).</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="relative flex items-start group">
+                                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-blue-500 text-white font-bold shadow-md shrink-0 z-10 mt-1 transition-transform group-hover:scale-110">2</div>
+                                    <div class="ml-6 p-5 rounded-xl border border-slate-100 bg-slate-50 shadow-sm w-full">
+                                        <p class="text-base font-bold mb-2 text-slate-800">Evaluate initial Phase Margin</p>
+                                        <p class="text-sm text-slate-600">Using the gain \( K \) determined above, draw the Bode diagram of the gain-adjusted uncompensated system and evaluate the existing Phase Margin (\( PM_{system} \)).</p>
+                                    </div>
+                                </div>
+
+                                <div class="relative flex items-start group">
+                                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-blue-500 text-white font-bold shadow-md shrink-0 z-10 mt-1 transition-transform group-hover:scale-110">3</div>
+                                    <div class="ml-6 p-5 rounded-xl border-2 border-blue-200 bg-blue-50 shadow-sm w-full relative overflow-hidden">
+                                        <div class="absolute right-0 top-0 text-blue-200 opacity-20 pointer-events-none transform translate-x-4 -translate-y-4">
+                                            <svg class="w-24 h-24" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2z"/></svg>
+                                        </div>
+                                        <p class="text-base font-bold mb-3 text-blue-900">Calculate required phase lead \( \phi_m \)</p>
+                                        <p class="text-sm text-slate-700 mb-3">Determine the necessary phase lead angle to be added to the system:</p>
+                                        <div class="bg-white px-4 py-3 rounded-lg border border-blue-100 shadow-inner">
+                                            $$\phi_m = PM_{desired} - PM_{system} + \epsilon$$
+                                        </div>
+                                        <p class="text-sm mt-3 text-blue-800">Add an additional \( \epsilon \approx 5^\circ \) to \( 12^\circ \) because the addition of the lead compensator shifts the gain crossover frequency to the right, which generally decreases the phase margin.</p>
+                                    </div>
+                                </div>
+
+                                <div class="relative flex items-start group">
+                                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-blue-500 text-white font-bold shadow-md shrink-0 z-10 mt-1 transition-transform group-hover:scale-110">4</div>
+                                    <div class="ml-6 p-5 rounded-xl border border-slate-100 bg-slate-50 shadow-sm w-full">
+                                        <p class="text-base font-bold mb-2 text-slate-800">Calculate attenuation factor \( \alpha \)</p>
+                                        <div class="bg-white px-4 py-2 rounded-lg border border-slate-200 inline-block mb-2">
+                                            $$\alpha = \frac{1 - \sin\phi_m}{1 + \sin\phi_m}$$
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="relative flex items-start group">
+                                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-blue-500 text-white font-bold shadow-md shrink-0 z-10 mt-1 transition-transform group-hover:scale-110">5</div>
+                                    <div class="ml-6 p-5 rounded-xl border-2 border-blue-200 bg-white shadow-sm w-full">
+                                        <p class="text-base font-bold mb-3 text-slate-800">Find new gain crossover \( \omega_m \)</p>
+                                        <p class="text-sm text-slate-600 mb-3">Determine the frequency where the magnitude of the <strong>uncompensated system</strong> is exactly equal to:</p>
+                                        <div class="bg-slate-50 px-4 py-2 rounded-lg border border-slate-200 text-center text-lg font-bold text-blue-800 shadow-inner">
+                                            $$-20 \log_{10} \left(\frac{1}{\sqrt{\alpha}}\right)$$
+                                        </div>
+                                        <p class="text-sm text-slate-600 mt-3">Select this frequency as the new gain crossover frequency \( \omega_m \).</p>
+                                    </div>
+                                </div>
+
+                                <div class="relative flex items-start group">
+                                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-blue-500 text-white font-bold shadow-md shrink-0 z-10 mt-1 transition-transform group-hover:scale-110">6</div>
+                                    <div class="ml-6 p-5 rounded-xl border border-slate-100 bg-slate-50 shadow-sm w-full">
+                                        <p class="text-base font-bold mb-3 text-slate-800">Calculate \( T \) and finalize</p>
+                                        <p class="text-sm text-slate-600 mb-2">Knowing that \( \omega_m = 1/(T\sqrt{\alpha}) \), calculate \( T \):</p>
+                                        <div class="bg-white px-4 py-2 rounded-lg border border-slate-200 inline-block mb-4">
+                                            $$T = \frac{1}{\omega_m\sqrt{\alpha}}$$
+                                        </div>
+                                        <p class="text-sm text-slate-600 mb-2">Determine the transfer function of the lead compensator:</p>
+                                        <div class="bg-white px-4 py-2 rounded-lg border border-slate-200 shadow-inner font-bold text-center">
+                                            $$G_c(s) = \frac{\alpha(1 + sT)}{1 + \alpha sT}$$
+                                        </div>
+                                        <p class="text-sm text-slate-500 italic mt-3">Finally, verify the design by checking the phase margin of the overall compensated system \( G_c(s)G(s) \).</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lag Procedure -->
+                    <div class="bg-white border-t-8 border-t-orange-500 rounded-2xl shadow-lg overflow-hidden relative">
+                        <div class="p-8">
+                            <h3 class="text-2xl font-bold text-orange-900 mt-0 mb-8 flex items-center gap-3 border-b border-slate-100 pb-4">
+                                <div class="bg-orange-100 p-2 rounded-lg">
+                                    <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"></path></svg>
+                                </div>
+                                Lag Compensator Design
+                            </h3>
+                            
+                            <div class="space-y-6 relative before:absolute before:inset-0 before:ml-[1.125rem] before:-translate-x-px before:h-full before:w-1 before:bg-gradient-to-b before:from-orange-200 before:via-orange-100 before:to-transparent">
+                                
+                                <div class="relative flex items-start group">
+                                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-orange-500 text-white font-bold shadow-md shrink-0 z-10 mt-1 transition-transform group-hover:scale-110">1</div>
+                                    <div class="ml-6 p-5 rounded-xl border border-slate-100 bg-slate-50 shadow-sm w-full">
+                                        <p class="text-base font-bold mb-2 text-slate-800">Determine open-loop gain \( K \)</p>
+                                        <p class="text-sm text-slate-600">Determine the value of the open-loop gain \( K \) in order to satisfy the given requirement on the static error constant.</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="relative flex items-start group">
+                                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-orange-500 text-white font-bold shadow-md shrink-0 z-10 mt-1 transition-transform group-hover:scale-110">2</div>
+                                    <div class="ml-6 p-5 rounded-xl border border-slate-100 bg-slate-50 shadow-sm w-full">
+                                        <p class="text-base font-bold mb-2 text-slate-800">Draw uncompensated Bode Plot</p>
+                                        <p class="text-sm text-slate-600">Using the gain \( K \) determined above, draw the Bode diagram of the gain-adjusted system and evaluate the phase margin.</p>
+                                    </div>
+                                </div>
+
+                                <div class="relative flex items-start group">
+                                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-orange-500 text-white font-bold shadow-md shrink-0 z-10 mt-1 transition-transform group-hover:scale-110">3</div>
+                                    <div class="ml-6 p-5 rounded-xl border-2 border-orange-200 bg-orange-50 shadow-sm w-full relative overflow-hidden">
+                                        <div class="absolute right-0 top-0 text-orange-200 opacity-20 pointer-events-none transform translate-x-4 -translate-y-4">
+                                            <svg class="w-24 h-24" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
+                                        </div>
+                                        <p class="text-base font-bold mb-3 text-orange-900">Find new gain crossover \( \omega_{gcn} \)</p>
+                                        <p class="text-sm text-slate-700 mb-3">Find the frequency at which the phase angle of the uncompensated system is equal to:</p>
+                                        <div class="bg-white px-4 py-3 rounded-lg border border-orange-100 shadow-inner font-bold text-center text-orange-800">
+                                            $$-180^\circ + PM_{desired} + \epsilon$$
+                                        </div>
+                                        <p class="text-sm mt-3 text-orange-800">Add 5° to 12° to compensate for the slight phase lag contributed by the lag compensator at the new crossover. This frequency becomes the <strong>new gain crossover frequency \( \omega_{gcn} \)</strong>.</p>
+                                    </div>
+                                </div>
+
+                                <div class="relative flex items-start group">
+                                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-orange-500 text-white font-bold shadow-md shrink-0 z-10 mt-1 transition-transform group-hover:scale-110">4</div>
+                                    <div class="ml-6 p-5 rounded-xl border border-slate-100 bg-slate-50 shadow-sm w-full">
+                                        <p class="text-base font-bold mb-3 text-slate-800">Place the zero \( 1/T \)</p>
+                                        <p class="text-sm text-slate-600 mb-3">To prevent detrimental effects of phase lag, the pole and zero must be located substantially lower than the new crossover frequency. Choose the corner frequency (zero) 1 decade below the new gain crossover:</p>
+                                        <div class="bg-white px-4 py-2 rounded-lg border border-slate-200 inline-block font-bold text-lg text-center shadow-sm">
+                                            $$z_c = \frac{1}{T} = \frac{\omega_{gcn}}{10}$$
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="relative flex items-start group">
+                                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-orange-500 text-white font-bold shadow-md shrink-0 z-10 mt-1 transition-transform group-hover:scale-110">5</div>
+                                    <div class="ml-6 p-5 rounded-xl border-2 border-orange-200 bg-white shadow-sm w-full">
+                                        <p class="text-base font-bold mb-3 text-slate-800">Calculate attenuation \( \beta \)</p>
+                                        <p class="text-sm text-slate-600 mb-3">Determine the attenuation necessary to bring the magnitude down to 0 dB at the new gain crossover frequency. Measure the uncompensated magnitude at \( \omega_{gcn} \) (let's call it \( M \) in dB).</p>
+                                        <div class="bg-orange-50 px-4 py-3 rounded-lg border border-orange-100 text-center shadow-inner">
+                                            $$M = 20 \log_{10} \beta \implies \beta = 10^{\frac{M}{20}}$$
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="relative flex items-start group">
+                                    <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-orange-500 text-white font-bold shadow-md shrink-0 z-10 mt-1 transition-transform group-hover:scale-110">6</div>
+                                    <div class="ml-6 p-5 rounded-xl border border-slate-100 bg-slate-50 shadow-sm w-full">
+                                        <p class="text-base font-bold mb-3 text-slate-800">Calculate Pole and finalize</p>
+                                        <p class="text-sm text-slate-600 mb-2">The pole is located at \( 1/(\beta T) \). Determine the transfer function:</p>
+                                        <div class="bg-white px-4 py-3 rounded-lg border border-slate-200 shadow-inner font-bold text-center text-lg">
+                                            $$G_c(s) = \frac{1 + sT}{1 + s\beta T}$$
+                                        </div>
+                                        <p class="text-sm text-slate-500 italic mt-3">Verify the design by checking the phase margin of the overall compensated system.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+        
+        <!-- Table of Contents Sidebar -->
+        <aside class="hidden xl:block w-72 shrink-0 relative">
+            <div class="sticky top-28 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+                <h4 class="font-extrabold text-slate-900 mb-4 uppercase tracking-widest text-xs border-b border-slate-100 pb-2">Quick Navigation</h4>
+                <nav class="space-y-2 text-sm font-medium">
+                    <a href="#types-of-controllers" class="toc-link">1. Compensation Topologies</a>
+                    <a href="#pid-actions" class="toc-link">2. P, I, PI, PID Actions</a>
+                    <a href="#compensator-theory" class="toc-link">3. Compensator Analysis</a>
+                    <div class="pl-4 space-y-1 mt-1 mb-2 border-l border-slate-200 ml-2">
+                        <a href="#lead-compensator" class="block text-slate-500 hover:text-blue-600 transition-colors py-1">3.1 Lead</a>
+                        <a href="#lag-compensator" class="block text-slate-500 hover:text-orange-600 transition-colors py-1">3.2 Lag</a>
+                        <a href="#lag-lead-compensator" class="block text-slate-500 hover:text-emerald-600 transition-colors py-1">3.3 Lag-Lead</a>
+                    </div>
+                    <a href="#bode-design" class="toc-link">4. Bode Design Steps</a>
+                </nav>
+            </div>
+        </aside>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-8 text-center mt-12 border-t-4 border-blue-600">
+        <p class="mb-2 text-lg font-bold text-white">Advanced Control Theory • Module 1 Comprehensive Notes</p>
+        <p class="text-sm">Compiled for Engineering Curriculum Examination Preparation</p>
+    </footer>
+
+    <script>
+        // Simple active state toggling for sidebar navigation based on scroll position
+        window.addEventListener('DOMContentLoaded', () => {
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    const id = entry.target.getAttribute('id');
+                    if (entry.intersectionRatio > 0) {
+                        document.querySelectorAll('.toc-link').forEach(link => {
+                            link.classList.remove('active');
+                            link.classList.remove('font-bold');
+                            link.classList.remove('text-blue-600');
+                        });
+                        const activeLink = document.querySelector(`.toc-link[href="#${id}"]`);
+                        if(activeLink) {
+                            activeLink.classList.add('active');
+                            activeLink.classList.add('font-bold');
+                            activeLink.classList.add('text-blue-600');
+                        }
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('section[id]').forEach((section) => {
+                observer.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>
