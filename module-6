@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 6: Advanced Control Theory</title>
+    
+    <!-- MathJax for rendering LaTeX equations -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        :root {
+            --primary: #0f766e;      /* Teal 700 */
+            --secondary: #14b8a6;    /* Teal 500 */
+            --accent: #f59e0b;       /* Amber 500 */
+            --bg-color: #f0fdfa;     /* Teal 50 */
+            --text-main: #334155;    /* Slate 700 */
+        }
+
+        body { 
+            font-family: 'Inter', system-ui, -apple-system, sans-serif; 
+            scroll-behavior: smooth; 
+            background-color: var(--bg-color); 
+            color: var(--text-main);
+            line-height: 1.7;
+        }
+        
+        /* Typography & Layout */
+        h1, h2, h3, h4, h5 { color: #0f172a; letter-spacing: -0.025em; font-weight: 700; }
+        h2 { 
+            scroll-margin-top: 6rem; 
+            border-bottom: 3px solid #ccfbf1; 
+            padding-bottom: 0.75rem; 
+            margin-top: 4rem; 
+            margin-bottom: 2rem; 
+            display: flex; 
+            align-items: center; 
+            gap: 1rem; 
+        }
+        h3 { 
+            scroll-margin-top: 6rem; 
+            margin-top: 2.5rem; 
+            margin-bottom: 1.25rem; 
+            color: var(--primary); 
+        }
+        
+        /* Mathematical Blocks */
+        .math-block { 
+            overflow-x: auto; 
+            padding: 1.5rem; 
+            background: #ffffff; 
+            border: 1px solid #e2e8f0; 
+            border-radius: 0.75rem; 
+            box-shadow: inset 0 2px 4px 0 rgb(0 0 0 / 0.02); 
+            margin: 1.5rem 0; 
+            text-align: center; 
+            font-size: 1.1rem;
+        }
+        
+        .equation-box { 
+            background: #f0fdfa; 
+            border-left: 4px solid var(--secondary); 
+            padding: 1.5rem; 
+            margin: 1.5rem 0; 
+            border-radius: 0 0.75rem 0.75rem 0; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05); 
+        }
+
+        .derivation-box { 
+            background: #ffffff; 
+            border: 1px dashed #cbd5e1; 
+            padding: 2rem; 
+            border-radius: 0.75rem; 
+            margin-top: 1.5rem; 
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);
+        }
+        
+        /* Diagrams & SVGs */
+        .diagram-container { 
+            border: 1px solid #cbd5e1; 
+            border-radius: 1rem; 
+            padding: 2.5rem; 
+            background: #ffffff; 
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.05); 
+            margin: 2.5rem 0; 
+            overflow-x: auto; 
+            position: relative; 
+        }
+        .svg-grid { stroke: #f1f5f9; stroke-width: 1; }
+        .svg-grid-major { stroke: #e2e8f0; stroke-width: 1.5; stroke-dasharray: 4,4; }
+        .svg-axis { stroke: #475569; stroke-width: 2; }
+        .svg-text { font-family: 'Inter', sans-serif; font-size: 13px; fill: #475569; }
+        .svg-text-bold { font-weight: 700; fill: #0f172a; font-size: 14px; }
+        .svg-text-math { font-family: 'Times New Roman', Times, serif; font-style: italic; font-size: 16px; }
+        
+        /* Custom SVG Curves */
+        .svg-curve-primary { stroke: #0f766e; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+        .svg-curve-secondary { stroke: #0284c7; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+        .svg-curve-danger { stroke: #e11d48; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+        
+        /* Sidebar Navigation */
+        .toc-link { 
+            display: block; 
+            padding: 0.6rem 1.2rem; 
+            color: #475569; 
+            text-decoration: none; 
+            border-radius: 0.5rem; 
+            transition: all 0.2s; 
+            border-left: 3px solid transparent; 
+            font-weight: 500;
+        }
+        .toc-link:hover, .toc-link.active { 
+            background: #f0fdfa; 
+            color: var(--primary); 
+            border-left-color: var(--primary); 
+        }
+        
+        /* Badges */
+        .badge-important { 
+            display: inline-flex; 
+            align-items: center; 
+            padding: 0.25rem 0.85rem; 
+            border-radius: 9999px; 
+            font-size: 0.75rem; 
+            font-weight: 800; 
+            background-color: #fef2f2; 
+            color: #dc2626; 
+            border: 1px solid #fca5a5; 
+            margin-bottom: 1rem; 
+            text-transform: uppercase; 
+            letter-spacing: 0.05em; 
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        .badge-qp { 
+            display: inline-flex; 
+            align-items: center; 
+            padding: 0.25rem 0.75rem; 
+            border-radius: 0.375rem; 
+            font-size: 0.75rem; 
+            font-weight: 700; 
+            background-color: #ccfbf1; 
+            color: #0f766e; 
+            border: 1px solid #99f6e4; 
+            margin-left: 0.75rem; 
+            margin-bottom: 1rem;
+        }
+
+        .highlight-box {
+            background-color: #f8fafc;
+            border-left: 4px solid var(--secondary);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+        }
+        .data-table th {
+            background-color: #f0fdfa;
+            color: #0f766e;
+            font-weight: 700;
+            text-align: left;
+            padding: 1rem;
+            border: 1px solid #99f6e4;
+        }
+        .data-table td {
+            padding: 1rem;
+            border: 1px solid #e2e8f0;
+            background-color: #ffffff;
+        }
+        .data-table tr:nth-child(even) td {
+            background-color: #f8fafc;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-teal-200 selection:text-teal-900">
+
+    <!-- Top Navigation / Header -->
+    <header class="bg-white/95 border-b border-slate-200 sticky top-0 z-50 shadow-sm backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="bg-teal-600 p-2 rounded-lg shadow-inner">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5"></path></svg>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-extrabold text-teal-950 tracking-tight leading-none">ACT: Module 6</h1>
+                    <p class="text-sm text-slate-500 font-medium mt-1">Phase Plane & Lyapunov Stability</p>
+                </div>
+            </div>
+            <div class="hidden lg:flex space-x-1 text-sm font-semibold">
+                <a href="#phase-plane" class="text-slate-600 hover:text-teal-700 px-4 py-2.5 rounded-lg hover:bg-teal-50 transition-all">1. Phase Plane</a>
+                <a href="#singular-points" class="text-slate-600 hover:text-teal-700 px-4 py-2.5 rounded-lg hover:bg-teal-50 transition-all">2. Singular Points</a>
+                <a href="#limit-cycles" class="text-slate-600 hover:text-teal-700 px-4 py-2.5 rounded-lg hover:bg-teal-50 transition-all">3. Limit Cycles</a>
+                <a href="#lyapunov" class="text-teal-700 bg-teal-50 px-4 py-2.5 rounded-lg transition-all shadow-sm">4. Lyapunov Stability</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col xl:flex-row gap-12">
+        
+        <!-- Main Content -->
+        <main class="flex-1 w-full max-w-5xl mx-auto">
+            
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 mb-12">
+                <h3 class="text-xl font-bold text-slate-800 mb-4 mt-0">Syllabus Covered in this Document</h3>
+                <p class="text-slate-600 mb-4"><strong>Module VI:</strong> Phase Plane Analysis: Concepts- Construction of phase trajectories for nonlinear systems and linear systems with static nonlinearities. Singular points, Classification of singular points. Definition of stability- asymptotic stability and instability. Liapunov methods to stability of linear and nonlinear, continuous time systems.</p>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- SECTION 1: PHASE PLANE ANALYSIS INTRO      -->
+            <!-- ========================================== -->
+            <section id="phase-plane" class="mb-24">
+                <h2>
+                    <span class="bg-gradient-to-br from-teal-600 to-teal-800 text-white w-12 h-12 rounded-xl flex items-center justify-center font-extrabold text-2xl shadow-lg shrink-0">1</span>
+                    Introduction to Phase Plane Analysis
+                </h2>
+                
+                <div class="mb-4">
+                    <span class="badge-important">CONCEPTS</span>
+                    <span class="badge-qp">May 2019</span><span class="badge-qp">Dec 2019</span>
+                </div>
+
+                <p class="text-lg text-slate-700 mb-8">The phase plane method is a graphical technique used for investigating second-order nonlinear and linear differential equations. It provides a visual representation of the system dynamics without explicitly solving the differential equations analytically over time.</p>
+
+                <div class="grid md:grid-cols-2 gap-8 mb-10">
+                    <div class="bg-white border border-slate-200 p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow border-l-4 border-l-teal-500">
+                        <h4 class="font-bold text-teal-900 mb-3">1. State and State Variables</h4>
+                        <p class="text-sm text-slate-700 mb-2"><strong>State:</strong> The state of a dynamic system is the smallest set of variables such that the knowledge of these variables at time \( t=t_0 \) (initial condition), together with the input for \( t \ge t_0 \), completely determines the behavior of the system for any time \( t \ge t_0 \).</p>
+                        <p class="text-sm text-slate-700"><strong>State Vector:</strong> If \( n \) state variables are needed to describe a system, they form an \( n \)-dimensional vector \( \mathbf{X} = [x_1, x_2, \dots, x_n]^T \).</p>
+                    </div>
+                    
+                    <div class="bg-white border border-slate-200 p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow border-l-4 border-l-teal-500">
+                        <h4 class="font-bold text-teal-900 mb-3">2. State Space and Phase Plane</h4>
+                        <p class="text-sm text-slate-700 mb-2"><strong>State Space:</strong> The \( n \)-dimensional space whose coordinate axes consist of the \( x_1, x_2, \dots, x_n \) axes is called a state space.</p>
+                        <p class="text-sm text-slate-700"><strong>Phase Plane:</strong> For a second-order system (\( n=2 \)), the state space reduces to a two-dimensional plane called the Phase Plane, typically with \( x_1 \) and \( x_2 \) as coordinate axes.</p>
+                    </div>
+
+                    <div class="bg-white border border-slate-200 p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow border-l-4 border-l-teal-500">
+                        <h4 class="font-bold text-teal-900 mb-3">3. Phase Trajectory</h4>
+                        <p class="text-sm text-slate-700">A curve in the state space (or phase plane) that shows the variation in the state of the system as time progresses is called a <strong>state trajectory</strong> or <strong>phase trajectory</strong>.</p>
+                    </div>
+                    
+                    <div class="bg-white border border-slate-200 p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow border-l-4 border-l-teal-500">
+                        <h4 class="font-bold text-teal-900 mb-3">4. Phase Portrait</h4>
+                        <p class="text-sm text-slate-700">A family of phase trajectories corresponding to different initial conditions is called a <strong>phase portrait</strong>. It reveals the global qualitative behavior of the system (e.g., regions of stability, limit cycles).</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========================================== -->
+            <!-- SECTION 2: SINGULAR POINTS                 -->
+            <!-- ========================================== -->
+            <section id="singular-points" class="mb-24">
+                <h2>
+                    <span class="bg-gradient-to-br from-teal-600 to-teal-800 text-white w-12 h-12 rounded-xl flex items-center justify-center font-extrabold text-2xl shadow-lg shrink-0">2</span>
+                    Singular Points (Equilibrium Points)
+                </h2>
+
+                <div class="mb-4">
+                    <span class="badge-important">VERY IMPORTANT</span>
+                    <span class="badge-qp">Apr 2018</span><span class="badge-qp">May 2019</span><span class="badge-qp">Jul 2021</span>
+                </div>
+
+                <div class="highlight-box">
+                    <p class="text-slate-800"><strong>Definition:</strong> The points in the phase space at which the derivatives of all the state variables of an autonomous system are zero (i.e., \( \dot{x}_1 = 0, \dot{x}_2 = 0, \dots \)) are called <strong>singular points</strong> or equilibrium points. If the system is placed at such a point, it will continue to lie there if left undisturbed.</p>
+                </div>
+
+                <p class="text-lg text-slate-700 mb-6">Depending on the roots of the system's characteristic equation (eigenvalues of the system matrix \( A \)), singular points are classified into distinct types. Let the characteristic equation be \( s^2 + a_1s + a_2 = 0 \).</p>
+
+                <!-- Singular Point Grid -->
+                <div class="grid lg:grid-cols-2 gap-8 mb-10">
+                    
+                    <!-- 1. Stable Node -->
+                    <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+                        <div class="bg-slate-50 border-b border-slate-200 p-4">
+                            <h4 class="font-bold text-teal-900 text-lg">1. Stable Node</h4>
+                        </div>
+                        <div class="p-4">
+                            <p class="text-sm text-slate-700 mb-4"><strong>Eigenvalues:</strong> Real, distinct, and <strong>both negative</strong> (\( \lambda_1, \lambda_2 < 0 \)).</p>
+                            <svg viewBox="0 0 600 200" class="w-full">
+                                <!-- s-plane (Eigenvalues) -->
+                                <path d="M 100 180 L 100 20" class="svg-axis" marker-end="url(#arrow-head)"/>
+                                <path d="M 20 100 L 180 100" class="svg-axis" marker-end="url(#arrow-head)"/>
+                                <text x="170" y="90" class="svg-text-bold">σ</text>
+                                <text x="110" y="30" class="svg-text-bold">jω</text>
+                                <path d="M 45 95 L 55 105 M 55 95 L 45 105" stroke="#0f172a" stroke-width="2"/>
+                                <path d="M 75 95 L 85 105 M 85 95 L 75 105" stroke="#0f172a" stroke-width="2"/>
+
+                                <!-- Phase Portrait -->
+                                <g transform="translate(200, 0)">
+                                    <g class="svg-grid"><line x1="200" y1="20" x2="200" y2="180"/><line x1="20" y1="100" x2="380" y2="100"/></g>
+                                    <path d="M 200 180 L 200 20" class="svg-axis" marker-end="url(#arrow-head)"/><path d="M 20 100 L 380 100" class="svg-axis" marker-end="url(#arrow-head)"/>
+                                    <text x="360" y="90" class="svg-text-bold">x1</text><text x="210" y="30" class="svg-text-bold">x2</text>
+                                    <!-- Trajectories pointing inward -->
+                                    <path d="M 50 20 Q 150 90, 200 100" class="svg-curve-primary" marker-start="url(#arrow-mid-primary)"/>
+                                    <path d="M 350 20 Q 250 90, 200 100" class="svg-curve-primary" marker-start="url(#arrow-mid-primary)"/>
+                                    <path d="M 50 180 Q 150 110, 200 100" class="svg-curve-primary" marker-start="url(#arrow-mid-primary)"/>
+                                    <path d="M 350 180 Q 250 110, 200 100" class="svg-curve-primary" marker-start="url(#arrow-mid-primary)"/>
+                                    <path d="M 120 100 L 200 100" class="svg-curve-primary" marker-start="url(#arrow-mid-primary)"/>
+                                    <path d="M 280 100 L 200 100" class="svg-curve-primary" marker-start="url(#arrow-mid-primary)"/>
+                                </g>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- 2. Unstable Node -->
+                    <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+                        <div class="bg-slate-50 border-b border-slate-200 p-4">
+                            <h4 class="font-bold text-teal-900 text-lg">2. Unstable Node</h4>
+                        </div>
+                        <div class="p-4">
+                            <p class="text-sm text-slate-700 mb-4"><strong>Eigenvalues:</strong> Real, distinct, and <strong>both positive</strong> (\( \lambda_1, \lambda_2 > 0 \)).</p>
+                            <svg viewBox="0 0 600 200" class="w-full">
+                                <!-- s-plane (Eigenvalues) -->
+                                <path d="M 100 180 L 100 20" class="svg-axis" marker-end="url(#arrow-head)"/>
+                                <path d="M 20 100 L 180 100" class="svg-axis" marker-end="url(#arrow-head)"/>
+                                <text x="170" y="90" class="svg-text-bold">σ</text>
+                                <text x="110" y="30" class="svg-text-bold">jω</text>
+                                <path d="M 125 95 L 135 105 M 135 95 L 125 105" stroke="#0f172a" stroke-width="2"/>
+                                <path d="M 155 95 L 165 105 M 165 95 L 155 105" stroke="#0f172a" stroke-width="2"/>
+
+                                <!-- Phase Portrait -->
+                                <g transform="translate(200, 0)">
+                                    <g class="svg-grid"><line x1="200" y1="20" x2="200" y2="180"/><line x1="20" y1="100" x2="380" y2="100"/></g>
+                                    <path d="M 200 180 L 200 20" class="svg-axis" marker-end="url(#arrow-head)"/><path d="M 20 100 L 380 100" class="svg-axis" marker-end="url(#arrow-head)"/>
+                                    <text x="360" y="90" class="svg-text-bold">x1</text><text x="210" y="30" class="svg-text-bold">x2</text>
+                                    <!-- Trajectories pointing outward -->
+                                    <path d="M 200 100 Q 150 90, 50 20" class="svg-curve-danger" marker-end="url(#arrow-mid-danger)"/>
+                                    <path d="M 200 100 Q 250 90, 350 20" class="svg-curve-danger" marker-end="url(#arrow-mid-danger)"/>
+                                    <path d="M 200 100 Q 150 110, 50 180" class="svg-curve-danger" marker-end="url(#arrow-mid-danger)"/>
+                                    <path d="M 200 100 Q 250 110, 350 180" class="svg-curve-danger" marker-end="url(#arrow-mid-danger)"/>
+                                    <path d="M 200 100 L 120 100" class="svg-curve-danger" marker-end="url(#arrow-mid-danger)"/>
+                                    <path d="M 200 100 L 280 100" class="svg-curve-danger" marker-end="url(#arrow-mid-danger)"/>
+                                </g>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- 3. Saddle Point -->
+                    <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+                        <div class="bg-slate-50 border-b border-slate-200 p-4">
+                            <h4 class="font-bold text-teal-900 text-lg">3. Saddle Point</h4>
+                        </div>
+                        <div class="p-4">
+                            <p class="text-sm text-slate-700 mb-4"><strong>Eigenvalues:</strong> Real, distinct, with <strong>opposite signs</strong> (\( \lambda_1 < 0, \lambda_2 > 0 \)). Unstable.</p>
+                            <svg viewBox="0 0 600 200" class="w-full">
+                                <!-- s-plane (Eigenvalues) -->
+                                <path d="M 100 180 L 100 20" class="svg-axis" marker-end="url(#arrow-head)"/>
+                                <path d="M 20 100 L 180 100" class="svg-axis" marker-end="url(#arrow-head)"/>
+                                <text x="170" y="90" class="svg-text-bold">σ</text>
+                                <text x="110" y="30" class="svg-text-bold">jω</text>
+                                <path d="M 55 95 L 65 105 M 65 95 L 55 105" stroke="#0f172a" stroke-width="2"/>
+                                <path d="M 135 95 L 145 105 M 145 95 L 135 105" stroke="#0f172a" stroke-width="2"/>
+
+                                <!-- Phase Portrait -->
+                                <g transform="translate(200, 0)">
+                                    <g class="svg-grid"><line x1="200" y1="20" x2="200" y2="180"/><line x1="20" y1="100" x2="380" y2="100"/></g>
+                                    <path d="M 200 180 L 200 20" class="svg-axis" marker-end="url(#arrow-head)"/><path d="M 20 100 L 380 100" class="svg-axis" marker-end="url(#arrow-head)"/>
+                                    <text x="360" y="90" class="svg-text-bold">x1</text><text x="210" y="30" class="svg-text-bold">x2</text>
+                                    <!-- Saddle curves -->
+                                    <path d="M 120 20 Q 180 80, 50 90" class="svg-curve-secondary" marker-end="url(#arrow-mid-sec)"/>
+                                    <path d="M 280 20 Q 220 80, 350 90" class="svg-curve-secondary" marker-end="url(#arrow-mid-sec)"/>
+                                    <path d="M 120 180 Q 180 120, 50 110" class="svg-curve-secondary" marker-end="url(#arrow-mid-sec)"/>
+                                    <path d="M 280 180 Q 220 120, 350 110" class="svg-curve-secondary" marker-end="url(#arrow-mid-sec)"/>
+                                    <path d="M 200 20 L 200 95" class="svg-curve-secondary" marker-end="url(#arrow-mid-sec)"/>
+                                    <path d="M 200 180 L 200 105" class="svg-curve-secondary" marker-end="url(#arrow-mid-sec)"/>
+                                    <path d="M 200 100 L 350 100" class="svg-curve-secondary" marker-end="url(#arrow-mid-sec)"/>
+                                    <path d="M 200 100 L 50 100" class="svg-curve-secondary" marker-end="url(#arrow-mid-sec)"/>
+                                </g>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- 4. Stable Focus -->
+                    <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+                        <div class="bg-slate-50 border-b border-slate-200 p-4">
+                            <h4 class="font-bold text-teal-900 text-lg">4. Stable Focus</h4>
+                        </div>
+                        <div class="p-4">
+                            <p class="text-sm text-slate-700 mb-4"><strong>Eigenvalues:</strong> Complex conjugates with <strong>negative real part</strong> (\( -\sigma \pm j\omega_d \)).</p>
+                            <svg viewBox="0 0 600 200" class="w-full">
+                                <!-- s-plane (Eigenvalues) -->
+                                <path d="M 100 180 L 100 20" class="svg-axis" marker-end="url(#arrow-head)"/>
+                                <path d="M 20 100 L 180 100" class="svg-axis" marker-end="url(#arrow-head)"/>
+                                <text x="170" y="90" class="svg-text-bold">σ</text>
+                                <text x="110" y="30" class="svg-text-bold">jω</text>
+                                <path d="M 55 55 L 65 65 M 65 55 L 55 65" stroke="#0f172a" stroke-width="2"/>
+                                <path d="M 55 135 L 65 145 M 65 135 L 55 145" stroke="#0f172a" stroke-width="2"/>
+
+                                <!-- Phase Portrait -->
+                                <g transform="translate(200, 0)">
+                                    <g class="svg-grid"><line x1="200" y1="20" x2="200" y2="180"/><line x1="20" y1="100" x2="380" y2="100"/></g>
+                                    <path d="M 200 180 L 200 20" class="svg-axis" marker-end="url(#arrow-head)"/><path d="M 20 100 L 380 100" class="svg-axis" marker-end="url(#arrow-head)"/>
+                                    <text x="360" y="90" class="svg-text-bold">x1</text><text x="210" y="30" class="svg-text-bold">x2</text>
+                                    <!-- Spiral inwards with directional arrows -->
+                                    <path d="M 350 100 C 350 30, 50 30, 50 100" class="svg-curve-primary" marker-end="url(#arrow-mid-primary)"/>
+                                    <path d="M 50 100 C 50 160, 310 160, 310 100" class="svg-curve-primary" marker-end="url(#arrow-mid-primary)"/>
+                                    <path d="M 310 100 C 310 50, 110 50, 110 100" class="svg-curve-primary" marker-end="url(#arrow-mid-primary)"/>
+                                    <path d="M 110 100 C 110 140, 270 140, 270 100" class="svg-curve-primary" marker-end="url(#arrow-mid-primary)"/>
+                                    <path d="M 270 100 C 270 70, 150 70, 150 100" class="svg-curve-primary" marker-end="url(#arrow-mid-primary)"/>
+                                    <path d="M 150 100 C 150 120, 230 120, 230 100" class="svg-curve-primary" marker-end="url(#arrow-mid-primary)"/>
+                                    <path d="M 230 100 C 230 90, 180 90, 180 100" class="svg-curve-primary" marker-end="url(#arrow-mid-primary)"/>
+                                </g>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- 5. Unstable Focus -->
+                    <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+                        <div class="bg-slate-50 border-b border-slate-200 p-4">
+                            <h4 class="font-bold text-teal-900 text-lg">5. Unstable Focus</h4>
+                        </div>
+                        <div class="p-4">
+                            <p class="text-sm text-slate-700 mb-4"><strong>Eigenvalues:</strong> Complex conjugates with <strong>positive real part</strong> (\( +\sigma \pm j\omega_d \)).</p>
+                            <svg viewBox="0 0 600 200" class="w-full">
+                                <!-- s-plane (Eigenvalues) -->
+                                <path d="M 100 180 L 100 20" class="svg-axis" marker-end="url(#arrow-head)"/>
+                                <path d="M 20 100 L 180 100" class="svg-axis" marker-end="url(#arrow-head)"/>
+                                <text x="170" y="90" class="svg-text-bold">σ</text>
+                                <text x="110" y="30" class="svg-text-bold">jω</text>
+                                <path d="M 135 55 L 145 65 M 145 55 L 135 65" stroke="#0f172a" stroke-width="2"/>
+                                <path d="M 135 135 L 145 145 M 145 135 L 135 145" stroke="#0f172a" stroke-width="2"/>
+
+                                <!-- Phase Portrait -->
+                                <g transform="translate(200, 0)">
+                                    <g class="svg-grid"><line x1="200" y1="20" x2="200" y2="180"/><line x1="20" y1="100" x2="380" y2="100"/></g>
+                                    <path d="M 200 180 L 200 20" class="svg-axis" marker-end="url(#arrow-head)"/><path d="M 20 100 L 380 100" class="svg-axis" marker-end="url(#arrow-head)"/>
+                                    <text x="360" y="90" class="svg-text-bold">x1</text><text x="210" y="30" class="svg-text-bold">x2</text>
+                                    <!-- Spiral outwards with directional arrows -->
+                                    <path d="M 180 100 C 180 90, 230 90, 230 100" class="svg-curve-danger" marker-end="url(#arrow-mid-danger)"/>
+                                    <path d="M 230 100 C 230 120, 150 120, 150 100" class="svg-curve-danger" marker-end="url(#arrow-mid-danger)"/>
+                                    <path d="M 150 100 C 150 70, 270 70, 270 100" class="svg-curve-danger" marker-end="url(#arrow-mid-danger)"/>
+                                    <path d="M 270 100 C 270 140, 110 140, 110 100" class="svg-curve-danger" marker-end="url(#arrow-mid-danger)"/>
+                                    <path d="M 110 100 C 110 50, 310 50, 310 100" class="svg-curve-danger" marker-end="url(#arrow-mid-danger)"/>
+                                    <path d="M 310 100 C 310 160, 50 160, 50 100" class="svg-curve-danger" marker-end="url(#arrow-mid-danger)"/>
+                                    <path d="M 50 100 C 50 30, 350 30, 350 100" class="svg-curve-danger" marker-end="url(#arrow-mid-danger)"/>
+                                </g>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- 6. Center Point -->
+                    <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+                        <div class="bg-slate-50 border-b border-slate-200 p-4">
+                            <h4 class="font-bold text-teal-900 text-lg">6. Center or Vortex Point</h4>
+                        </div>
+                        <div class="p-4">
+                            <p class="text-sm text-slate-700 mb-4"><strong>Eigenvalues:</strong> Purely imaginary and conjugate (\( \pm j\omega_d \)). Exhibits sustained oscillations.</p>
+                            <svg viewBox="0 0 600 200" class="w-full">
+                                <!-- s-plane (Eigenvalues) -->
+                                <path d="M 100 180 L 100 20" class="svg-axis" marker-end="url(#arrow-head)"/>
+                                <path d="M 20 100 L 180 100" class="svg-axis" marker-end="url(#arrow-head)"/>
+                                <text x="170" y="90" class="svg-text-bold">σ</text>
+                                <text x="110" y="30" class="svg-text-bold">jω</text>
+                                <path d="M 95 55 L 105 65 M 105 55 L 95 65" stroke="#0f172a" stroke-width="2"/>
+                                <path d="M 95 135 L 105 145 M 105 135 L 95 145" stroke="#0f172a" stroke-width="2"/>
+
+                                <!-- Phase Portrait -->
+                                <g transform="translate(200, 0)">
+                                    <g class="svg-grid"><line x1="200" y1="20" x2="200" y2="180"/><line x1="20" y1="100" x2="380" y2="100"/></g>
+                                    <path d="M 200 180 L 200 20" class="svg-axis" marker-end="url(#arrow-head)"/><path d="M 20 100 L 380 100" class="svg-axis" marker-end="url(#arrow-head)"/>
+                                    <text x="360" y="90" class="svg-text-bold">x1</text><text x="210" y="30" class="svg-text-bold">x2</text>
+                                    <!-- Concentric ellipses -->
+                                    <ellipse cx="200" cy="100" rx="40" ry="30" class="svg-curve-secondary" fill="none"/>
+                                    <ellipse cx="200" cy="100" rx="90" ry="60" class="svg-curve-secondary" fill="none"/>
+                                    <!-- Arrows -->
+                                    <path d="M 200 70 L 210 70" stroke="#0284c7" stroke-width="3" marker-end="url(#arrow-mid-sec)"/>
+                                    <path d="M 200 40 L 210 40" stroke="#0284c7" stroke-width="3" marker-end="url(#arrow-mid-sec)"/>
+                                </g>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Defs for arrows used above -->
+                    <defs>
+                        <marker id="arrow-head" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#475569"/></marker>
+                        <marker id="arrow-mid-primary" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 z" fill="#0f766e"/></marker>
+                        <marker id="arrow-mid-danger" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 z" fill="#e11d48"/></marker>
+                        <marker id="arrow-mid-sec" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 z" fill="#0284c7"/></marker>
+                    </defs>
+
+                </div>
+            </section>
+
+            <!-- ========================================== -->
+            <!-- SECTION 3: LIMIT CYCLES                    -->
+            <!-- ========================================== -->
+            <section id="limit-cycles" class="mb-24">
+                <h2>
+                    <span class="bg-gradient-to-br from-teal-600 to-teal-800 text-white w-12 h-12 rounded-xl flex items-center justify-center font-extrabold text-2xl shadow-lg shrink-0">3</span>
+                    Limit Cycles
+                </h2>
+
+                <div class="mb-4">
+                    <span class="badge-important">CONCEPTS & TYPES</span>
+                    <span class="badge-qp">Apr 2018</span><span class="badge-qp">Dec 2019</span><span class="badge-qp">Jul 2021</span>
+                </div>
+
+                <p class="text-lg text-slate-700 mb-6">The response of nonlinear systems may exhibit oscillations with fixed amplitude and frequency; these oscillations are called <strong>limit cycles</strong>. Once the system trajectories converge to a limit cycle, the system will continue to remain in this closed trajectory in the state space.</p>
+                
+                <p class="text-slate-700 mb-8">Unlike a "Center" in linear systems whose amplitude depends strictly on initial conditions, the amplitude and frequency of a limit cycle are inherent properties of the nonlinear system itself.</p>
+
+                <div class="grid lg:grid-cols-3 gap-6">
+                    <!-- Stable Limit Cycle -->
+                    <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm text-center">
+                        <h4 class="font-bold text-teal-900 mb-2">Stable Limit Cycle</h4>
+                        <p class="text-xs text-slate-600 mb-4 h-12">All trajectories in the vicinity (both inside and outside) converge to the limit cycle as \( t \to \infty \).</p>
+                        <svg viewBox="0 0 200 200" class="w-full mx-auto">
+                            <g class="svg-grid"><line x1="100" y1="20" x2="100" y2="180"/><line x1="20" y1="100" x2="180" y2="100"/></g>
+                            <path d="M 100 180 L 100 20" class="svg-axis" marker-end="url(#arrow-head)"/><path d="M 20 100 L 180 100" class="svg-axis" marker-end="url(#arrow-head)"/>
+                            
+                            <!-- Limit cycle -->
+                            <circle cx="100" cy="100" r="40" stroke="#0f766e" stroke-width="3" fill="none"/>
+                            <path d="M 100 60 L 110 60" stroke="#0f766e" stroke-width="3" marker-end="url(#arrow-mid-primary)"/>
+                            
+                            <!-- Inside spiral out -->
+                            <path d="M 100 100 C 100 90, 110 90, 110 100 C 110 115, 85 115, 85 100 C 85 75, 125 75, 125 100 C 125 130, 70 130, 70 100" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#arrow-head)"/>
+                            <!-- Outside spiral in -->
+                            <path d="M 170 100 C 170 30, 30 30, 30 100 C 30 160, 150 160, 150 100 C 150 60, 50 60, 50 100" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#arrow-head)"/>
+                        </svg>
+                    </div>
+
+                    <!-- Unstable Limit Cycle -->
+                    <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm text-center">
+                        <h4 class="font-bold text-red-900 mb-2">Unstable Limit Cycle</h4>
+                        <p class="text-xs text-slate-600 mb-4 h-12">All trajectories in the vicinity diverge away from the limit cycle as \( t \to \infty \).</p>
+                        <svg viewBox="0 0 200 200" class="w-full mx-auto">
+                            <g class="svg-grid"><line x1="100" y1="20" x2="100" y2="180"/><line x1="20" y1="100" x2="180" y2="100"/></g>
+                            <path d="M 100 180 L 100 20" class="svg-axis" marker-end="url(#arrow-head)"/><path d="M 20 100 L 180 100" class="svg-axis" marker-end="url(#arrow-head)"/>
+                            
+                            <!-- Limit cycle -->
+                            <circle cx="100" cy="100" r="40" stroke="#e11d48" stroke-width="3" fill="none"/>
+                            <path d="M 100 60 L 90 60" stroke="#e11d48" stroke-width="3" marker-end="url(#arrow-mid-danger)"/>
+                            
+                            <!-- Inside spiral in (diverging from limit cycle) -->
+                            <path d="M 70 100 C 70 130, 125 130, 125 100 C 125 75, 85 75, 85 100 C 85 115, 110 115, 110 100 C 110 90, 100 90, 100 100" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#arrow-head)"/>
+                            <!-- Outside spiral out -->
+                            <path d="M 50 100 C 50 60, 150 60, 150 100 C 150 160, 30 160, 30 100 C 30 30, 170 30, 170 100" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#arrow-head)"/>
+                        </svg>
+                    </div>
+
+                    <!-- Semi-Stable Limit Cycle -->
+                    <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm text-center">
+                        <h4 class="font-bold text-amber-600 mb-2">Semi-Stable Limit Cycle</h4>
+                        <p class="text-xs text-slate-600 mb-4 h-12">Trajectories converge from one side (e.g., inside) and diverge from the other side (e.g., outside).</p>
+                        <svg viewBox="0 0 200 200" class="w-full mx-auto">
+                            <g class="svg-grid"><line x1="100" y1="20" x2="100" y2="180"/><line x1="20" y1="100" x2="180" y2="100"/></g>
+                            <path d="M 100 180 L 100 20" class="svg-axis" marker-end="url(#arrow-head)"/><path d="M 20 100 L 180 100" class="svg-axis" marker-end="url(#arrow-head)"/>
+                            
+                            <!-- Limit cycle -->
+                            <circle cx="100" cy="100" r="40" stroke="#f59e0b" stroke-width="3" fill="none"/>
+                            <path d="M 100 60 L 110 60" stroke="#f59e0b" stroke-width="3" marker-end="url(#arrow-mid-primary)"/>
+                            
+                            <!-- Inside spiral out (converging to LC) -->
+                            <path d="M 100 100 C 100 90, 110 90, 110 100 C 110 115, 85 115, 85 100 C 85 75, 125 75, 125 100 C 125 130, 70 130, 70 100" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#arrow-head)"/>
+                            <!-- Outside spiral out (diverging from LC) -->
+                            <path d="M 50 100 C 50 60, 150 60, 150 100 C 150 160, 30 160, 30 100 C 30 30, 170 30, 170 100" stroke="#64748b" stroke-width="1.5" fill="none" marker-end="url(#arrow-head)"/>
+                        </svg>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========================================== -->
+            <!-- SECTION 4: LYAPUNOV STABILITY BASICS       -->
+            <!-- ========================================== -->
+            <section id="lyapunov" class="mb-24">
+                <h2>
+                    <span class="bg-gradient-to-br from-teal-600 to-teal-800 text-white w-12 h-12 rounded-xl flex items-center justify-center font-extrabold text-2xl shadow-lg shrink-0">4</span>
+                    Lyapunov Stability Analysis
+                </h2>
+
+                <div class="mb-4">
+                    <span class="badge-important">ESSAY QUESTION (10 MARKS)</span>
+                    <span class="badge-qp">Apr 2018</span><span class="badge-qp">May 2019</span><span class="badge-qp">Dec 2019</span><span class="badge-qp">Sep 2020</span><span class="badge-qp">Jul 2021</span>
+                </div>
+
+                <p class="text-lg text-slate-700 mb-6">In general, a relaxed system (no disturbance and zero input) operates at an equilibrium point. A nonlinear system may have multiple equilibrium points. A Russian mathematician, A.M. Lyapunov, introduced two methods for stability analysis of nonlinear systems: the <em>Indirect Method (First Method)</em> and the <em>Direct Method (Second Method)</em>.</p>
+
+                <!-- 4.1 Definitions -->
+                <div class="bg-white border border-slate-200 p-8 rounded-2xl shadow-sm mb-10">
+                    <h3 class="text-2xl font-bold text-teal-900 mt-0 mb-6 border-b pb-2">4.1 Definition of Stability</h3>
+                    <p class="text-slate-700 mb-4">Let \( x=0 \) be an equilibrium point of an autonomous system \( \dot{X} = F(X) \).</p>
+                    <ul class="list-disc ml-6 space-y-4 text-slate-700">
+                        <li><strong>Stable (in the sense of Lyapunov):</strong> If, for each \( \epsilon > 0 \), there is \( \delta = \delta(\epsilon) > 0 \) such that if the initial state \( ||X(t_0)|| < \delta \), then the state trajectory \( ||X(t)|| < \epsilon \) for all \( t \ge t_0 \). (It stays within a bounded region).</li>
+                        <li><strong>Asymptotically Stable:</strong> If it is stable, and additionally, \( \delta \) can be chosen such that \( ||X(t_0)|| < \delta \) implies \( \lim_{t \to \infty} X(t) = 0 \). (It returns to the origin).</li>
+                        <li><strong>Unstable:</strong> If it is not stable.</li>
+                    </ul>
+                </div>
+
+                <!-- 4.2 Definiteness -->
+                <div class="bg-white border-t-8 border-t-teal-500 rounded-2xl shadow-lg overflow-hidden relative mb-12">
+                    <div class="bg-slate-50 px-8 py-5 border-b border-slate-200">
+                        <h3 class="text-2xl font-bold text-teal-900 mt-0 mb-0">4.2 Definiteness of Scalar Functions</h3>
+                    </div>
+                    <div class="p-8">
+                        <p class="text-slate-700 mb-6">Lyapunov's Direct Method requires constructing a scalar "energy-like" function, \( V(x) \). We must classify the sign definiteness of \( V(x) \):</p>
+                        
+                        <div class="space-y-4">
+                            <!-- Positive Definite -->
+                            <div class="p-5 rounded-xl border border-teal-200 bg-teal-50/30">
+                                <h4 class="font-bold text-teal-900 mb-2">1. Positive Definite</h4>
+                                <p class="text-sm text-slate-700 mb-2">\( V(x) > 0 \) for all \( x \ne 0 \), and \( V(0) = 0 \).</p>
+                                <p class="text-sm font-mono bg-white inline-block px-2 py-1 rounded border border-slate-200">Example: \( V(x) = 5x_1^2 + 2x_2^2 \)</p>
+                            </div>
+                            
+                            <!-- Negative Definite -->
+                            <div class="p-5 rounded-xl border border-rose-200 bg-rose-50/30">
+                                <h4 class="font-bold text-rose-900 mb-2">2. Negative Definite</h4>
+                                <p class="text-sm text-slate-700 mb-2">\( V(x) < 0 \) for all \( x \ne 0 \), and \( V(0) = 0 \).</p>
+                                <p class="text-sm font-mono bg-white inline-block px-2 py-1 rounded border border-slate-200">Example: \( V(x) = -x_1^2 - 4x_2^2 \)</p>
+                            </div>
+
+                            <!-- Positive Semi-Definite -->
+                            <div class="p-5 rounded-xl border border-amber-200 bg-amber-50/30">
+                                <h4 class="font-bold text-amber-900 mb-2">3. Positive Semi-Definite</h4>
+                                <p class="text-sm text-slate-700 mb-2">\( V(x) \ge 0 \) for all \( x \), and \( V(0) = 0 \), but \( V(x) \) can be zero for some non-zero \( x \).</p>
+                                <p class="text-sm font-mono bg-white inline-block px-2 py-1 rounded border border-slate-200">Example: \( V(x) = (2x_1 + 3x_2)^2 \) (Zero when \( 2x_1 = -3x_2 \))</p>
+                            </div>
+
+                            <!-- Negative Semi-Definite -->
+                            <div class="p-5 rounded-xl border border-slate-300 bg-slate-100">
+                                <h4 class="font-bold text-slate-800 mb-2">4. Negative Semi-Definite</h4>
+                                <p class="text-sm text-slate-700 mb-2">\( V(x) \le 0 \) for all \( x \), and \( V(0) = 0 \), but \( V(x) \) can be zero for some non-zero \( x \).</p>
+                                <p class="text-sm font-mono bg-white inline-block px-2 py-1 rounded border border-slate-200">Example: \( V(x) = -(2x_1 + 3x_2)^2 \)</p>
+                            </div>
+
+                            <!-- Indefinite -->
+                            <div class="p-5 rounded-xl border border-slate-300 bg-white shadow-sm">
+                                <h4 class="font-bold text-slate-800 mb-2">5. Indefinite</h4>
+                                <p class="text-sm text-slate-700 mb-2">\( V(x) \) takes both positive and negative values in a given region.</p>
+                                <p class="text-sm font-mono bg-slate-50 inline-block px-2 py-1 rounded border border-slate-200">Example: \( V(x) = x_1^2 - 2x_2^2 \)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4.3 Sylvester's Criterion -->
+                <div class="bg-white border border-slate-200 p-8 rounded-2xl shadow-sm mb-12">
+                    <h3 class="text-2xl font-bold text-teal-900 mt-0 mb-6 border-b pb-2">4.3 Quadratic Form & Sylvester's Criterion</h3>
+                    <p class="text-slate-700 mb-4">A common scalar function used in Lyapunov analysis is the <strong>quadratic form</strong>:</p>
+                    <div class="math-block !bg-teal-50 !border-teal-200">
+                        $$ V(x) = x^T P x $$
+                    </div>
+                    <p class="text-slate-700 mt-4 mb-4">Where \( x \) is the state vector and \( P \) is a real symmetric matrix (\( P^T = P \)).</p>
+                    <div class="math-block !bg-white">
+                        $$ V(x) = \begin{bmatrix} x_1 & x_2 & x_3 \end{bmatrix} \begin{bmatrix} P_{11} & P_{12} & P_{13} \\ P_{21} & P_{22} & P_{23} \\ P_{31} & P_{32} & P_{33} \end{bmatrix} \begin{bmatrix} x_1 \\ x_2 \\ x_3 \end{bmatrix} $$
+                    </div>
+                    <p class="text-slate-700 mt-4 mb-4">Because \( P \) is symmetric, \( P_{ij} = P_{ji} \). This expands to:</p>
+                    <div class="math-block !bg-white !text-sm">
+                        $$ V(x) = P_{11}x_1^2 + P_{22}x_2^2 + P_{33}x_3^2 + 2P_{12}x_1x_2 + 2P_{13}x_1x_3 + 2P_{23}x_2x_3 $$
+                    </div>
+
+                    <div class="highlight-box !border-teal-500 !bg-teal-50/50 mt-8">
+                        <h4 class="font-bold text-teal-900 mb-3">Sylvester's Criterion</h4>
+                        <p class="text-slate-700 mb-2">To test the positive definiteness of \( V(x) = x^T P x \), we use Sylvester's Criterion on the matrix \( P \):</p>
+                        <p class="text-slate-700 mb-4"><strong>Rule:</strong> The quadratic form is <strong>Positive Definite</strong> if and only if all the successive principal minors of \( P \) are strictly positive (\( > 0 \)).</p>
+                        <div class="math-block !bg-white !text-sm">
+                            $$ \Delta_1 = P_{11} > 0 $$
+                            $$ \Delta_2 = \begin{vmatrix} P_{11} & P_{12} \\ P_{21} & P_{22} \end{vmatrix} > 0 $$
+                            $$ \Delta_3 = \begin{vmatrix} P_{11} & P_{12} & P_{13} \\ P_{21} & P_{22} & P_{23} \\ P_{31} & P_{32} & P_{33} \end{vmatrix} > 0 $$
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4.4 Lyapunov's Direct Method -->
+                <div class="bg-teal-900 text-white p-10 rounded-3xl shadow-xl mb-12 relative overflow-hidden">
+                    <div class="absolute -right-10 -top-10 text-teal-800 opacity-20 transform scale-150">
+                        <svg class="w-64 h-64" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2z"/></svg>
+                    </div>
+                    <h3 class="text-3xl font-extrabold text-white mt-0 mb-6 border-b border-teal-700 pb-4 relative z-10">4.4 Lyapunov's Second (Direct) Method</h3>
+                    <p class="text-teal-50 mb-6 text-lg relative z-10">The Direct Method of Lyapunov is a powerful mathematical tool to determine the stability of nonlinear systems <em>without</em> needing to solve the differential equations.</p>
+                    
+                    <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20 relative z-10">
+                        <h4 class="font-bold text-teal-100 mb-3 text-xl">Lyapunov's Stability Theorem</h4>
+                        <p class="mb-4">Let \( x=0 \) be an equilibrium point of \( \dot{x} = F(x) \). Let \( V(x) \) be a continuously differentiable scalar function.</p>
+                        <ol class="list-decimal ml-6 space-y-4">
+                            <li>If \( V(x) \) is <strong>positive definite</strong> (\( V(x) > 0 \) for \( x \ne 0 \), and \( V(0)=0 \))...</li>
+                            <li>And if the time derivative \( \dot{V}(x) = \frac{dV(x)}{dt} \) along the trajectories of the system is <strong>negative semi-definite</strong> (\( \dot{V}(x) \le 0 \)), then the origin is <strong>stable</strong>.</li>
+                            <li>If \( \dot{V}(x) \) is <strong>strictly negative definite</strong> (\( \dot{V}(x) < 0 \) for \( x \ne 0 \)), then the origin is <strong>asymptotically stable</strong>.</li>
+                        </ol>
+                    </div>
+
+                    <div class="mt-8 relative z-10">
+                        <h4 class="font-bold text-teal-100 mb-2">How to compute \( \dot{V}(x) \):</h4>
+                        <div class="math-block !bg-teal-950/50 !border-teal-700 !text-teal-50">
+                            $$ \dot{V}(x) = \frac{dV}{dt} = \frac{\partial V}{\partial x_1}\dot{x}_1 + \frac{\partial V}{\partial x_2}\dot{x}_2 + \dots + \frac{\partial V}{\partial x_n}\dot{x}_n $$
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4.5 Solved Problem 1 -->
+                <div class="bg-white border-2 border-teal-200 rounded-3xl overflow-hidden shadow-lg mt-12 relative">
+                    <div class="absolute top-0 right-0 bg-teal-600 text-white px-5 py-1.5 rounded-bl-xl font-bold tracking-wider text-sm shadow-sm">SOLVED UNIVERSITY QP (DEC 2019)</div>
+                    <div class="p-8 md:p-10">
+                        <h3 class="text-2xl font-bold text-teal-950 mt-0 mb-6 border-none">Problem 1: Checking Definiteness</h3>
+                        
+                        <p class="text-slate-800 font-medium mb-6"><strong>Question:</strong> Determine if the given quadratic form is positive definite or not:<br>
+                        \( V(x) = 10x_1^2 + 4x_2^2 + x_3^2 + 2x_1x_2 - 2x_2x_3 - 4x_1x_3 \)</p>
+                        
+                        <div class="space-y-6">
+                            <div class="derivation-box !border-teal-200 !bg-teal-50/30">
+                                <h4 class="font-bold text-teal-900 mb-3">Step 1: Form the P Matrix</h4>
+                                <p class="text-sm text-slate-700 mb-3">Compare with the standard quadratic form expansion: \( V(x) = P_{11}x_1^2 + P_{22}x_2^2 + P_{33}x_3^2 + 2P_{12}x_1x_2 + 2P_{13}x_1x_3 + 2P_{23}x_2x_3 \).</p>
+                                <ul class="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm font-mono text-slate-800 mb-4 bg-white p-4 rounded border border-slate-200">
+                                    <li>\( P_{11} = 10 \)</li>
+                                    <li>\( P_{22} = 4 \)</li>
+                                    <li>\( P_{33} = 1 \)</li>
+                                    <li>\( 2P_{12} = 2 \implies P_{12} = 1 \)</li>
+                                    <li>\( 2P_{13} = -4 \implies P_{13} = -2 \)</li>
+                                    <li>\( 2P_{23} = -2 \implies P_{23} = -1 \)</li>
+                                </ul>
+                                <p class="text-sm text-slate-700 mb-2">The symmetric matrix \( P \) is:</p>
+                                <div class="math-block !bg-white !py-2">
+                                    $$ P = \begin{bmatrix} 10 & 1 & -2 \\ 1 & 4 & -1 \\ -2 & -1 & 1 \end{bmatrix} $$
+                                </div>
+                            </div>
+
+                            <div class="derivation-box !border-teal-200 !bg-teal-50/30">
+                                <h4 class="font-bold text-teal-900 mb-3">Step 2: Apply Sylvester's Theorem</h4>
+                                <p class="text-sm text-slate-700 mb-3">Calculate the leading principal minors:</p>
+                                <div class="math-block !bg-white !py-3">
+                                    $$ \Delta_1 = |10| = 10 > 0 $$
+                                    <br>
+                                    $$ \Delta_2 = \begin{vmatrix} 10 & 1 \\ 1 & 4 \end{vmatrix} = (10)(4) - (1)(1) = 40 - 1 = 39 > 0 $$
+                                    <br>
+                                    $$ \Delta_3 = |P| = \begin{vmatrix} 10 & 1 & -2 \\ 1 & 4 & -1 \\ -2 & -1 & 1 \end{vmatrix} = 10(4 - 1) - 1(1 - 2) - 2(-1 + 8) $$
+                                    $$ \Delta_3 = 10(3) - 1(-1) - 2(7) = 30 + 1 - 14 = 17 > 0 $$
+                                </div>
+                                <p class="text-sm text-slate-700 mt-4 mb-2 text-center text-teal-800 font-bold text-lg bg-teal-100 py-3 rounded-lg border border-teal-300">
+                                    All principal minors are greater than zero (\( \Delta_1, \Delta_2, \Delta_3 > 0 \)).<br>Hence, \( P \) is a positive definite matrix, and \( V(x) \) is a POSITIVE DEFINITE scalar function.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4.6 Solved Problem 2 (Linear Systems A^T P + P A = -Q) -->
+                <div class="bg-white border-2 border-indigo-200 rounded-3xl overflow-hidden shadow-lg mt-12 relative">
+                    <div class="absolute top-0 right-0 bg-indigo-600 text-white px-5 py-1.5 rounded-bl-xl font-bold tracking-wider text-sm shadow-sm">SOLVED UNIVERSITY QP (APR 2018)</div>
+                    <div class="p-8 md:p-10">
+                        <h3 class="text-2xl font-bold text-indigo-950 mt-0 mb-6 border-none">Problem 2: Lyapunov Equation for Linear Systems</h3>
+                        
+                        <p class="text-slate-800 font-medium mb-6"><strong>Question:</strong> A second order system is represented by \( \dot{X} = AX \), where \( A = \begin{bmatrix} 0 & 1 \\ -1 & -1 \end{bmatrix} \). Assuming matrix \( Q \) to be an identity matrix, solve for matrix \( P \) in the Lyapunov equation \( A^T P + P A = -Q \). Determine stability and write the Lyapunov function \( V(x) \).</p>
+                        
+                        <div class="highlight-box !border-indigo-500 !bg-indigo-50/50 mb-6">
+                            <h4 class="font-bold text-indigo-900 mb-2 text-sm">Theory Note:</h4>
+                            <p class="text-sm text-slate-700">For linear time-invariant systems \( \dot{x} = Ax \), we choose \( V(x) = x^T P x \). Taking the derivative: <br> \( \dot{V}(x) = \dot{x}^T P x + x^T P \dot{x} = x^T A^T P x + x^T P A x = x^T (A^T P + P A) x \). <br> To ensure \( \dot{V}(x) \) is negative definite (for asymptotic stability), we set \( A^T P + P A = -Q \), where \( Q \) is a positive definite matrix (often chosen as the Identity matrix \( I \)). If solving this yields a positive definite \( P \), the system is stable.</p>
+                        </div>
+
+                        <div class="space-y-6">
+                            <div class="derivation-box !border-indigo-200 !bg-indigo-50/30">
+                                <h4 class="font-bold text-indigo-900 mb-3">Step 1: Set up the Lyapunov Equation</h4>
+                                <div class="math-block !bg-white !py-3">
+                                    $$ A^T P + P A = -Q $$
+                                    $$ \begin{bmatrix} 0 & -1 \\ 1 & -1 \end{bmatrix} \begin{bmatrix} P_{11} & P_{12} \\ P_{12} & P_{22} \end{bmatrix} + \begin{bmatrix} P_{11} & P_{12} \\ P_{12} & P_{22} \end{bmatrix} \begin{bmatrix} 0 & 1 \\ -1 & -1 \end{bmatrix} = \begin{bmatrix} -1 & 0 \\ 0 & -1 \end{bmatrix} $$
+                                </div>
+                                <p class="text-sm text-slate-700 mt-4 mb-2">Perform matrix multiplication:</p>
+                                <div class="math-block !bg-white !py-3 !text-sm">
+                                    $$ \begin{bmatrix} -P_{12} & -P_{22} \\ P_{11}-P_{12} & P_{12}-P_{22} \end{bmatrix} + \begin{bmatrix} -P_{12} & P_{11}-P_{12} \\ -P_{22} & P_{12}-P_{22} \end{bmatrix} = \begin{bmatrix} -1 & 0 \\ 0 & -1 \end{bmatrix} $$
+                                </div>
+                                <p class="text-sm text-slate-700 mt-4 mb-2">Add the matrices on the left:</p>
+                                <div class="math-block !bg-white !py-3 !text-sm">
+                                    $$ \begin{bmatrix} -2P_{12} & P_{11}-P_{12}-P_{22} \\ P_{11}-P_{12}-P_{22} & 2(P_{12}-P_{22}) \end{bmatrix} = \begin{bmatrix} -1 & 0 \\ 0 & -1 \end{bmatrix} $$
+                                </div>
+                            </div>
+
+                            <div class="derivation-box !border-indigo-200 !bg-indigo-50/30">
+                                <h4 class="font-bold text-indigo-900 mb-3">Step 2: Equate terms and solve for P</h4>
+                                <div class="math-block !bg-white !py-3 text-left pl-10">
+                                    <p class="mb-2">1) \( -2P_{12} = -1 \implies P_{12} = 0.5 \)</p>
+                                    <p class="mb-2">2) \( 2(P_{12} - P_{22}) = -1 \implies 2(0.5 - P_{22}) = -1 \implies 1 - 2P_{22} = -1 \implies 2P_{22} = 2 \implies P_{22} = 1 \)</p>
+                                    <p class="mb-2">3) \( P_{11} - P_{12} - P_{22} = 0 \implies P_{11} - 0.5 - 1 = 0 \implies P_{11} = 1.5 \)</p>
+                                </div>
+                                <p class="text-sm text-slate-700 mt-4 mb-2">Thus, the matrix P is:</p>
+                                <div class="math-block !bg-white !py-2">
+                                    $$ P = \begin{bmatrix} 1.5 & 0.5 \\ 0.5 & 1 \end{bmatrix} $$
+                                </div>
+                            </div>
+
+                            <div class="derivation-box !border-indigo-200 !bg-indigo-50/30">
+                                <h4 class="font-bold text-indigo-900 mb-3">Step 3: Check Stability and write \( V(x) \)</h4>
+                                <p class="text-sm text-slate-700 mb-3">Check positive definiteness of \( P \) using Sylvester's theorem:</p>
+                                <div class="math-block !bg-white !py-2">
+                                    $$ \Delta_1 = |1.5| = 1.5 > 0 $$
+                                    $$ \Delta_2 = \begin{vmatrix} 1.5 & 0.5 \\ 0.5 & 1 \end{vmatrix} = (1.5)(1) - (0.5)(0.5) = 1.5 - 0.25 = 1.25 > 0 $$
+                                </div>
+                                <p class="text-sm text-slate-700 mt-3 mb-3">Since \( P \) is positive definite, the system is <strong>asymptotically stable in the large</strong>.</p>
+                                <p class="text-sm text-slate-700 mb-2">The Lyapunov function is:</p>
+                                <div class="math-block !bg-white !py-3 !font-bold !text-indigo-800 border-2 border-indigo-400">
+                                    $$ V(x) = x^T P x = \begin{bmatrix} x_1 & x_2 \end{bmatrix} \begin{bmatrix} 1.5 & 0.5 \\ 0.5 & 1 \end{bmatrix} \begin{bmatrix} x_1 \\ x_2 \end{bmatrix} $$
+                                    <br>
+                                    $$ V(x) = 1.5x_1^2 + x_2^2 + x_1x_2 $$
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+        </main>
+        
+        <!-- Table of Contents Sidebar -->
+        <aside class="hidden xl:block w-72 shrink-0 relative">
+            <div class="sticky top-28 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+                <h4 class="font-extrabold text-slate-900 mb-4 uppercase tracking-widest text-xs border-b border-slate-100 pb-2">Module 6 Contents</h4>
+                <nav class="space-y-2 text-sm font-medium">
+                    <a href="#phase-plane" class="toc-link">1. Phase Plane Analysis</a>
+                    <a href="#singular-points" class="toc-link">2. Singular Points</a>
+                    <a href="#limit-cycles" class="toc-link">3. Limit Cycles</a>
+                    <a href="#lyapunov" class="toc-link">4. Lyapunov Stability</a>
+                    <div class="pl-4 space-y-1 mt-1 mb-2 border-l border-slate-200 ml-2">
+                        <a href="#lyapunov" class="block text-slate-500 hover:text-teal-600 transition-colors py-1 text-xs">Definitions</a>
+                        <a href="#lyapunov" class="block text-slate-500 hover:text-teal-600 transition-colors py-1 text-xs">Sylvester's Criterion</a>
+                        <a href="#lyapunov" class="block text-slate-500 hover:text-teal-600 transition-colors py-1 text-xs">Direct Method</a>
+                        <a href="#lyapunov" class="block text-slate-500 hover:text-teal-600 transition-colors py-1 text-xs font-bold">Solved QPs</a>
+                    </div>
+                </nav>
+            </div>
+        </aside>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-8 text-center mt-12 border-t-4 border-teal-600">
+        <p class="mb-2 text-lg font-bold text-white">Advanced Control Theory • Module 6 Comprehensive Notes</p>
+        <p class="text-sm">Compiled for Engineering Curriculum Examination Preparation</p>
+    </footer>
+
+    <script>
+        // Active state toggling for sidebar navigation based on scroll position
+        window.addEventListener('DOMContentLoaded', () => {
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    const id = entry.target.getAttribute('id');
+                    if (entry.intersectionRatio > 0) {
+                        document.querySelectorAll('.toc-link').forEach(link => {
+                            link.classList.remove('active');
+                            link.classList.remove('font-bold');
+                            link.classList.remove('text-teal-600');
+                        });
+                        const activeLink = document.querySelector(`.toc-link[href="#${id}"]`);
+                        if(activeLink) {
+                            activeLink.classList.add('active');
+                            activeLink.classList.add('font-bold');
+                            activeLink.classList.add('text-teal-600');
+                        }
+                    }
+                });
+            }, { threshold: 0.15 });
+
+            document.querySelectorAll('section[id]').forEach((section) => {
+                observer.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>
