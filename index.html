@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EE304 - Advanced Control Theory | Study Notes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Custom styles for subtle animations */
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900 font-sans antialiased flex flex-col min-h-screen">
+
+    <!-- Header / Navbar -->
+    <header class="bg-blue-900 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <i data-lucide="book-open" class="h-6 w-6 text-blue-300"></i>
+                <h1 class="text-xl font-bold tracking-tight">KTU EEE S6 Notes</h1>
+            </div>
+            <div>
+                <a href="https://github.com/mrisvanv/ktu-eee-s6-act" target="_blank" class="flex items-center space-x-2 text-sm font-medium hover:text-blue-300 transition">
+                    <i data-lucide="github" class="h-5 w-5"></i>
+                    <span class="hidden sm:inline">View Repository</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="bg-white border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
+            <span class="inline-block py-1 px-3 rounded-full bg-blue-100 text-blue-800 text-sm font-semibold mb-4">EE304</span>
+            <h2 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4 tracking-tight">Advanced Control Theory</h2>
+            <p class="max-w-2xl mx-auto text-lg text-gray-600">
+                Comprehensive study materials and notes covering compensator design, discrete-time systems, state-space analysis, and nonlinear control systems.
+            </p>
+        </div>
+    </section>
+
+    <!-- Main Content / Module Grid -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="flex items-center justify-between mb-8">
+            <h3 class="text-2xl font-bold text-gray-800">Course Modules</h3>
+            <span class="text-sm font-medium text-gray-500">6 Modules Total</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            
+            <!-- Module 1 -->
+            <a href="module-1.html" class="block bg-white rounded-xl border border-gray-200 p-6 card-hover group relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-4">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                        Available
+                    </span>
+                </div>
+                <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center mb-4 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                    <i data-lucide="sliders-horizontal" class="h-6 w-6"></i>
+                </div>
+                <h4 class="text-xl font-bold text-gray-900 mb-2">Module 1</h4>
+                <p class="text-sm font-medium text-blue-600 mb-3">Controllers & Bode Plot Design</p>
+                <p class="text-gray-600 text-sm line-clamp-3">
+                    Types of controller - Feedforward, feedback, cascade, P, PI and PID. Realization of compensators. Design using bode plot.
+                </p>
+            </a>
+
+            <!-- Module 2 -->
+            <a href="module-2.html" class="block bg-white rounded-xl border border-gray-200 p-6 card-hover group relative overflow-hidden opacity-80 hover:opacity-100">
+                <div class="absolute top-0 right-0 p-4">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
+                        Coming Soon
+                    </span>
+                </div>
+                <div class="w-12 h-12 bg-gray-50 text-gray-500 rounded-lg flex items-center justify-center mb-4 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                    <i data-lucide="git-merge" class="h-6 w-6"></i>
+                </div>
+                <h4 class="text-xl font-bold text-gray-900 mb-2">Module 2</h4>
+                <p class="text-sm font-medium text-gray-500 group-hover:text-blue-600 transition-colors mb-3">Root Locus & Tuning</p>
+                <p class="text-gray-600 text-sm line-clamp-3">
+                    Compensator design using root locus. Design of P, PI and PID controller using Ziegler-Nichols tuning method.
+                </p>
+            </a>
+
+            <!-- Module 3 -->
+            <a href="module-3.html" class="block bg-white rounded-xl border border-gray-200 p-6 card-hover group relative overflow-hidden opacity-80 hover:opacity-100">
+                <div class="absolute top-0 right-0 p-4">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
+                        Coming Soon
+                    </span>
+                </div>
+                <div class="w-12 h-12 bg-gray-50 text-gray-500 rounded-lg flex items-center justify-center mb-4 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                    <i data-lucide="box" class="h-6 w-6"></i>
+                </div>
+                <h4 class="text-xl font-bold text-gray-900 mb-2">Module 3</h4>
+                <p class="text-sm font-medium text-gray-500 group-hover:text-blue-600 transition-colors mb-3">State Space Analysis</p>
+                <p class="text-gray-600 text-sm line-clamp-3">
+                    Introduction to state concept, phase variable and canonical forms, solution of time invariant systems, state feedback controller design.
+                </p>
+            </a>
+
+            <!-- Module 4 -->
+            <a href="module-4.html" class="block bg-white rounded-xl border border-gray-200 p-6 card-hover group relative overflow-hidden opacity-80 hover:opacity-100">
+                <div class="absolute top-0 right-0 p-4">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
+                        Coming Soon
+                    </span>
+                </div>
+                <div class="w-12 h-12 bg-gray-50 text-gray-500 rounded-lg flex items-center justify-center mb-4 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                    <i data-lucide="activity" class="h-6 w-6"></i>
+                </div>
+                <h4 class="text-xl font-bold text-gray-900 mb-2">Module 4</h4>
+                <p class="text-sm font-medium text-gray-500 group-hover:text-blue-600 transition-colors mb-3">Sampled Data Control</p>
+                <p class="text-gray-600 text-sm line-clamp-3">
+                    Pulse Transfer function, Stability of sampled data system, Routh Hurwitz criterion and Jury's test, state-space representation.
+                </p>
+            </a>
+
+            <!-- Module 5 -->
+            <a href="module-5.html" class="block bg-white rounded-xl border border-gray-200 p-6 card-hover group relative overflow-hidden opacity-80 hover:opacity-100">
+                <div class="absolute top-0 right-0 p-4">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
+                        Coming Soon
+                    </span>
+                </div>
+                <div class="w-12 h-12 bg-gray-50 text-gray-500 rounded-lg flex items-center justify-center mb-4 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                    <i data-lucide="waves" class="h-6 w-6"></i>
+                </div>
+                <h4 class="text-xl font-bold text-gray-900 mb-2">Module 5</h4>
+                <p class="text-sm font-medium text-gray-500 group-hover:text-blue-600 transition-colors mb-3">Nonlinear Systems</p>
+                <p class="text-gray-600 text-sm line-clamp-3">
+                    Characteristics of nonlinear systems, harmonic linearisation, describing function for stability analysis.
+                </p>
+            </a>
+
+            <!-- Module 6 -->
+            <a href="module-6.html" class="block bg-white rounded-xl border border-gray-200 p-6 card-hover group relative overflow-hidden opacity-80 hover:opacity-100">
+                <div class="absolute top-0 right-0 p-4">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
+                        Coming Soon
+                    </span>
+                </div>
+                <div class="w-12 h-12 bg-gray-50 text-gray-500 rounded-lg flex items-center justify-center mb-4 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                    <i data-lucide="target" class="h-6 w-6"></i>
+                </div>
+                <h4 class="text-xl font-bold text-gray-900 mb-2">Module 6</h4>
+                <p class="text-sm font-medium text-gray-500 group-hover:text-blue-600 transition-colors mb-3">Phase Plane Analysis</p>
+                <p class="text-gray-600 text-sm line-clamp-3">
+                    Construction of phase trajectories, singular points, definition of stability, Liapunov methods for stability analysis.
+                </p>
+            </a>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col md:flex-row justify-between items-center">
+            <p class="text-sm text-gray-500">
+                &copy; <script>document.write(new Date().getFullYear())</script> Study Notes. For KTU Students.
+            </p>
+            <div class="mt-4 md:mt-0">
+                <span class="text-sm text-gray-500">Course Code: <strong>EE304</strong></span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Initialize Lucide Icons -->
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
