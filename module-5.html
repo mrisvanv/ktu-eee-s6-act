@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 5: Advanced Control Theory</title>
+    
+    <!-- MathJax for rendering LaTeX equations -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        :root {
+            --primary: #d97706;      /* Amber 600 */
+            --secondary: #f59e0b;    /* Amber 500 */
+            --accent: #e11d48;       /* Rose 600 */
+            --bg-color: #fffbeb;     /* Amber 50 */
+            --text-main: #334155;    /* Slate 700 */
+        }
+
+        body { 
+            font-family: 'Inter', system-ui, -apple-system, sans-serif; 
+            scroll-behavior: smooth; 
+            background-color: var(--bg-color); 
+            color: var(--text-main);
+            line-height: 1.7;
+        }
+        
+        /* Typography & Layout */
+        h1, h2, h3, h4, h5 { color: #451a03; letter-spacing: -0.025em; font-weight: 700; }
+        h2 { 
+            scroll-margin-top: 6rem; 
+            border-bottom: 3px solid #fde68a; 
+            padding-bottom: 0.75rem; 
+            margin-top: 4rem; 
+            margin-bottom: 2rem; 
+            display: flex; 
+            align-items: center; 
+            gap: 1rem; 
+        }
+        h3 { 
+            scroll-margin-top: 6rem; 
+            margin-top: 2.5rem; 
+            margin-bottom: 1.25rem; 
+            color: var(--primary); 
+        }
+        
+        /* Mathematical Blocks */
+        .math-block { 
+            overflow-x: auto; 
+            padding: 1.5rem; 
+            background: #ffffff; 
+            border: 1px solid #fcd34d; 
+            border-radius: 0.75rem; 
+            box-shadow: inset 0 2px 4px 0 rgb(0 0 0 / 0.02); 
+            margin: 1.5rem 0; 
+            text-align: center; 
+            font-size: 1.1rem;
+        }
+        
+        .equation-box { 
+            background: #fff7ed; 
+            border-left: 4px solid var(--secondary); 
+            padding: 1.5rem; 
+            margin: 1.5rem 0; 
+            border-radius: 0 0.75rem 0.75rem 0; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05); 
+        }
+
+        .derivation-box { 
+            background: #ffffff; 
+            border: 1px dashed #fcd34d; 
+            padding: 2rem; 
+            border-radius: 0.75rem; 
+            margin-top: 1.5rem; 
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);
+        }
+        
+        /* Diagrams & SVGs */
+        .diagram-container { 
+            border: 1px solid #fde68a; 
+            border-radius: 1rem; 
+            padding: 2.5rem; 
+            background: #ffffff; 
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.05); 
+            margin: 2.5rem 0; 
+            overflow-x: auto; 
+            position: relative; 
+        }
+        .svg-grid { stroke: #f1f5f9; stroke-width: 1; }
+        .svg-grid-major { stroke: #e2e8f0; stroke-width: 1.5; stroke-dasharray: 4,4; }
+        .svg-axis { stroke: #475569; stroke-width: 2; }
+        .svg-text { font-family: 'Inter', sans-serif; font-size: 13px; fill: #475569; }
+        .svg-text-bold { font-weight: 700; fill: #451a03; font-size: 14px; }
+        .svg-text-math { font-family: 'Times New Roman', Times, serif; font-style: italic; font-size: 16px; }
+        
+        /* Custom SVG Curves */
+        .svg-curve-primary { stroke: #d97706; stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+        .svg-curve-secondary { stroke: #e11d48; stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+        .svg-curve-danger { stroke: #be123c; stroke-width: 2; fill: none; stroke-dasharray: 4,4; }
+        .svg-annotation { stroke: #94a3b8; stroke-width: 1.5; stroke-dasharray: 4,4; fill: none; }
+        
+        /* Sidebar Navigation */
+        .toc-link { 
+            display: block; 
+            padding: 0.6rem 1.2rem; 
+            color: #475569; 
+            text-decoration: none; 
+            border-radius: 0.5rem; 
+            transition: all 0.2s; 
+            border-left: 3px solid transparent; 
+            font-weight: 500;
+        }
+        .toc-link:hover, .toc-link.active { 
+            background: #fffbeb; 
+            color: var(--primary); 
+            border-left-color: var(--primary); 
+        }
+        
+        /* Badges */
+        .badge-important { 
+            display: inline-flex; 
+            align-items: center; 
+            padding: 0.25rem 0.85rem; 
+            border-radius: 9999px; 
+            font-size: 0.75rem; 
+            font-weight: 800; 
+            background-color: #fef2f2; 
+            color: #e11d48; 
+            border: 1px solid #fecdd3; 
+            margin-bottom: 1rem; 
+            text-transform: uppercase; 
+            letter-spacing: 0.05em; 
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        .badge-qp { 
+            display: inline-flex; 
+            align-items: center; 
+            padding: 0.25rem 0.75rem; 
+            border-radius: 0.375rem; 
+            font-size: 0.75rem; 
+            font-weight: 700; 
+            background-color: #fef3c7; 
+            color: #b45309; 
+            border: 1px solid #fde68a; 
+            margin-left: 0.75rem; 
+            margin-bottom: 1rem;
+        }
+
+        .highlight-box {
+            background-color: #fff7ed;
+            border-left: 4px solid var(--secondary);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+            border: 1px solid #ffedd5;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-amber-200 selection:text-amber-900">
+
+    <!-- Top Navigation / Header -->
+    <header class="bg-white/95 border-b border-slate-200 sticky top-0 z-50 shadow-sm backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="bg-amber-600 p-2 rounded-lg shadow-inner">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-extrabold text-amber-950 tracking-tight leading-none">ACT: Module 5</h1>
+                    <p class="text-sm text-slate-500 font-medium mt-1">Nonlinear Systems & Describing Functions</p>
+                </div>
+            </div>
+            <div class="hidden lg:flex space-x-1 text-sm font-semibold">
+                <a href="#characteristics" class="text-slate-600 hover:text-amber-700 px-4 py-2.5 rounded-lg hover:bg-amber-50 transition-all">1. Characteristics</a>
+                <a href="#nonlinearities" class="text-slate-600 hover:text-amber-700 px-4 py-2.5 rounded-lg hover:bg-amber-50 transition-all">2. Nonlinearities</a>
+                <a href="#describing-function" class="text-slate-600 hover:text-amber-700 px-4 py-2.5 rounded-lg hover:bg-amber-50 transition-all">3. Describing Function</a>
+                <a href="#derivations" class="text-slate-600 hover:text-amber-700 px-4 py-2.5 rounded-lg hover:bg-amber-50 transition-all">4. Derivations</a>
+                <a href="#stability" class="text-amber-700 bg-amber-50 px-4 py-2.5 rounded-lg transition-all shadow-sm">5. Stability Analysis</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col xl:flex-row gap-12">
+        
+        <!-- Main Content -->
+        <main class="flex-1 w-full max-w-5xl mx-auto">
+            
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 mb-12">
+                <h3 class="text-xl font-bold text-slate-800 mb-4 mt-0">Syllabus Covered in this Document</h3>
+                <p class="text-slate-600 mb-4"><strong>Module V:</strong> Nonlinear systems: Introduction, characteristics of nonlinear systems. Types of nonlinearities. Analysis through harmonic linearization. Determination of describing function of nonlinearities (relay, dead zone, and saturation only) - application of describing function for stability analysis of autonomous system with single nonlinearity.</p>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- SECTION 1: CHARACTERISTICS OF NONLINEAR    -->
+            <!-- ========================================== -->
+            <section id="characteristics" class="mb-24">
+                <h2>
+                    <span class="bg-gradient-to-br from-amber-500 to-amber-700 text-white w-12 h-12 rounded-xl flex items-center justify-center font-extrabold text-2xl shadow-lg shrink-0">1</span>
+                    Characteristics of Nonlinear Systems
+                </h2>
+                
+                <div class="mb-4">
+                    <span class="badge-important">THEORY</span>
+                    <span class="badge-qp">May 2019</span><span class="badge-qp">Sep 2020</span>
+                </div>
+
+                <div class="highlight-box mb-8">
+                    <h4 class="font-bold text-amber-900 mb-2">Difference between Stability Analysis of Linear and Nonlinear Systems</h4>
+                    <ul class="list-disc ml-5 text-sm text-slate-700 space-y-2">
+                        <li><strong>Linear Systems:</strong> Stability is an absolute property of the system. It is completely independent of the initial conditions or the amplitude of the input. Evaluated easily using characteristic equation roots (poles).</li>
+                        <li><strong>Nonlinear Systems:</strong> Stability is highly dependent on the <strong>initial conditions</strong> and the <strong>amplitude of the input</strong>. A system may be stable for small inputs but unstable for large ones. They may also exhibit sustained oscillations (limit cycles). Analysis requires specialized techniques like Describing Functions, Phase Plane, or Lyapunov methods.</li>
+                    </ul>
+                </div>
+
+                <p class="text-lg text-slate-700 mb-8">Unlike linear systems, nonlinear systems do not obey the principle of superposition (homogeneity and additivity). They exhibit several unique phenomena not found in linear systems. <strong>Five key characteristics are:</strong></p>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+                    <div class="bg-white border border-slate-200 p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow border-t-4 border-t-amber-500">
+                        <h4 class="font-bold text-amber-900 mb-2">1. Jump Resonance</h4>
+                        <p class="text-sm text-slate-700">In the frequency response of nonlinear systems, the amplitude of the response may jump discontinuously from one point to another for smoothly decreasing or increasing values of input frequency. The frequency response curve tilts, causing a multi-valued region.</p>
+                    </div>
+                    
+                    <div class="bg-white border border-slate-200 p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow border-t-4 border-t-rose-500">
+                        <h4 class="font-bold text-rose-900 mb-2">2. Limit Cycles</h4>
+                        <p class="text-sm text-slate-700">These are oscillations in the unforced (autonomous) response of nonlinear systems with a strictly fixed amplitude and frequency, independent of initial conditions. They represent isolated closed trajectories in the phase plane. (Can be Stable, Unstable, or Semi-stable).</p>
+                    </div>
+
+                    <div class="bg-white border border-slate-200 p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow border-t-4 border-t-amber-500">
+                        <h4 class="font-bold text-amber-900 mb-2">3. Sub-harmonic Oscillations</h4>
+                        <p class="text-sm text-slate-700">When a nonlinear system is excited by a sinusoidal signal of frequency \(\omega\), the steady-state response may contain oscillations whose frequencies are an integral sub-multiple of the forcing frequency (e.g., \(\omega/2, \omega/3\)).</p>
+                    </div>
+                    
+                    <div class="bg-white border border-slate-200 p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow border-t-4 border-t-rose-500">
+                        <h4 class="font-bold text-rose-900 mb-2">4. Frequency Entrainment</h4>
+                        <p class="text-sm text-slate-700">If a periodic input is applied to a system exhibiting a limit cycle, the limit cycle frequency \(\omega_L\) may be "captured" or entrained by the forcing frequency \(\omega_f\) within a certain band of frequencies.</p>
+                    </div>
+
+                    <div class="bg-white border border-slate-200 p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow border-t-4 border-t-amber-500">
+                        <h4 class="font-bold text-amber-900 mb-2">5. Asynchronous Quenching</h4>
+                        <p class="text-sm text-slate-700">It is possible to entirely quench (suppress) a limit cycle oscillation by forcing the system with a periodic signal of a frequency \(\omega_q\), where \(\omega_L\) and \(\omega_q\) are not harmonically related to each other.</p>
+                    </div>
+                </div>
+
+                <!-- Detailed Limit Cycles Section -->
+                <div class="bg-white border border-slate-200 p-8 rounded-2xl shadow-sm mb-10">
+                    <h3 class="text-2xl font-bold text-amber-900 mt-0 mb-4 border-b pb-2">Detailed Analysis: Limit Cycles</h3>
+                    <p class="text-slate-700 mb-4"><strong>What is a limit cycle? How will you determine stable and unstable limit cycle using phase portrait?</strong></p>
+                    <p class="text-slate-700 mb-4">The response of nonlinear systems may exhibit oscillations with fixed amplitude and frequency; these oscillations are called <strong>limit cycles</strong>. Once the system trajectories converge to a limit cycle, it will continue to remain in the closed trajectory in the state space identified as limit cycles. In many systems the limit cycles are undesirable particularly when the amplitude is not small and result in some unwanted phenomena.</p>
+                    
+                    <h4 class="font-bold text-slate-800 mb-3 mt-6">Different types of limit cycles are:</h4>
+                    <ul class="list-disc ml-6 space-y-2 text-slate-700 mb-6">
+                        <li><strong>Stable Limit Cycle:</strong> All trajectories in the vicinity of the limit cycle converge to it as \( t \to \infty \).</li>
+                        <li><strong>Unstable Limit Cycle:</strong> All trajectories in the vicinity of the limit cycle diverge from it as \( t \to \infty \).</li>
+                        <li><strong>Semi-Stable Limit Cycle:</strong> Some of the trajectories in the vicinity of the limit cycle converge to it as \( t \to \infty \) (e.g., from the outside), while others diverge from it (e.g., from the inside).</li>
+                    </ul>
+
+                    <div class="diagram-container !p-6 !m-0 !bg-slate-50 border-amber-100 flex flex-col items-center">
+                        <h4 class="font-bold text-slate-800 mb-6 text-center">Phase Portraits of Limit Cycles</h4>
+                        <svg viewBox="0 0 900 300" class="w-full h-auto">
+                            <defs>
+                                <marker id="arrow-head-lc" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+                                    <path d="M0,0 L8,4 L0,8 z" fill="#334155"/>
+                                </marker>
+                                <marker id="arrow-head-amber" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+                                    <path d="M0,0 L8,4 L0,8 z" fill="#d97706"/>
+                                </marker>
+                                <marker id="arrow-head-rose" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+                                    <path d="M0,0 L8,4 L0,8 z" fill="#e11d48"/>
+                                </marker>
+                            </defs>
+
+                            <!-- (a) Stable -->
+                            <g transform="translate(150, 130)">
+                                <line x1="-120" y1="0" x2="120" y2="0" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow-head-lc)"/>
+                                <line x1="0" y1="-100" x2="0" y2="100" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow-head-lc)"/>
+                                <text x="125" y="5" class="svg-text-bold">x₁</text>
+                                <text x="5" y="-105" class="svg-text-bold">x₂</text>
+                                
+                                <circle cx="0" cy="0" r="50" stroke="#d97706" stroke-width="3" fill="none"/>
+                                <path d="M 0 50 L 5 50" stroke="#d97706" stroke-width="3" marker-end="url(#arrow-head-amber)"/>
+                                
+                                <!-- Outside converging -->
+                                <path d="M -90 0 C -90 -80, 70 -80, 70 0 C 70 60, -60 60, -60 0 C -60 -40, 52 -40, 52 0" stroke="#475569" stroke-width="1.5" fill="none" marker-end="url(#arrow-head-lc)"/>
+                                <!-- Inside converging (outward to circle) -->
+                                <path d="M -10 0 C -10 -20, 20 -20, 20 0 C 20 30, -35 30, -35 0 C -35 -45, 48 -45, 48 0" stroke="#475569" stroke-width="1.5" fill="none" marker-end="url(#arrow-head-lc)"/>
+                                
+                                <text x="-120" y="-110" class="svg-text-bold" fill="#475569">converging</text>
+                                <text x="-120" y="-95" class="svg-text-bold" fill="#475569">trajectories</text>
+                                <path d="M -80 -85 L -55 -60" stroke="#94a3b8" stroke-width="1" marker-end="url(#arrow-head-lc)"/>
+                                
+                                <text x="30" y="80" class="svg-text-bold" fill="#d97706">limit cycle</text>
+                                <path d="M 50 65 L 40 52" stroke="#94a3b8" stroke-width="1" marker-end="url(#arrow-head-lc)"/>
+                                
+                                <text x="0" y="150" class="svg-text-bold text-center" text-anchor="middle">(a) Stable limit cycle</text>
+                            </g>
+
+                            <!-- (b) Unstable -->
+                            <g transform="translate(450, 130)">
+                                <line x1="-120" y1="0" x2="120" y2="0" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow-head-lc)"/>
+                                <line x1="0" y1="-100" x2="0" y2="100" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow-head-lc)"/>
+                                <text x="125" y="5" class="svg-text-bold">x₁</text>
+                                <text x="5" y="-105" class="svg-text-bold">x₂</text>
+                                
+                                <circle cx="0" cy="0" r="50" stroke="#e11d48" stroke-width="3" fill="none"/>
+                                <path d="M 0 50 L -5 50" stroke="#e11d48" stroke-width="3" marker-end="url(#arrow-head-rose)"/>
+                                
+                                <!-- Outside diverging -->
+                                <path d="M 52 0 C 52 -40, -60 -40, -60 0 C -60 60, 70 60, 70 0 C 70 -80, -90 -80, -90 0" stroke="#475569" stroke-width="1.5" fill="none" marker-end="url(#arrow-head-lc)"/>
+                                <!-- Inside diverging (inward to origin) -->
+                                <path d="M 48 0 C 48 -45, -35 -45, -35 0 C -35 30, 20 30, 20 0 C 20 -20, -10 -20, -10 0" stroke="#475569" stroke-width="1.5" fill="none" marker-end="url(#arrow-head-lc)"/>
+                                
+                                <text x="20" y="-110" class="svg-text-bold" fill="#475569">diverging</text>
+                                <text x="20" y="-95" class="svg-text-bold" fill="#475569">trajectories</text>
+                                <path d="M 50 -85 L 65 -65" stroke="#94a3b8" stroke-width="1" marker-end="url(#arrow-head-lc)"/>
+                                
+                                <text x="30" y="80" class="svg-text-bold" fill="#e11d48">limit cycle</text>
+                                <path d="M 50 65 L 40 52" stroke="#94a3b8" stroke-width="1" marker-end="url(#arrow-head-lc)"/>
+                                
+                                <text x="0" y="150" class="svg-text-bold text-center" text-anchor="middle">(b) Unstable limit cycle</text>
+                            </g>
+
+                            <!-- (c) Semi-stable -->
+                            <g transform="translate(750, 130)">
+                                <line x1="-120" y1="0" x2="120" y2="0" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow-head-lc)"/>
+                                <line x1="0" y1="-100" x2="0" y2="100" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arrow-head-lc)"/>
+                                <text x="125" y="5" class="svg-text-bold">x₁</text>
+                                <text x="5" y="-105" class="svg-text-bold">x₂</text>
+                                
+                                <circle cx="0" cy="0" r="50" stroke="#f59e0b" stroke-width="3" fill="none"/>
+                                <path d="M 0 50 L 5 50" stroke="#f59e0b" stroke-width="3" marker-end="url(#arrow-head-amber)"/>
+                                
+                                <!-- Outside converging -->
+                                <path d="M -90 0 C -90 -80, 70 -80, 70 0 C 70 60, -60 60, -60 0 C -60 -40, 52 -40, 52 0" stroke="#475569" stroke-width="1.5" fill="none" marker-end="url(#arrow-head-lc)"/>
+                                <!-- Inside diverging (inward to origin) -->
+                                <path d="M 48 0 C 48 -45, -35 -45, -35 0 C -35 30, 20 30, 20 0 C 20 -20, -10 -20, -10 0" stroke="#475569" stroke-width="1.5" fill="none" marker-end="url(#arrow-head-lc)"/>
+                                
+                                <text x="-120" y="-95" class="svg-text-bold" fill="#475569">converging</text>
+                                <text x="30" y="-95" class="svg-text-bold" fill="#475569">diverging</text>
+                                
+                                <text x="30" y="80" class="svg-text-bold" fill="#f59e0b">limit cycle</text>
+                                <path d="M 50 65 L 40 52" stroke="#94a3b8" stroke-width="1" marker-end="url(#arrow-head-lc)"/>
+                                
+                                <text x="0" y="150" class="svg-text-bold text-center" text-anchor="middle">(c) Semi-stable limit cycle</text>
+                            </g>
+                        </svg>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========================================== -->
+            <!-- SECTION 3: DESCRIBING FUNCTION THEORY      -->
+            <!-- ========================================== -->
+            <section id="describing-function" class="mb-24">
+                <h2>
+                    <span class="bg-gradient-to-br from-amber-500 to-amber-700 text-white w-12 h-12 rounded-xl flex items-center justify-center font-extrabold text-2xl shadow-lg shrink-0">3</span>
+                    Describing Function & Harmonic Linearization
+                </h2>
+
+                <div class="mb-4">
+                    <span class="badge-important">CORE CONCEPT</span>
+                    <span class="badge-qp">Apr 2018</span><span class="badge-qp">May 2019</span>
+                </div>
+
+                <div class="bg-white border border-slate-200 p-8 rounded-2xl shadow-sm mb-10">
+                    <h3 class="text-2xl font-bold text-amber-900 mt-0 mb-4 border-b pb-2">Analysis through Harmonic Linearization</h3>
+                    <p class="text-slate-700 mb-4"><strong>What is Harmonic Linearization?</strong> It is an approximation technique used to analyze nonlinear systems in the frequency domain. It consists of replacing a nonlinear element within a system by an "equivalent" linear time-invariant system (a variable gain), which is in a sense the best possible linear approximation of the given nonlinear system for a sinusoidal input.</p>
+                    <p class="text-slate-700 mb-4">When a sinusoidal signal \( x(t) = X \sin(\omega t) \) is passed through a nonlinear element, the output \( y(t) \) is generally non-sinusoidal but periodic. It can be expanded into a Fourier series. If the linear part of the system acts as a severe <strong>low-pass filter</strong>, the higher harmonics (\( 2\omega, 3\omega, \dots \)) are highly attenuated. Harmonic linearization approximates the nonlinearity by considering <em>only the fundamental harmonic component</em> of the output.</p>
+                    
+                    <div class="diagram-container !p-6 !m-0 !bg-slate-50 border-amber-100 flex flex-col items-center mt-6">
+                        <h4 class="font-bold text-slate-800 mb-4 text-center">Describing Function Block Diagram Replacement</h4>
+                        <svg viewBox="0 0 600 150" class="w-full max-w-2xl">
+                            <!-- Input R(t) -->
+                            <path d="M 20 75 L 80 75" class="svg-curve-primary" marker-end="url(#arrow-head)"/>
+                            <text x="40" y="65" class="svg-text-bold">r(t)</text>
+                            
+                            <!-- Summing Junction -->
+                            <circle cx="100" cy="75" r="20" fill="white" stroke="#0f172a" stroke-width="2"/>
+                            <text x="100" y="82" text-anchor="middle" font-size="20">+</text>
+                            <text x="100" y="115" text-anchor="middle" font-size="20">-</text>
+
+                            <!-- G1(s) -->
+                            <path d="M 120 75 L 160 75" class="svg-curve-primary" marker-end="url(#arrow-head)"/>
+                            <rect x="160" y="50" width="70" height="50" fill="white" stroke="#0f172a" stroke-width="2"/>
+                            <text x="195" y="80" text-anchor="middle" class="svg-text-bold">G₁(s)</text>
+                            
+                            <!-- x(t) -->
+                            <path d="M 230 75 L 280 75" class="svg-curve-primary" marker-end="url(#arrow-head)"/>
+                            <text x="255" y="65" text-anchor="middle" class="svg-text-bold">x</text>
+
+                            <!-- NLE replaced by KN -->
+                            <rect x="280" y="45" width="100" height="60" fill="#fffbeb" stroke="#d97706" stroke-width="3"/>
+                            <text x="330" y="80" text-anchor="middle" class="svg-text-bold text-amber-700">K_N(X, ω)</text>
+                            <text x="330" y="35" text-anchor="middle" class="svg-text text-amber-600">NLE Equivalent</text>
+
+                            <!-- y(t) -->
+                            <path d="M 380 75 L 430 75" class="svg-curve-primary" marker-end="url(#arrow-head)"/>
+                            <text x="405" y="65" text-anchor="middle" class="svg-text-bold">y</text>
+
+                            <!-- G2(s) -->
+                            <rect x="430" y="50" width="70" height="50" fill="white" stroke="#0f172a" stroke-width="2"/>
+                            <text x="465" y="80" text-anchor="middle" class="svg-text-bold">G₂(s)</text>
+
+                            <!-- c(t) -->
+                            <path d="M 500 75 L 580 75" class="svg-curve-primary" marker-end="url(#arrow-head)"/>
+                            <text x="540" y="65" class="svg-text-bold">c(t)</text>
+
+                            <!-- Feedback -->
+                            <path d="M 550 75 L 550 130 L 100 130 L 100 95" stroke="#0f172a" stroke-width="2" fill="none" marker-end="url(#arrow-head)"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <p class="text-lg text-slate-700 mb-4 mt-8 font-bold border-b pb-2">Mathematical Definition:</p>
+                <p class="text-slate-700 mb-4">Let the input to the nonlinear element be \( x(t) = X \sin(\omega t) \).</p>
+                            <p class="text-slate-700 mt-4 mb-2">The describing function is \( K_N(X) = \frac{A_1}{X} \angle 0^\circ \):</p>
+                            <div class="math-block !bg-white !py-4 !font-bold !text-amber-800 !border-2 !border-amber-400">
+                                $$ K_N(X) = \begin{cases} K & \text{for } X \le S \\ \frac{2K}{\pi} \left[ \alpha + \sin\alpha \cos\alpha \right] & \text{for } X > S \end{cases} $$
+                                <br>
+                                $$ \text{Where } \alpha = \sin^{-1}\left(\frac{S}{X}\right) $$
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4.3 DEAD ZONE -->
+                <div class="bg-white border-2 border-slate-200 rounded-3xl overflow-hidden shadow-lg mb-16 relative">
+                    <div class="p-8 md:p-10">
+                        <h3 class="text-3xl font-bold text-slate-800 mt-0 mb-6 border-none">4.3 Dead-Zone Nonlinearity</h3>
+                        
+                        <p class="text-slate-700 mb-6">Output is zero for inputs between \(-D/2\) and \(D/2\). Let threshold be \( S = D/2 \). Let input be \( x(t) = X \sin(\omega t) \) where \( X > S \). Let \( x(t) = S \) at \( \omega t = \alpha \). Therefore, \( \alpha = \sin^{-1}(S/X) \).</p>
+                        
+                        <div class="math-block !bg-white">
+                            $$ y(\omega t) = \begin{cases} 0, & 0 \le \omega t \le \alpha \\ K(X \sin\omega t - S), & \alpha \le \omega t \le \pi/2 \end{cases} $$
+                        </div>
+
+                        <p class="text-slate-700 mb-4">Because the output is an odd function, \( B_1 = 0 \). Using quarter-wave symmetry for \( A_1 \):</p>
+                        
+                        <div class="derivation-box !border-slate-200 !bg-slate-50/30">
+                            <div class="math-block !bg-white !py-3">
+                                $$ A_1 = \frac{4}{\pi} \int_{\alpha}^{\pi/2} K(X \sin\omega t - S) \sin(\omega t) d(\omega t) $$
+                                $$ A_1 = \frac{4K}{\pi} \left[ X \int_{\alpha}^{\pi/2} \sin^2(\omega t) d(\omega t) - S \int_{\alpha}^{\pi/2} \sin(\omega t) d(\omega t) \right] $$
+                            </div>
+                            
+                            <p class="text-slate-700 mt-4 mb-2">Evaluate the integrals:</p>
+                            <div class="math-block !bg-white !py-3">
+                                $$ A_1 = \frac{4K}{\pi} \left[ X \left( \frac{\omega t}{2} - \frac{\sin 2\omega t}{4} \right)_\alpha^{\pi/2} - S [-\cos\omega t]_\alpha^{\pi/2} \right] $$
+                                $$ A_1 = \frac{4K}{\pi} \left[ X \left( \frac{\pi}{4} - \frac{\alpha}{2} + \frac{\sin 2\alpha}{4} \right) - S \cos\alpha \right] $$
+                            </div>
+                            
+                            <p class="text-slate-700 mt-4 mb-2">Substitute \( S = X \sin\alpha \):</p>
+                            <div class="math-block !bg-white !py-3">
+                                $$ A_1 = \frac{KX}{\pi} \left[ \pi - 2\alpha + \sin 2\alpha - 4 \sin\alpha \cos\alpha \right] $$
+                                $$ A_1 = \frac{KX}{\pi} \left[ \pi - 2\alpha + 2\sin\alpha\cos\alpha - 4\sin\alpha\cos\alpha \right] $$
+                                $$ A_1 = \frac{KX}{\pi} \left[ \pi - 2\alpha - 2\sin\alpha\cos\alpha \right] = \frac{2KX}{\pi} \left[ \frac{\pi}{2} - \alpha - \sin\alpha\cos\alpha \right] $$
+                            </div>
+
+                            <p class="text-slate-700 mt-4 mb-2">The describing function is \( K_N(X) = \frac{A_1}{X} \angle 0^\circ \):</p>
+                            <div class="math-block !bg-white !py-4 !font-bold !text-slate-800 !border-2 !border-slate-400">
+                                $$ K_N(X) = \begin{cases} 0 & \text{for } X \le S \\ \frac{2K}{\pi} \left[ \frac{\pi}{2} - \alpha - \sin\alpha \cos\alpha \right] & \text{for } X > S \end{cases} $$
+                                <br>
+                                $$ \text{Where } \alpha = \sin^{-1}\left(\frac{S}{X}\right) $$
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- ========================================== -->
+            <!-- SECTION 5: STABILITY ANALYSIS              -->
+            <!-- ========================================== -->
+            <section id="stability" class="mb-24">
+                <h2>
+                    <span class="bg-gradient-to-br from-amber-500 to-amber-700 text-white w-12 h-12 rounded-xl flex items-center justify-center font-extrabold text-2xl shadow-lg shrink-0">5</span>
+                    Stability Analysis using Describing Functions
+                </h2>
+
+                <div class="mb-4">
+                    <span class="badge-important">HIGHLY EXAMINED TENTH-MARKER</span>
+                    <span class="badge-qp">Apr 2018</span><span class="badge-qp">May 2019</span>
+                </div>
+
+                <div class="bg-white border border-slate-200 p-8 rounded-2xl shadow-sm mb-12">
+                    <h3 class="text-2xl font-bold text-amber-900 mt-0 mb-4 border-b pb-2">The Intersection Method</h3>
+                    <p class="text-slate-700 mb-4">The characteristic equation of a nonlinear closed-loop system is given by:</p>
+                    <div class="math-block !bg-amber-50 !border-amber-200">
+                        $$ 1 + K_N(X, \omega) G(j\omega) = 0 \implies G(j\omega) = \frac{-1}{K_N(X, \omega)} $$
+                    </div>
+                    <p class="text-slate-700 mt-4 mb-4">Stability analysis is performed by plotting both \( G(j\omega) \) (polar plot) and \( -1/K_N \) on the same complex plane.</p>
+                    <ul class="list-disc ml-6 space-y-2 text-slate-700">
+                        <li><strong>No Intersection:</strong> If \( G(j\omega) \) does not enclose the \( -1/K_N \) locus, the system is <strong>stable</strong>.</li>
+                        <li><strong>Intersection:</strong> The points of intersection indicate the existence of <strong>Limit Cycles</strong>. At the intersection point:
+                            <ul class="list-circle ml-6 mt-2 text-slate-600">
+                                <li>The frequency of the limit cycle (\( \omega \)) is found from the \( G(j\omega) \) curve.</li>
+                                <li>The amplitude of the limit cycle (\( X \)) is found from the \( -1/K_N \) curve.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- 5.1 Solved QP Problem -->
+                <div class="bg-white border-2 border-rose-200 rounded-3xl overflow-hidden shadow-lg mt-12 relative">
+                    <div class="absolute top-0 right-0 bg-rose-600 text-white px-5 py-1.5 rounded-bl-xl font-bold tracking-wider text-sm shadow-sm">SOLVED UNIVERSITY QP (APR 2018 / MAY 2019)</div>
+                    <div class="p-8 md:p-10">
+                        <h3 class="text-2xl font-bold text-rose-950 mt-0 mb-6 border-none">Comprehensive Stability Problem</h3>
+                        
+                        <p class="text-slate-800 font-medium mb-6"><strong>Question:</strong> Consider a unity feedback system having a saturation amplifier with gain \( K \) in the linear region (saturation limit \( S=1 \)) in cascade with a linear plant \( G(s) = \frac{1}{s(1+0.5s)(1+4s)} \).<br>
+                        (a) Determine the maximum value of \( K \) for the system to remain stable.<br>
+                        (b) If \( K=2.5 \), determine the amplitude and frequency of the resulting limit cycle.</p>
+                        
+                        <div class="space-y-6">
+                            <div class="derivation-box !border-rose-200 !bg-rose-50/30">
+                                <h4 class="font-bold text-rose-900 mb-3">Part (a): Maximum K for Stability</h4>
+                                <p class="text-sm text-slate-700 mb-3">The linear transfer function including gain \( K \) is:</p>
+                                <div class="math-block !bg-white !py-3">
+                                    $$ G(j\omega) = \frac{K}{j\omega(1 + j0.5\omega)(1 + j4\omega)} $$
+                                </div>
+                                <p class="text-sm text-slate-700 mt-4 mb-2">The magnitude and phase are:</p>
+                                <div class="math-block !bg-white !py-3">
+                                    $$ |G(j\omega)| = \frac{K}{\omega\sqrt{1 + 0.25\omega^2}\sqrt{1 + 16\omega^2}} $$
+                                    $$ \angle G(j\omega) = -90^\circ - \tan^{-1}(0.5\omega) - \tan^{-1}(4\omega) $$
+                                </div>
+                                
+                                <p class="text-sm text-slate-700 mt-4 mb-3">For saturation nonlinearity, the describing function \( K_N \) decreases from \( K \) to 0 as \( X \) increases. The locus of \( -1/K_N \) starts at \( -1/K \) and travels along the negative real axis towards \( -\infty \).</p>
+                                <p class="text-sm text-slate-700 mb-3">The limiting condition for stability is when the \( G(j\omega) \) locus crosses the real axis at the start of the \( -1/K_N \) locus, which is at \( -1 \angle -180^\circ \) (assuming \( K \) is lumped into \( G(j\omega) \) and \( K_N \) max is 1).</p>
+                                
+                                <p class="text-sm text-slate-700 mt-4 mb-2">Find the phase crossover frequency \( \omega_{pc} \) where \( \angle G(j\omega) = -180^\circ \):</p>
+                                <div class="math-block !bg-white !py-3">
+                                    $$ -90^\circ - \tan^{-1}(0.5\omega_{pc}) - \tan^{-1}(4\omega_{pc}) = -180^\circ $$
+                                    $$ \tan^{-1}(0.5\omega_{pc}) + \tan^{-1}(4\omega_{pc}) = 90^\circ $$
+                                </div>
+                                <p class="text-sm text-slate-700 mt-4 mb-2">Taking \(\tan\) on both sides:</p>
+                                <div class="math-block !bg-white !py-3">
+                                    $$ \frac{0.5\omega_{pc} + 4\omega_{pc}}{1 - (0.5\omega_{pc})(4\omega_{pc})} = \tan(90^\circ) = \infty $$
+                                    $$ \implies \text{Denominator} = 0 \implies 1 - 2\omega_{pc}^2 = 0 \implies \omega_{pc}^2 = 0.5 \implies \omega_{pc} = \frac{1}{\sqrt{2}} \text{ rad/sec} $$
+                                </div>
+                                
+                                <p class="text-sm text-slate-700 mt-4 mb-2">At marginal stability, \( |G(j\omega_{pc})| = 1 \):</p>
+                                <div class="math-block !bg-white !py-3">
+                                    $$ \frac{K}{\omega_{pc}\sqrt{1 + 0.25\omega_{pc}^2}\sqrt{1 + 16\omega_{pc}^2}} = 1 $$
+                                    $$ K = \frac{1}{\sqrt{2}} \sqrt{1 + 0.25(0.5)} \sqrt{1 + 16(0.5)} = \frac{1}{\sqrt{2}} \sqrt{1.125} \sqrt{9} $$
+                                    $$ K = \frac{1}{\sqrt{2}} \times 1.0606 \times 3 = 2.25 $$
+                                </div>
+                                <p class="text-sm text-slate-700 mt-2 text-center text-rose-800 font-bold bg-rose-100 py-2 border border-rose-300 rounded">
+                                    Therefore, the maximum value of K for the system to be stable is \( K < 2.25 \).
+                                </p>
+                            </div>
+
+                            <div class="derivation-box !border-rose-200 !bg-rose-50/30">
+                                <h4 class="font-bold text-rose-900 mb-3">Part (b): Limit Cycle for \( K=2.5 \)</h4>
+                                <p class="text-sm text-slate-700 mb-3">If \( K = 2.5 \), the system is unstable under linear conditions. The \( G(j\omega) \) locus will intersect the \( -1/K_N \) locus, predicting a stable limit cycle.</p>
+                                
+                                <p class="text-sm text-slate-700 mb-3">The frequency of the limit cycle is dictated by the point where the locus crosses the negative real axis. As derived above, this crossing always occurs at:</p>
+                                <div class="math-block !bg-white !py-2 !font-bold text-rose-800">
+                                    $$ \omega = \omega_{pc} = \frac{1}{\sqrt{2}} \approx 0.707 \text{ rad/sec} $$
+                                </div>
+
+                                <p class="text-sm text-slate-700 mt-4 mb-3">The amplitude is determined by the intersection point condition:</p>
+                                <div class="math-block !bg-white !py-3">
+                                    $$ |G(j\omega_{pc})|_{\text{with } K=2.5} = \frac{2.5}{2.25} = 1.111 $$
+                                </div>
+                                <p class="text-sm text-slate-700 mt-4 mb-3">At intersection, \( |G(j\omega)| = \left|\frac{-1}{K_N(X)}\right| \implies K_N(X) = \frac{1}{1.111} = 0.9 \).</p>
+                                <p class="text-sm text-slate-700 mb-3">Since \( K_N(X) < 1 \), the system operates in the saturated region (\( X > S=1 \)). Using the describing function for saturation:</p>
+                                <div class="math-block !bg-white !py-3">
+                                    $$ \frac{2}{\pi} \left[ \alpha + \sin\alpha \cos\alpha \right] = 0.9 \quad \text{where } \alpha = \sin^{-1}\left(\frac{1}{X}\right) $$
+                                </div>
+                                <p class="text-sm text-slate-700 italic text-center">Solving this transcendental equation (usually done graphically or numerically) yields the amplitude \( X \).</p>
+                                <p class="text-sm text-slate-700 text-center font-bold text-rose-800 mt-2">
+                                    Result: A stable limit cycle exists with frequency \(\omega \approx 0.707\) rad/sec.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+        </main>
+        
+        <!-- Table of Contents Sidebar -->
+        <aside class="hidden xl:block w-72 shrink-0 relative">
+            <div class="sticky top-28 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+                <h4 class="font-extrabold text-slate-900 mb-4 uppercase tracking-widest text-xs border-b border-slate-100 pb-2">Module 5 Contents</h4>
+                <nav class="space-y-2 text-sm font-medium">
+                    <a href="#characteristics" class="toc-link">1. System Characteristics</a>
+                    <a href="#nonlinearities" class="toc-link">2. Common Nonlinearities</a>
+                    <a href="#describing-function" class="toc-link">3. Describing Function Theory</a>
+                    <a href="#derivations" class="toc-link">4. Mathematical Derivations</a>
+                    <div class="pl-4 space-y-1 mt-1 mb-2 border-l border-slate-200 ml-2">
+                        <a href="#derivations" class="block text-slate-500 hover:text-amber-600 transition-colors py-1 text-xs">4.1 Ideal Relay</a>
+                        <a href="#derivations" class="block text-slate-500 hover:text-amber-600 transition-colors py-1 text-xs font-bold">4.2 Saturation (QP Exact)</a>
+                        <a href="#derivations" class="block text-slate-500 hover:text-amber-600 transition-colors py-1 text-xs">4.3 Dead-Zone</a>
+                    </div>
+                    <a href="#stability" class="toc-link">5. Stability Analysis</a>
+                    <div class="pl-4 space-y-1 mt-1 mb-2 border-l border-slate-200 ml-2">
+                        <a href="#stability" class="block text-slate-500 hover:text-amber-600 transition-colors py-1 text-xs font-bold">Solved Limit Cycle QP</a>
+                    </div>
+                </nav>
+            </div>
+        </aside>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-8 text-center mt-12 border-t-4 border-amber-600">
+        <p class="mb-2 text-lg font-bold text-white">Advanced Control Theory • Module 5 Comprehensive Notes</p>
+        <p class="text-sm">Compiled for Engineering Curriculum Examination Preparation</p>
+    </footer>
+
+    <script>
+        // Active state toggling for sidebar navigation based on scroll position
+        window.addEventListener('DOMContentLoaded', () => {
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    const id = entry.target.getAttribute('id');
+                    if (entry.intersectionRatio > 0) {
+                        document.querySelectorAll('.toc-link').forEach(link => {
+                            link.classList.remove('active');
+                            link.classList.remove('font-bold');
+                            link.classList.remove('text-amber-600');
+                        });
+                        const activeLink = document.querySelector(`.toc-link[href="#${id}"]`);
+                        if(activeLink) {
+                            activeLink.classList.add('active');
+                            activeLink.classList.add('font-bold');
+                            activeLink.classList.add('text-amber-600');
+                        }
+                    }
+                });
+            }, { threshold: 0.15 });
+
+            document.querySelectorAll('section[id]').forEach((section) => {
+                observer.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>
