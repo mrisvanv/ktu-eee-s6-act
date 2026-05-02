@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 2: Advanced Control Theory</title>
+    
+    <!-- MathJax for rendering LaTeX equations -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        :root {
+            --primary: #4338ca;      /* Indigo 700 */
+            --secondary: #6366f1;    /* Indigo 500 */
+            --accent: #10b981;       /* Emerald 500 */
+            --bg-color: #f8fafc;     /* Slate 50 */
+            --text-main: #334155;    /* Slate 700 */
+        }
+
+        body { 
+            font-family: 'Inter', system-ui, -apple-system, sans-serif; 
+            scroll-behavior: smooth; 
+            background-color: var(--bg-color); 
+            color: var(--text-main);
+            line-height: 1.7;
+        }
+        
+        /* Typography & Layout */
+        h1, h2, h3, h4, h5 { color: #0f172a; letter-spacing: -0.025em; font-weight: 700; }
+        h2 { 
+            scroll-margin-top: 6rem; 
+            border-bottom: 3px solid #e0e7ff; 
+            padding-bottom: 0.75rem; 
+            margin-top: 4rem; 
+            margin-bottom: 2rem; 
+            display: flex; 
+            align-items: center; 
+            gap: 1rem; 
+        }
+        h3 { 
+            scroll-margin-top: 6rem; 
+            margin-top: 2.5rem; 
+            margin-bottom: 1.25rem; 
+            color: var(--primary); 
+        }
+        
+        /* Mathematical Blocks */
+        .math-block { 
+            overflow-x: auto; 
+            padding: 1.5rem; 
+            background: #ffffff; 
+            border: 1px solid #e2e8f0; 
+            border-radius: 0.75rem; 
+            box-shadow: inset 0 2px 4px 0 rgb(0 0 0 / 0.02); 
+            margin: 1.5rem 0; 
+            text-align: center; 
+            font-size: 1.1rem;
+        }
+        
+        .equation-box { 
+            background: #eef2ff; 
+            border-left: 4px solid var(--secondary); 
+            padding: 1.5rem; 
+            margin: 1.5rem 0; 
+            border-radius: 0 0.75rem 0.75rem 0; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05); 
+        }
+
+        .derivation-box { 
+            background: #ffffff; 
+            border: 1px dashed #cbd5e1; 
+            padding: 2rem; 
+            border-radius: 0.75rem; 
+            margin-top: 1.5rem; 
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);
+        }
+        
+        /* Diagrams & SVGs */
+        .diagram-container { 
+            border: 1px solid #cbd5e1; 
+            border-radius: 1rem; 
+            padding: 2.5rem; 
+            background: #ffffff; 
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.05); 
+            margin: 2.5rem 0; 
+            overflow-x: auto; 
+            position: relative; 
+        }
+        .svg-grid { stroke: #f1f5f9; stroke-width: 1; }
+        .svg-grid-major { stroke: #e2e8f0; stroke-width: 1.5; stroke-dasharray: 4,4; }
+        .svg-axis { stroke: #475569; stroke-width: 2; }
+        .svg-text { font-family: 'Inter', sans-serif; font-size: 13px; fill: #475569; }
+        .svg-text-bold { font-weight: 700; fill: #0f172a; font-size: 14px; }
+        .svg-text-math { font-family: 'Times New Roman', Times, serif; font-style: italic; font-size: 16px; }
+        
+        /* Custom SVG Curves */
+        .svg-curve-primary { stroke: #4338ca; stroke-width: 3; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+        .svg-curve-secondary { stroke: #10b981; stroke-width: 3; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+        .svg-curve-danger { stroke: #e11d48; stroke-width: 2.5; fill: none; stroke-dasharray: 5,5; }
+        .svg-annotation { stroke: #64748b; stroke-width: 1.5; stroke-dasharray: 4,4; fill: none; }
+        
+        /* UI Components */
+        .step-card { 
+            border: 1px solid #e2e8f0; 
+            padding: 2rem; 
+            border-radius: 1rem; 
+            margin-bottom: 1.5rem; 
+            background: #ffffff; 
+            transition: all 0.3s ease; 
+            border-left: 5px solid var(--secondary); 
+            position: relative;
+        }
+        .step-card:hover { 
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1); 
+            transform: translateY(-3px); 
+        }
+        
+        /* Sidebar Navigation */
+        .toc-link { 
+            display: block; 
+            padding: 0.6rem 1.2rem; 
+            color: #475569; 
+            text-decoration: none; 
+            border-radius: 0.5rem; 
+            transition: all 0.2s; 
+            border-left: 3px solid transparent; 
+            font-weight: 500;
+        }
+        .toc-link:hover, .toc-link.active { 
+            background: #eef2ff; 
+            color: var(--primary); 
+            border-left-color: var(--primary); 
+        }
+        
+        /* Badges */
+        .badge-important { 
+            display: inline-flex; 
+            align-items: center; 
+            padding: 0.25rem 0.85rem; 
+            border-radius: 9999px; 
+            font-size: 0.75rem; 
+            font-weight: 800; 
+            background-color: #fef2f2; 
+            color: #dc2626; 
+            border: 1px solid #fca5a5; 
+            margin-bottom: 1rem; 
+            text-transform: uppercase; 
+            letter-spacing: 0.05em; 
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        .badge-qp { 
+            display: inline-flex; 
+            align-items: center; 
+            padding: 0.25rem 0.75rem; 
+            border-radius: 0.375rem; 
+            font-size: 0.75rem; 
+            font-weight: 700; 
+            background-color: #e0e7ff; 
+            color: #3730a3; 
+            border: 1px solid #c7d2fe; 
+            margin-left: 0.75rem; 
+            margin-bottom: 1rem;
+        }
+
+        .highlight-box {
+            background-color: #f8fafc;
+            border-left: 4px solid #8b5cf6;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+        }
+        .data-table th {
+            background-color: #eef2ff;
+            color: #3730a3;
+            font-weight: 700;
+            text-align: left;
+            padding: 1rem;
+            border: 1px solid #c7d2fe;
+        }
+        .data-table td {
+            padding: 1rem;
+            border: 1px solid #e2e8f0;
+            background-color: #ffffff;
+        }
+        .data-table tr:nth-child(even) td {
+            background-color: #f8fafc;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-indigo-200 selection:text-indigo-900">
+
+    <!-- Top Navigation / Header -->
+    <header class="bg-white/95 border-b border-slate-200 sticky top-0 z-50 shadow-sm backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="bg-indigo-600 p-2 rounded-lg shadow-inner">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-extrabold text-indigo-950 tracking-tight leading-none">ACT: Module 2</h1>
+                    <p class="text-sm text-slate-500 font-medium mt-1">Ziegler-Nichols & Root Locus Design</p>
+                </div>
+            </div>
+            <div class="hidden lg:flex space-x-1 text-sm font-semibold">
+                <a href="#ziegler-nichols" class="text-slate-600 hover:text-indigo-700 px-4 py-2.5 rounded-lg hover:bg-indigo-50 transition-all">1. Ziegler-Nichols</a>
+                <a href="#rl-intro" class="text-slate-600 hover:text-indigo-700 px-4 py-2.5 rounded-lg hover:bg-indigo-50 transition-all">2. Root Locus Basis</a>
+                <a href="#lead-design" class="text-slate-600 hover:text-indigo-700 px-4 py-2.5 rounded-lg hover:bg-indigo-50 transition-all">3. Lead Design</a>
+                <a href="#lag-design" class="text-indigo-700 bg-indigo-50 px-4 py-2.5 rounded-lg transition-all shadow-sm">4. Lag Design</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col xl:flex-row gap-12">
+        
+        <!-- Main Content -->
+        <main class="flex-1 w-full max-w-5xl mx-auto">
+            
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 mb-12">
+                <h3 class="text-xl font-bold text-slate-800 mb-4 mt-0">Syllabus Covered in this Document</h3>
+                <p class="text-slate-600 mb-4"><strong>Module II:</strong> Compensator design: Realization of compensators - lag, lead and lag-lead. Design of compensator using root locus. Design of P, PI and PID controller using Ziegler-Nichols tuning method.</p>
+                <div class="bg-indigo-50 text-indigo-800 px-4 py-3 rounded-lg border border-indigo-100 text-sm font-medium flex items-center gap-3">
+                    <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Focus Shift: While Module 1 utilized Bode plots (Frequency Domain), Module 2 strictly focuses on Root Locus (Time Domain) design methodologies and empirical PID tuning.
+                </div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- SECTION 1: ZIEGLER-NICHOLS TUNING          -->
+            <!-- ========================================== -->
+            <section id="ziegler-nichols" class="mb-24">
+                <h2>
+                    <span class="bg-gradient-to-br from-indigo-600 to-indigo-800 text-white w-12 h-12 rounded-xl flex items-center justify-center font-extrabold text-2xl shadow-lg shrink-0">1</span>
+                    Ziegler-Nichols PID Tuning Rules
+                </h2>
+                
+                <div class="mb-4">
+                    <span class="badge-important">FREQUENTLY ASKED</span>
+                    <span class="badge-qp">May 2019</span><span class="badge-qp">Sep 2020</span><span class="badge-qp">Jul 2021</span>
+                </div>
+
+                <p class="text-lg text-slate-700 mb-8">In 1942, Ziegler and Nichols described simple mathematical procedures (the first and second methods) for tuning PID controllers. These empirical procedures are standard in control systems practice. They make a priori assumptions on the system model but <strong>do not require the mathematical model to be specifically known</strong>.</p>
+
+                <!-- 1.1 First Method -->
+                <div class="bg-white border border-slate-200 rounded-2xl shadow-sm mb-10 overflow-hidden">
+                    <div class="bg-slate-50 border-b border-slate-200 px-8 py-5">
+                        <h3 class="text-2xl font-bold text-indigo-900 mt-0 mb-0 flex items-center gap-3">
+                            <svg class="w-7 h-7 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path></svg>
+                            1.1 The First Method (Step Response Method)
+                        </h3>
+                    </div>
+                    <div class="p-8">
+                        <p class="text-slate-700 mb-6">The first method is applied to plants with open-loop step responses that exhibit an <strong>S-shaped curve</strong>. This is typical of a first-order system with transportation delay, or a plant made up of a series of first-order systems.</p>
+                        
+                        <div class="diagram-container bg-slate-50">
+                            <h4 class="text-center font-bold text-slate-800 mb-6">S-Shaped Response Curve</h4>
+                            <svg viewBox="0 0 800 300" class="w-full h-auto max-w-2xl mx-auto">
+                                <!-- Grid -->
+                                <g class="svg-grid-major">
+                                    <line x1="80" y1="60" x2="720" y2="60"/>
+                                </g>
+
+                                <!-- Axes -->
+                                <path d="M 80 260 L 750 260" class="svg-axis" marker-end="url(#arrow-head)"/>
+                                <path d="M 80 280 L 80 20" class="svg-axis" marker-end="url(#arrow-head)"/>
+                                <text x="730" y="290" class="svg-text-bold" font-size="16">Time (t)</text>
+                                <text x="30" y="30" class="svg-text-bold" font-size="16">y(t)</text>
+                                <text x="50" y="65" class="svg-text-math font-bold" fill="#0f172a" font-size="18">K</text>
+
+                                <!-- S-Curve -->
+                                <!-- Starts flat, goes up, flattens out at K -->
+                                <path d="M 80 260 C 250 260, 200 60, 450 60 L 720 60" class="svg-curve-primary"/>
+                                
+                                <!-- Inflection Point & Tangent -->
+                                <!-- Inflection is roughly at (225, 160) -->
+                                <circle cx="225" cy="160" r="6" fill="#ffffff" stroke="#e11d48" stroke-width="3"/>
+                                <text x="245" y="150" class="svg-text-bold" fill="#e11d48">Inflection Point</text>
+                                
+                                <!-- Tangent Line -->
+                                <path d="M 140 260 L 310 60" class="svg-curve-danger"/>
+                                <text x="320" y="50" class="svg-text-bold" fill="#e11d48">Tangent Line</text>
+
+                                <!-- Projections for L and T -->
+                                <path d="M 140 260 L 140 280" stroke="#0f172a" stroke-width="2"/>
+                                <path d="M 310 60 L 310 280" stroke="#0f172a" stroke-width="2"/>
+                                
+                                <!-- Delay Time L -->
+                                <path d="M 80 270 L 140 270" stroke="#0f172a" stroke-width="2" marker-start="url(#arrow-head-rev)" marker-end="url(#arrow-head)"/>
+                                <text x="105" y="290" class="svg-text-bold" font-size="16">L</text>
+                                
+                                <!-- Time Constant T -->
+                                <path d="M 140 270 L 310 270" stroke="#0f172a" stroke-width="2" marker-start="url(#arrow-head-rev)" marker-end="url(#arrow-head)"/>
+                                <text x="220" y="290" class="svg-text-bold" font-size="16">T</text>
+
+                                <defs>
+                                    <marker id="arrow-head" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+                                        <path d="M0,0 L0,6 L9,3 z" fill="#475569"/>
+                                    </marker>
+                                    <marker id="arrow-head-rev" markerWidth="10" markerHeight="10" refX="1" refY="3" orient="auto">
+                                        <path d="M9,0 L9,6 L0,3 z" fill="#475569"/>
+                                    </marker>
+                                </defs>
+                            </svg>
+                        </div>
+
+                        <p class="text-slate-700 mt-6 mb-4">The response is characterized by two parameters: <strong>L (Delay Time)</strong> and <strong>T (Time Constant)</strong>. These are found by drawing a tangent to the step response at its point of inflection and noting its intersections with the time axis and the steady-state value line. The approximated plant model is:</p>
+                        
+                        <div class="math-block bg-indigo-50 border-indigo-200">
+                            $$ G(s) = \frac{K e^{-Ls}}{Ts + 1} $$
+                        </div>
+
+                        <p class="text-slate-700 mt-6 mb-4 font-bold">Ziegler-Nichols Recipe - First Method:</p>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>PID Type</th>
+                                    <th>\( K_p \)</th>
+                                    <th>\( T_i = K_p / K_i \)</th>
+                                    <th>\( T_d = K_d / K_p \)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>P</strong></td>
+                                    <td class="font-mono">\( \frac{T}{L} \)</td>
+                                    <td class="font-mono">\( \infty \)</td>
+                                    <td class="font-mono">0</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>PI</strong></td>
+                                    <td class="font-mono">\( 0.9 \frac{T}{L} \)</td>
+                                    <td class="font-mono">\( \frac{L}{0.3} \)</td>
+                                    <td class="font-mono">0</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>PID</strong></td>
+                                    <td class="font-mono text-indigo-700 font-bold">\( 1.2 \frac{T}{L} \)</td>
+                                    <td class="font-mono text-indigo-700 font-bold">\( 2L \)</td>
+                                    <td class="font-mono text-indigo-700 font-bold">\( 0.5L \)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p class="text-sm text-slate-500 italic mt-4">Note: The PID controller tuned by this method yields: \( G_c(s) = 0.6T \frac{(s + 1/L)^2}{s} \)</p>
+                    </div>
+                </div>
+
+                <!-- 1.2 Second Method -->
+                <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+                    <div class="bg-slate-50 border-b border-slate-200 px-8 py-5">
+                        <h3 class="text-2xl font-bold text-indigo-900 mt-0 mb-0 flex items-center gap-3">
+                            <svg class="w-7 h-7 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                            1.2 The Second Method (Ultimate Cycle Method)
+                        </h3>
+                    </div>
+                    <div class="p-8">
+                        <p class="text-slate-700 mb-6">The second method targets plants that can be rendered unstable (marginally stable) under purely proportional control. The technique is designed to result in a closed-loop system with approximately 25% overshoot.</p>
+                        
+                        <div class="highlight-box mb-8">
+                            <h4 class="font-bold text-indigo-900 mb-3 uppercase tracking-wider text-sm">Experimental Tuning Steps:</h4>
+                            <ol class="list-decimal ml-5 space-y-2 text-slate-700">
+                                <li>Reduce the integrator and derivative gains to 0 (\( T_i = \infty \) and \( T_d = 0 \)). Use only proportional feedback control.</li>
+                                <li>Increase \( K_p \) from 0 to a critical value <strong>\( K_{cr} \)</strong> at which <em>sustained, continuous oscillations</em> first occur. (If the system does not exhibit sustained oscillations for any \( K_p \), this method cannot be used).</li>
+                                <li>Note the critical gain <strong>\( K_{cr} \)</strong> and the corresponding period of sustained oscillation, <strong>\( P_{cr} \)</strong>.</li>
+                            </ol>
+                        </div>
+
+                        <div class="diagram-container bg-slate-50">
+                            <h4 class="text-center font-bold text-slate-800 mb-6">Sustained Oscillations at Critical Gain</h4>
+                            <svg viewBox="0 0 800 250" class="w-full h-auto max-w-2xl mx-auto">
+                                <!-- Axes -->
+                                <path d="M 80 125 L 750 125" class="svg-axis" marker-end="url(#arrow-head)"/>
+                                <path d="M 80 230 L 80 20" class="svg-axis" marker-end="url(#arrow-head)"/>
+                                <text x="730" y="150" class="svg-text-bold" font-size="16">Time (t)</text>
+                                <text x="30" y="30" class="svg-text-bold" font-size="16">c(t)</text>
+
+                                <!-- Sine Wave (Sustained Oscillation) -->
+                                <path d="M 80 125 Q 130 -50, 180 125 T 280 125 T 380 125 T 480 125 T 580 125 T 680 125" class="svg-curve-primary"/>
+                                
+                                <!-- Pcr Markers (Peak to Peak) -->
+                                <path d="M 180 35 L 180 0" stroke="#0f172a" stroke-width="1.5"/>
+                                <path d="M 380 35 L 380 0" stroke="#0f172a" stroke-width="1.5"/>
+                                <path d="M 180 15 L 380 15" stroke="#0f172a" stroke-width="1.5" marker-start="url(#arrow-head-rev)" marker-end="url(#arrow-head)"/>
+                                <text x="265" y="10" class="svg-text-bold" font-size="16">P<tspan dy="5" font-size="12">cr</tspan></text>
+                            </svg>
+                        </div>
+
+                        <p class="text-slate-700 mt-6 mb-4 font-bold">Ziegler-Nichols Recipe - Second Method:</p>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>PID Type</th>
+                                    <th>\( K_p \)</th>
+                                    <th>\( T_i \)</th>
+                                    <th>\( T_d \)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>P</strong></td>
+                                    <td class="font-mono">\( 0.5 K_{cr} \)</td>
+                                    <td class="font-mono">\( \infty \)</td>
+                                    <td class="font-mono">0</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>PI</strong></td>
+                                    <td class="font-mono">\( 0.45 K_{cr} \)</td>
+                                    <td class="font-mono">\( \frac{P_{cr}}{1.2} \)</td>
+                                    <td class="font-mono">0</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>PID</strong></td>
+                                    <td class="font-mono text-indigo-700 font-bold">\( 0.6 K_{cr} \)</td>
+                                    <td class="font-mono text-indigo-700 font-bold">\( 0.5 P_{cr} \)</td>
+                                    <td class="font-mono text-indigo-700 font-bold">\( 0.125 P_{cr} \)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 1.3 Solved QP Problem -->
+                <div class="bg-white border-2 border-rose-200 rounded-3xl overflow-hidden shadow-lg mt-12 relative">
+                    <div class="absolute top-0 right-0 bg-rose-600 text-white px-5 py-1.5 rounded-bl-xl font-bold tracking-wider text-sm shadow-sm">UNIVERSITY QP (MAY 2019)</div>
+                    <div class="p-8 md:p-10">
+                        <h3 class="text-2xl font-bold text-rose-950 mt-0 mb-6 border-none">Solved Problem: Ziegler-Nichols Analytical Tuning</h3>
+                        
+                        <p class="text-slate-800 font-medium mb-6"><strong>Question:</strong> A unity feedback system has the plant transfer function \( G(s) = \frac{6}{(s+1)(s+2)(s+3)} \). Tune the PID controller which is to be placed in series with the plant using the Ziegler-Nichols method.</p>
+                        
+                        <div class="space-y-6">
+                            <div class="derivation-box !border-rose-200 !bg-rose-50/30">
+                                <h4 class="font-bold text-rose-900 mb-3">Step 1: Determine Critical Gain (\(K_{cr}\)) using Routh Array</h4>
+                                <p class="text-sm text-slate-700 mb-3">Set \( T_i = \infty \) and \( T_d = 0 \). The system uses only proportional control \( K_p \). The characteristic equation is \( 1 + K_p G(s) = 0 \).</p>
+                                <div class="math-block !bg-white">
+                                    $$ 1 + \frac{6 K_p}{(s+1)(s+2)(s+3)} = 0 $$
+                                    $$ (s+1)(s^2 + 5s + 6) + 6K_p = 0 $$
+                                    $$ s^3 + 6s^2 + 11s + 6 + 6K_p = 0 $$
+                                </div>
+                                <p class="text-sm text-slate-700 mt-4 mb-2">Construct the Routh Array:</p>
+                                <table class="w-full max-w-md mx-auto text-center border-collapse mb-4 bg-white shadow-sm border border-slate-200">
+                                    <tr class="border-b"><td class="p-2 font-bold bg-slate-50 border-r w-16">\( s^3 \)</td><td class="p-2">1</td><td class="p-2">11</td></tr>
+                                    <tr class="border-b"><td class="p-2 font-bold bg-slate-50 border-r">\( s^2 \)</td><td class="p-2">6</td><td class="p-2">\( 6 + 6K_p \)</td></tr>
+                                    <tr class="border-b"><td class="p-2 font-bold bg-slate-50 border-r">\( s^1 \)</td><td class="p-2 text-rose-700 font-bold">\( \frac{66 - (6 + 6K_p)}{6} = 10 - K_p \)</td><td class="p-2">0</td></tr>
+                                    <tr><td class="p-2 font-bold bg-slate-50 border-r">\( s^0 \)</td><td class="p-2">\( 6 + 6K_p \)</td><td class="p-2">0</td></tr>
+                                </table>
+                                <p class="text-sm text-slate-700">For marginal stability (sustained oscillations), the \( s^1 \) row must be zero.</p>
+                                <div class="math-block !bg-white !py-2 !text-rose-800 !font-bold">
+                                    $$ 10 - K_p = 0 \implies K_{cr} = 10 $$
+                                </div>
+                            </div>
+
+                            <div class="derivation-box !border-rose-200 !bg-rose-50/30">
+                                <h4 class="font-bold text-rose-900 mb-3">Step 2: Determine Ultimate Period (\(P_{cr}\))</h4>
+                                <p class="text-sm text-slate-700 mb-3">Substitute \( K_p = 10 \) into the auxiliary equation from the \( s^2 \) row:</p>
+                                <div class="math-block !bg-white">
+                                    $$ 6s^2 + (6 + 6(10)) = 0 $$
+                                    $$ 6s^2 + 66 = 0 \implies s^2 = -11 $$
+                                    $$ s = \pm j\sqrt{11} $$
+                                </div>
+                                <p class="text-sm text-slate-700 mt-4 mb-2">The frequency of sustained oscillations \( \omega_{cr} \) is \( \sqrt{11} \) rad/sec.</p>
+                                <div class="math-block !bg-white !py-2 !text-rose-800 !font-bold">
+                                    $$ P_{cr} = \frac{2\pi}{\omega_{cr}} = \frac{2\pi}{\sqrt{11}} \approx 1.895 \text{ seconds} $$
+                                </div>
+                            </div>
+
+                            <div class="derivation-box !border-rose-200 !bg-rose-50/30">
+                                <h4 class="font-bold text-rose-900 mb-3">Step 3: Calculate PID Parameters</h4>
+                                <p class="text-sm text-slate-700 mb-3">Using the Ziegler-Nichols table for a PID controller:</p>
+                                <ul class="list-disc ml-6 text-sm text-slate-700 space-y-2 mb-4">
+                                    <li>\( K_p = 0.6 K_{cr} = 0.6 \times 10 = \mathbf{6} \)</li>
+                                    <li>\( T_i = 0.5 P_{cr} = 0.5 \times 1.895 = \mathbf{0.9475} \)</li>
+                                    <li>\( T_d = 0.125 P_{cr} = 0.125 \times 1.895 = \mathbf{0.2368} \)</li>
+                                </ul>
+                                <p class="text-sm text-slate-700 mb-2">The tuned PID controller transfer function is:</p>
+                                <div class="math-block !bg-white !border-rose-400 !border-2 !text-xl">
+                                    $$ G_c(s) = 6 \left[ 1 + \frac{1}{0.9475s} + 0.2368s \right] $$
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========================================== -->
+            <!-- SECTION 2: ROOT LOCUS COMPENSATOR BASIS    -->
+            <!-- ========================================== -->
+            <section id="rl-intro" class="mb-24">
+                <h2>
+                    <span class="bg-gradient-to-br from-indigo-600 to-indigo-800 text-white w-12 h-12 rounded-xl flex items-center justify-center font-extrabold text-2xl shadow-lg shrink-0">2</span>
+                    Root Locus Design Fundamentals
+                </h2>
+
+                <p class="text-lg text-slate-700 mb-6">Unlike Bode plot design which relies on frequency domain specifications (Phase Margin, Gain Margin, Bandwidth), <strong>Root Locus design works directly with Time Domain specifications</strong>. Performance requirements such as Maximum Peak Overshoot (\( \%M_p \)), Settling Time (\( T_s \)), and Damping Ratio (\( \zeta \)) translate directly to specific locations on the s-plane.</p>
+
+                <div class="grid md:grid-cols-2 gap-8 mb-10">
+                    <div class="bg-white border border-slate-200 p-6 rounded-xl shadow-sm">
+                        <h4 class="font-bold text-indigo-900 mb-4 border-b pb-2">Time Domain to s-Plane Mapping</h4>
+                        <div class="space-y-4 text-sm text-slate-700">
+                            <p><strong>1. Damping Ratio (\(\zeta\)):</strong> Derived from Peak Overshoot.</p>
+                            <div class="bg-slate-50 p-2 text-center rounded border border-slate-100">
+                                $$ \%M_p = e^{\frac{-\zeta\pi}{\sqrt{1-\zeta^2}}} \times 100 $$
+                            </div>
+                            <p><strong>2. Natural Frequency (\(\omega_n\)):</strong> Derived from Settling Time (2% criterion).</p>
+                            <div class="bg-slate-50 p-2 text-center rounded border border-slate-100">
+                                $$ T_s = \frac{4}{\zeta\omega_n} \implies \omega_n = \frac{4}{\zeta T_s} $$
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-indigo-50 border border-indigo-200 p-6 rounded-xl shadow-sm">
+                        <h4 class="font-bold text-indigo-900 mb-4 border-b border-indigo-100 pb-2">The Dominant Closed-Loop Pole (\(S_d\))</h4>
+                        <p class="text-sm text-slate-700 mb-4">Once \( \zeta \) and \( \omega_n \) are found, the desired dominant closed-loop pole location on the complex s-plane is fixed at:</p>
+                        <div class="math-block !bg-white !py-3 !text-lg !font-bold !border-indigo-300 !border-2">
+                            $$ S_d = -\zeta\omega_n \pm j\omega_n\sqrt{1-\zeta^2} $$
+                        </div>
+                        <p class="text-sm text-slate-700 mt-4"><strong>Design Goal:</strong> The compensator \( G_c(s) \) must be designed such that the root locus of the compensated system \( G_c(s)G(s) \) passes exactly through this desired point \( S_d \).</p>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <h4 class="font-bold text-indigo-900 mb-2">The Core Principle of Root Locus Compensation</h4>
+                    <p class="text-slate-700 mb-2">For \( S_d \) to lie on the root locus, it must satisfy the <strong>Angle Condition</strong>:</p>
+                    <div class="math-block !bg-white !py-2">
+                        $$ \angle G_c(S_d)G(S_d) = \pm 180^\circ (2k+1) $$
+                    </div>
+                    <p class="text-slate-700 mt-2">If the uncompensated system \( G(s) \) does not pass through \( S_d \), there is an <strong>angle deficiency (\(\phi\))</strong>. A Lead Compensator is designed to provide exactly this missing angle \( \phi \) so the locus shifts to pass through \( S_d \).</p>
+                </div>
+            </section>
+
+            <!-- ========================================== -->
+            <!-- SECTION 3: LEAD COMPENSATOR DESIGN (RL)    -->
+            <!-- ========================================== -->
+            <section id="lead-design" class="mb-24">
+                <h2>
+                    <span class="bg-gradient-to-br from-indigo-600 to-indigo-800 text-white w-12 h-12 rounded-xl flex items-center justify-center font-extrabold text-2xl shadow-lg shrink-0">3</span>
+                    Lead Compensator Design via Root Locus
+                </h2>
+
+                <div class="mb-4">
+                    <span class="badge-important">ESSAY QUESTION (10 MARKS)</span>
+                    <span class="badge-qp">May 2019</span><span class="badge-qp">May 2023</span>
+                </div>
+
+                <!-- 3.1 Step-by-Step Procedure -->
+                <div class="bg-white border-t-8 border-t-indigo-500 rounded-2xl shadow-lg overflow-hidden relative mb-12">
+                    <div class="p-8">
+                        <h3 class="text-2xl font-bold text-indigo-900 mt-0 mb-8 flex items-center gap-3 border-b border-slate-100 pb-4">
+                            Step-by-Step Algorithm
+                        </h3>
+                        
+                        <div class="space-y-6 relative before:absolute before:inset-0 before:ml-[1.125rem] before:-translate-x-px before:h-full before:w-1 before:bg-gradient-to-b before:from-indigo-200 before:via-indigo-100 before:to-transparent">
+                            
+                            <div class="relative flex items-start group">
+                                <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-indigo-500 text-white font-bold shadow-md shrink-0 z-10 mt-1 transition-transform group-hover:scale-110">1</div>
+                                <div class="ml-6 p-5 rounded-xl border border-slate-100 bg-slate-50 shadow-sm w-full">
+                                    <p class="text-base font-bold mb-2 text-slate-800">Determine the Dominant Pole \( S_d \)</p>
+                                    <p class="text-sm text-slate-600">Extract \( \zeta \) and \( \omega_n \) from transient specifications (\% Overshoot, Settling Time). Calculate \( S_d = -\zeta\omega_n + j\omega_n\sqrt{1-\zeta^2} \).</p>
+                                </div>
+                            </div>
+                            
+                            <div class="relative flex items-start group">
+                                <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-indigo-500 text-white font-bold shadow-md shrink-0 z-10 mt-1 transition-transform group-hover:scale-110">2</div>
+                                <div class="ml-6 p-5 rounded-xl border border-slate-100 bg-slate-50 shadow-sm w-full">
+                                    <p class="text-base font-bold mb-2 text-slate-800">Calculate the Angle Deficiency \( \phi \)</p>
+                                    <p class="text-sm text-slate-600 mb-2">Connect all open-loop poles and zeros of \( G(s) \) to \( S_d \). Calculate the net angle contribution at \( S_d \).</p>
+                                    <div class="bg-white px-4 py-2 rounded-lg border border-slate-200 text-sm font-bold text-center">
+                                        $$ \phi = 180^\circ - \left( \sum \angle \text{Poles} - \sum \angle \text{Zeros} \right) $$
+                                    </div>
+                                    <p class="text-sm text-slate-600 mt-2">This \( \phi \) is the exact phase angle the lead compensator must contribute.</p>
+                                </div>
+                            </div>
+
+                            <div class="relative flex items-start group">
+                                <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-indigo-500 text-white font-bold shadow-md shrink-0 z-10 mt-1 transition-transform group-hover:scale-110">3</div>
+                                <div class="ml-6 p-5 rounded-xl border-2 border-indigo-200 bg-indigo-50 shadow-sm w-full">
+                                    <p class="text-base font-bold mb-3 text-indigo-900">Locate Compensator Pole and Zero (The Bisector Method)</p>
+                                    <p class="text-sm text-slate-700 mb-4">To find the exact coordinates of the compensator's pole (\(P_c\)) and zero (\(Z_c\)), we use a specific geometric construction on the s-plane:</p>
+                                    <ul class="list-decimal ml-6 text-sm text-slate-700 space-y-2 mb-4">
+                                        <li>Draw a horizontal line <strong>AP</strong> passing through \(S_d\), extending to the left (\(-\infty\)).</li>
+                                        <li>Draw a line <strong>PO</strong> connecting the origin to \(S_d\).</li>
+                                        <li>Draw the bisector <strong>PC</strong> of the angle \(\angle APO\).</li>
+                                        <li>Draw two lines from \(S_d\), making an angle of <strong>\(\phi/2\)</strong> on either side of the bisector PC.</li>
+                                        <li>The intersections of these two lines with the negative real axis give the locations of the <strong>Zero (\(Z_c\))</strong> (closer to origin) and <strong>Pole (\(P_c\))</strong> (further left).</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="relative flex items-start group">
+                                <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-indigo-500 text-white font-bold shadow-md shrink-0 z-10 mt-1 transition-transform group-hover:scale-110">4</div>
+                                <div class="ml-6 p-5 rounded-xl border border-slate-100 bg-slate-50 shadow-sm w-full">
+                                    <p class="text-base font-bold mb-2 text-slate-800">Form the Compensator Transfer Function</p>
+                                    <div class="bg-white px-4 py-2 rounded-lg border border-slate-200 inline-block mb-2 text-lg">
+                                        $$ G_c(s) = \frac{s + Z_c}{s + P_c} = \frac{s + \frac{1}{T}}{s + \frac{1}{\alpha T}} $$
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="relative flex items-start group">
+                                <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-indigo-500 text-white font-bold shadow-md shrink-0 z-10 mt-1 transition-transform group-hover:scale-110">5</div>
+                                <div class="ml-6 p-5 rounded-xl border border-slate-100 bg-slate-50 shadow-sm w-full">
+                                    <p class="text-base font-bold mb-3 text-slate-800">Determine Open-Loop Gain \( K \)</p>
+                                    <p class="text-sm text-slate-600 mb-3">Apply the <strong>Magnitude Condition</strong> of the root locus to the fully compensated system \( G_c(s)G(s) \) evaluated at \( s = S_d \):</p>
+                                    <div class="bg-white px-4 py-3 rounded-lg border border-slate-200 text-center font-bold text-indigo-800 shadow-inner">
+                                        $$ K = \frac{\prod (\text{Distances from all poles to } S_d)}{\prod (\text{Distances from all zeros to } S_d)} $$
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Geometric Bisector Method SVG -->
+                <div class="diagram-container bg-slate-50">
+                    <h4 class="text-center font-bold text-slate-800 mb-6">Geometric Construction: The Bisector Method</h4>
+                    <svg viewBox="0 0 600 350" class="w-full h-auto max-w-2xl mx-auto">
+                        <!-- Grid -->
+                        <g class="svg-grid-major">
+                            <line x1="50" y1="100" x2="550" y2="100"/> <!-- Horizontal through P -->
+                            <line x1="450" y1="50" x2="450" y2="300"/> <!-- Vertical through origin -->
+                        </g>
+
+                        <!-- Axes -->
+                        <path d="M 50 250 L 550 250" class="svg-axis" marker-end="url(#arrow-head)"/>
+                        <path d="M 450 300 L 450 50" class="svg-axis" marker-end="url(#arrow-head)"/>
+                        <text x="530" y="240" class="svg-text-bold">σ (Real)</text>
+                        <text x="460" y="60" class="svg-text-bold">jω</text>
+                        <text x="460" y="270" class="svg-text-bold">O</text>
+
+                        <!-- Dominant Pole P -->
+                        <circle cx="250" cy="100" r="5" fill="#e11d48"/>
+                        <text x="260" y="95" class="svg-text-bold" fill="#e11d48">Sd (P)</text>
+
+                        <!-- Line AP -->
+                        <path d="M 100 100 L 250 100" stroke="#0f172a" stroke-width="2"/>
+                        <text x="90" y="105" class="svg-text-bold">A</text>
+
+                        <!-- Line PO -->
+                        <path d="M 250 100 L 450 250" stroke="#0f172a" stroke-width="2"/>
+
+                        <!-- Bisector PC -->
+                        <path d="M 250 100 L 320 250" stroke="#10b981" stroke-width="2" stroke-dasharray="6,4"/>
+                        <text x="325" y="270" class="svg-text-bold" fill="#10b981">C</text>
+                        
+                        <!-- Zero Line PD -->
+                        <path d="M 250 100 L 390 250" stroke="#2563eb" stroke-width="2"/>
+                        <circle cx="390" cy="250" r="6" fill="white" stroke="#2563eb" stroke-width="2"/>
+                        <text x="390" y="275" class="svg-text-bold" fill="#2563eb">Zc (D)</text>
+
+                        <!-- Pole Line PB -->
+                        <path d="M 250 100 L 150 250" stroke="#e11d48" stroke-width="2"/>
+                        <path d="M 144 244 L 156 256 M 156 244 L 144 256" stroke="#e11d48" stroke-width="2"/>
+                        <text x="140" y="275" class="svg-text-bold" fill="#e11d48">Pc (B)</text>
+
+                        <!-- Angle Arcs -->
+                        <!-- APO Bisector Arcs -->
+                        <path d="M 190 100 A 60 60 0 0 0 216 126" fill="none" stroke="#10b981" stroke-width="1.5"/>
+                        <path d="M 216 126 A 60 60 0 0 0 285 126" fill="none" stroke="#10b981" stroke-width="1.5"/>
+                        
+                        <!-- Phi/2 Arcs -->
+                        <path d="M 220 145 A 50 50 0 0 0 238 126" fill="none" stroke="#2563eb" stroke-width="1.5"/>
+                        <text x="210" y="160" class="svg-text" fill="#2563eb">φ/2</text>
+                        
+                        <path d="M 238 126 A 50 50 0 0 0 270 140" fill="none" stroke="#2563eb" stroke-width="1.5"/>
+                        <text x="250" y="155" class="svg-text" fill="#2563eb">φ/2</text>
+
+                    </svg>
+                    <p class="text-sm text-slate-500 mt-4 text-center italic">Figure: Geometry of locating Compensator Pole and Zero</p>
+                </div>
+
+                <!-- 3.2 Solved QP Problem -->
+                <div class="bg-white border-2 border-indigo-200 rounded-3xl overflow-hidden shadow-lg mt-12 relative">
+                    <div class="absolute top-0 right-0 bg-indigo-600 text-white px-5 py-1.5 rounded-bl-xl font-bold tracking-wider text-sm shadow-sm">SOLVED UNIVERSITY QP (MAY 2019)</div>
+                    <div class="p-8 md:p-10">
+                        <h3 class="text-2xl font-bold text-indigo-950 mt-0 mb-6 border-none">Root Locus Lead Compensator Design</h3>
+                        
+                        <p class="text-slate-800 font-medium mb-6"><strong>Question:</strong> Design a lead compensator for a unity feedback system with open-loop transfer function \( G(s) = \frac{K}{s(s+8)} \) to satisfy the following specifications: (1) Percentage overshoot = 9.5%, (2) Natural frequency of oscillation = 12 rad/sec, (3) Velocity error constant \( K_v \ge 10 \).</p>
+                        
+                        <div class="space-y-6">
+                            <div class="derivation-box !border-indigo-200 !bg-indigo-50/30">
+                                <h4 class="font-bold text-indigo-900 mb-3">Step 1: Determine the Dominant Pole, \(S_d\)</h4>
+                                <p class="text-sm text-slate-700 mb-3">Given \( \omega_n = 12 \) rad/sec and \( \%M_p = 9.5\% \).</p>
+                                <div class="math-block !bg-white !py-3">
+                                    $$ \%M_p = e^{\frac{-\zeta\pi}{\sqrt{1-\zeta^2}}} \times 100 \implies e^{\frac{-\zeta\pi}{\sqrt{1-\zeta^2}}} = 0.095 $$
+                                    $$ \frac{-\zeta\pi}{\sqrt{1-\zeta^2}} = \ln(0.095) \approx -2.354 $$
+                                    $$ \frac{\zeta^2 \pi^2}{1-\zeta^2} = (-2.354)^2 = 5.54 $$
+                                    $$ \zeta^2 \pi^2 = 5.54 - 5.54\zeta^2 \implies \zeta^2(\pi^2 + 5.54) = 5.54 $$
+                                    $$ \zeta = \sqrt{\frac{5.54}{9.87 + 5.54}} \approx 0.6 $$
+                                </div>
+                                <p class="text-sm text-slate-700 mt-4 mb-2">Calculate the location of the dominant pole:</p>
+                                <div class="math-block !bg-white !py-2 !text-indigo-800 !font-bold">
+                                    $$ S_d = -\zeta\omega_n \pm j\omega_n\sqrt{1-\zeta^2} = -(0.6 \times 12) \pm j12\sqrt{1 - 0.6^2} = -7.2 \pm j9.6 $$
+                                </div>
+                            </div>
+
+                            <div class="derivation-box !border-indigo-200 !bg-indigo-50/30">
+                                <h4 class="font-bold text-indigo-900 mb-3">Step 2: Calculate Angle Deficiency, \(\phi\)</h4>
+                                <p class="text-sm text-slate-700 mb-3">The uncompensated system has poles at \( s = 0 \) and \( s = -8 \). Calculate the angles from these poles to \( S_d = -7.2 + j9.6 \):</p>
+                                <div class="math-block !bg-white !py-3">
+                                    $$ \theta_1 (\text{from } s=0) = 180^\circ - \tan^{-1}\left(\frac{9.6}{7.2}\right) = 180^\circ - 53.1^\circ = 126.9^\circ $$
+                                    $$ \theta_2 (\text{from } s=-8) = \tan^{-1}\left(\frac{9.6}{8 - 7.2}\right) = \tan^{-1}\left(\frac{9.6}{0.8}\right) = 85.2^\circ $$
+                                </div>
+                                <p class="text-sm text-slate-700 mt-4 mb-2">Net angle contribution of uncompensated system at \( S_d \):</p>
+                                <div class="math-block !bg-white !py-2">
+                                    $$ \angle G(S_d) = 0^\circ - (\theta_1 + \theta_2) = -(126.9^\circ + 85.2^\circ) = -212.1^\circ $$
+                                </div>
+                                <p class="text-sm text-slate-700 mt-4 mb-2">To satisfy the root locus angle condition (-180°), the lead compensator must add \(\phi\):</p>
+                                <div class="math-block !bg-white !py-2 !text-indigo-800 !font-bold">
+                                    $$ \phi = 180^\circ - 212.1^\circ = 32.1^\circ \text{ (QP uses } 32^\circ) $$
+                                </div>
+                            </div>
+
+                            <div class="derivation-box !border-indigo-200 !bg-indigo-50/30">
+                                <h4 class="font-bold text-indigo-900 mb-3">Step 3: Find Compensator Pole & Zero (Bisector Method)</h4>
+                                <p class="text-sm text-slate-700 mb-3">Based on geometry (or applying trigonometric sine/cosine rules to the bisector construction):</p>
+                                <ul class="list-disc ml-6 text-sm text-slate-700 space-y-2 mb-4">
+                                    <li>\( \angle APO = 180^\circ - \theta_1 = 53.1^\circ \)</li>
+                                    <li>Bisector angle = \( 53.1^\circ / 2 = 26.55^\circ \)</li>
+                                    <li>\( \angle CPD = \angle BPC = \phi / 2 = 32^\circ / 2 = 16^\circ \)</li>
+                                </ul>
+                                <p class="text-sm text-slate-700 mt-4 mb-2">Applying trigonometry to find the exact intercepts on the real axis yields (as per QP solution):</p>
+                                <div class="math-block !bg-white !py-3 !text-lg text-indigo-800">
+                                    $$ \text{Zero, } Z_c = -9.1 $$
+                                    $$ \text{Pole, } P_c = -16.25 $$
+                                    $$ G_c(s) = \frac{s + 9.1}{s + 16.25} $$
+                                </div>
+                            </div>
+
+                            <div class="derivation-box !border-indigo-200 !bg-indigo-50/30">
+                                <h4 class="font-bold text-indigo-900 mb-3">Step 4: Determine Gain K & Verify</h4>
+                                <p class="text-sm text-slate-700 mb-3">Apply the Magnitude Condition to \( G_c(s)G(s) \) at \( s = S_d \):</p>
+                                <div class="math-block !bg-white !py-3">
+                                    $$ |G_c(S_d)G(S_d)| = 1 \implies K \left| \frac{S_d + 9.1}{S_d(S_d + 8)(S_d + 16.25)} \right| = 1 $$
+                                    $$ K = \frac{|-7.2 + j9.6| \times |-7.2+j9.6+8| \times |-7.2+j9.6+16.25|}{|-7.2+j9.6+9.1|} $$
+                                    $$ K = \frac{12 \times 9.63 \times 13.13}{9.78} \approx 150 $$
+                                </div>
+                                <p class="text-sm text-slate-700 mt-4 mb-2">Check the Velocity Error Constant (\( K_v \)):</p>
+                                <div class="math-block !bg-white !py-3 !text-indigo-800 !font-bold">
+                                    $$ K_v = \lim_{s \to 0} s G_c(s)G(s) = \lim_{s \to 0} s \frac{150(s + 9.1)}{s(s + 8)(s + 16.25)} = \frac{150 \times 9.1}{8 \times 16.25} = 10.5 $$
+                                </div>
+                                <p class="text-sm text-slate-700 mt-2 text-center text-green-700 font-bold">Since 10.5 \(\ge\) 10, the design is acceptable.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- ========================================== -->
+            <!-- SECTION 4: LAG COMPENSATOR DESIGN (RL)     -->
+            <!-- ========================================== -->
+            <section id="lag-design" class="mb-24">
+                <h2>
+                    <span class="bg-gradient-to-br from-indigo-600 to-indigo-800 text-white w-12 h-12 rounded-xl flex items-center justify-center font-extrabold text-2xl shadow-lg shrink-0">4</span>
+                    Lag Compensator Design via Root Locus
+                </h2>
+
+                <p class="text-lg text-slate-700 mb-6">A lag compensator is used when the system exhibits satisfactory transient response (dominant poles are correctly located) but <strong>unsatisfactory steady-state error characteristics</strong>. The goal is to increase the open-loop gain (improving \( K_p, K_v \)) without appreciably changing the root locus in the neighborhood of the dominant closed-loop poles.</p>
+
+                <div class="highlight-box mb-10 border-indigo-200 bg-white">
+                    <h4 class="font-bold text-indigo-900 mb-2">The Angle Constraint</h4>
+                    <p class="text-sm text-slate-700">To avoid changing the root locus, the angle contribution of the lag network at \( S_d \) must be extremely small (typically \(\le 5^\circ\)). This is achieved by placing the compensator's pole and zero very close together, and very near the origin.</p>
+                </div>
+
+                <!-- 4.1 Step-by-Step Procedure -->
+                <div class="bg-white border-t-8 border-t-indigo-500 rounded-2xl shadow-lg overflow-hidden relative mb-12">
+                    <div class="p-8">
+                        <h3 class="text-2xl font-bold text-indigo-900 mt-0 mb-8 flex items-center gap-3 border-b border-slate-100 pb-4">
+                            Step-by-Step Algorithm
+                        </h3>
+                        
+                        <div class="space-y-6 relative before:absolute before:inset-0 before:ml-[1.125rem] before:-translate-x-px before:h-full before:w-1 before:bg-gradient-to-b before:from-indigo-200 before:via-indigo-100 before:to-transparent">
+                            
+                            <div class="relative flex items-start group">
+                                <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-indigo-500 text-white font-bold shadow-md shrink-0 z-10 mt-1 transition-transform group-hover:scale-110">1</div>
+                                <div class="ml-6 p-5 rounded-xl border border-slate-100 bg-slate-50 shadow-sm w-full">
+                                    <p class="text-base font-bold mb-2 text-slate-800">Locate Dominant Poles</p>
+                                    <p class="text-sm text-slate-600">Draw the root locus for the uncompensated system \( G(s) \). Based on the transient specs, locate the dominant closed-loop poles \( S_d \) on the locus. Find the required gain \( K_{actual} \) to operate at this point.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="relative flex items-start group">
+                                <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-indigo-500 text-white font-bold shadow-md shrink-0 z-10 mt-1 transition-transform group-hover:scale-110">2</div>
+                                <div class="ml-6 p-5 rounded-xl border border-slate-100 bg-slate-50 shadow-sm w-full">
+                                    <p class="text-base font-bold mb-2 text-slate-800">Determine Required Gain Increase Factor (A)</p>
+                                    <p class="text-sm text-slate-600 mb-2">Calculate the particular static error constant using \( K_{actual} \). Compare it to the desired static error constant to find the factor A:</p>
+                                    <div class="bg-white px-4 py-2 rounded-lg border border-slate-200 text-sm font-bold inline-block shadow-sm">
+                                        $$ A = \frac{K_{desired}}{K_{actual}} $$
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="relative flex items-start group">
+                                <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-indigo-500 text-white font-bold shadow-md shrink-0 z-10 mt-1 transition-transform group-hover:scale-110">3</div>
+                                <div class="ml-6 p-5 rounded-xl border-2 border-indigo-200 bg-indigo-50 shadow-sm w-full">
+                                    <p class="text-base font-bold mb-3 text-indigo-900">Determine Attenuation \( \beta \)</p>
+                                    <p class="text-sm text-slate-700 mb-2">The lag compensator \( G_c(s) = \frac{s + 1/T}{s + 1/\beta T} \) provides a low-frequency gain of \( \beta \). To account for the slight shift in the root locus (which might drop the gain slightly), choose:</p>
+                                    <div class="bg-white px-4 py-2 rounded-lg border border-indigo-100 shadow-inner font-mono text-indigo-800 inline-block font-bold">
+                                        $$ \beta = (1.1 \text{ to } 1.2) \times A $$
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="relative flex items-start group">
+                                <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-indigo-500 text-white font-bold shadow-md shrink-0 z-10 mt-1 transition-transform group-hover:scale-110">4</div>
+                                <div class="ml-6 p-5 rounded-xl border border-slate-100 bg-slate-50 shadow-sm w-full">
+                                    <p class="text-base font-bold mb-2 text-slate-800">Locate Zero (\( Z_c \)) and Pole (\( P_c \))</p>
+                                    <p class="text-sm text-slate-600 mb-3">Place the zero of the compensator relatively close to the origin, specifically much smaller than the magnitude of the dominant pole, or a factor of 10-50 times smaller than the nearest system pole:</p>
+                                    <div class="bg-white px-4 py-2 rounded-lg border border-slate-200 inline-block text-sm mb-3">
+                                        $$ Z_c = \frac{1}{T} = \frac{p_{nearest}}{10 \text{ to } 50} $$
+                                    </div>
+                                    <p class="text-sm text-slate-600 mb-2">Then, calculate the pole:</p>
+                                    <div class="bg-white px-4 py-2 rounded-lg border border-slate-200 inline-block text-sm">
+                                        $$ P_c = \frac{1}{\beta T} = \frac{Z_c}{\beta} $$
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="relative flex items-start group">
+                                <div class="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-indigo-500 text-white font-bold shadow-md shrink-0 z-10 mt-1 transition-transform group-hover:scale-110">5</div>
+                                <div class="ml-6 p-5 rounded-xl border border-slate-100 bg-slate-50 shadow-sm w-full">
+                                    <p class="text-base font-bold mb-3 text-slate-800">Finalize Transfer Function</p>
+                                    <div class="bg-white px-4 py-3 rounded-lg border border-slate-200 text-center font-bold text-lg shadow-inner">
+                                        $$ G_c(s) = \frac{s + 1/T}{s + 1/\beta T} $$
+                                    </div>
+                                    <p class="text-sm text-slate-500 italic mt-3">Check if the steady-state error requirement is met. The root locus will pass very close to the original \( S_d \).</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+        </main>
+        
+        <!-- Table of Contents Sidebar -->
+        <aside class="hidden xl:block w-72 shrink-0 relative">
+            <div class="sticky top-28 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+                <h4 class="font-extrabold text-slate-900 mb-4 uppercase tracking-widest text-xs border-b border-slate-100 pb-2">Module 2 Contents</h4>
+                <nav class="space-y-2 text-sm font-medium">
+                    <a href="#ziegler-nichols" class="toc-link">1. Ziegler-Nichols Tuning</a>
+                    <div class="pl-4 space-y-1 mt-1 mb-2 border-l border-slate-200 ml-2">
+                        <a href="#ziegler-nichols" class="block text-slate-500 hover:text-indigo-600 transition-colors py-1">1.1 Step Response Method</a>
+                        <a href="#ziegler-nichols" class="block text-slate-500 hover:text-indigo-600 transition-colors py-1">1.2 Ultimate Cycle Method</a>
+                    </div>
+                    <a href="#rl-intro" class="toc-link">2. Root Locus Basis</a>
+                    <a href="#lead-design" class="toc-link">3. Lead Design (Root Locus)</a>
+                    <a href="#lag-design" class="toc-link">4. Lag Design (Root Locus)</a>
+                </nav>
+            </div>
+        </aside>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-8 text-center mt-12 border-t-4 border-indigo-600">
+        <p class="mb-2 text-lg font-bold text-white">Advanced Control Theory • Module 2 Comprehensive Notes</p>
+        <p class="text-sm">Compiled for Engineering Curriculum Examination Preparation</p>
+    </footer>
+
+    <script>
+        // Active state toggling for sidebar navigation based on scroll position
+        window.addEventListener('DOMContentLoaded', () => {
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    const id = entry.target.getAttribute('id');
+                    if (entry.intersectionRatio > 0) {
+                        document.querySelectorAll('.toc-link').forEach(link => {
+                            link.classList.remove('active');
+                            link.classList.remove('font-bold');
+                            link.classList.remove('text-indigo-600');
+                        });
+                        const activeLink = document.querySelector(`.toc-link[href="#${id}"]`);
+                        if(activeLink) {
+                            activeLink.classList.add('active');
+                            activeLink.classList.add('font-bold');
+                            activeLink.classList.add('text-indigo-600');
+                        }
+                    }
+                });
+            }, { threshold: 0.15 });
+
+            document.querySelectorAll('section[id]').forEach((section) => {
+                observer.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>
