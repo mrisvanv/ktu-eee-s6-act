@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lyapunov's Second Method</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- MathJax for rendering LaTeX equations -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body class="bg-slate-100 min-h-screen p-4 md:p-8 font-sans">
+    
+    <main class="max-w-4xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden text-slate-800">
+        <!-- Header -->
+        <header class="bg-blue-600 p-8 text-white">
+            <h1 class="text-3xl md:text-4xl font-extrabold mb-2">
+                Lyapunov's Second Method of Stability
+            </h1>
+            <p class="text-blue-100 text-lg">Advanced Control Theory for Nonlinear Systems</p>
+        </header>
+
+        <div class="p-8 md:p-10">
+            <!-- Introduction -->
+            <section class="mb-10 space-y-4 text-lg leading-relaxed">
+                <p>
+                    The second method is Lyapunov's second or <strong>direct method</strong>: this is a generalization of Lagrange's concept of stability of minimum potential energy.
+                </p>
+                <p>
+                    Consider a nonlinear system. Without loss of generality, we assume the origin as the equilibrium point of the system. Let us define the following:
+                </p>
+            </section>
+
+            <!-- Lyapunov Function Candidate -->
+            <section class="bg-blue-50 border-l-4 border-blue-500 p-6 md:p-8 rounded-r-xl mb-10 shadow-sm">
+                <h3 class="text-xl font-bold text-blue-900 mb-4">Lyapunov Function Candidate</h3>
+                <p class="mb-5 text-blue-800">
+                    A scalar function $V(x)$ will be a Lyapunov function candidate if it has the following properties:
+                </p>
+                
+                <ul class="space-y-4 list-none pl-2">
+                    <li class="flex items-center">
+                        <span class="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-blue-200 text-blue-800 font-bold rounded-full mr-4">1</span> 
+                        <span class="bg-white px-4 py-2 rounded-lg border border-blue-100 shadow-sm text-lg w-full md:w-auto">
+                            $V(0) = 0$ for $x = 0$
+                        </span>
+                    </li>
+                    <li class="flex items-center">
+                        <span class="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-blue-200 text-blue-800 font-bold rounded-full mr-4">2</span> 
+                        <span class="bg-white px-4 py-2 rounded-lg border border-blue-100 shadow-sm text-lg w-full md:w-auto">
+                            $V(x) > 0$ for $x \neq 0$
+                        </span>
+                    </li>
+                </ul>
+                <p class="mt-6 text-sm text-blue-700 italic border-t border-blue-200 pt-4">
+                    *Note: A function satisfying these conditions is mathematically referred to as being <strong>Positive Definite</strong>.
+                </p>
+            </section>
+
+            <!-- Intuitive Explanation -->
+            <section class="mb-10">
+                <h3 class="text-2xl font-bold text-slate-800 border-b-2 border-slate-100 pb-3 mb-5">The "Energy" Analogy</h3>
+                <div class="space-y-4 text-lg">
+                    <p>
+                        Think of a marble rolling inside a bowl. We intuitively know the marble will eventually settle at the bottom (the equilibrium point) because friction causes it to lose mechanical energy over time. 
+                    </p>
+                    <p>
+                        Lyapunov generalized this physical concept. He proposed that if a system has an equilibrium point, and we can find a scalar "energy-like" function for that system, we can determine its stability by observing how that function behaves over time. If the "energy" of the system is strictly decreasing along all trajectories, the system will eventually come to rest at the equilibrium point.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Conceptual Diagram -->
+            <figure class="my-12 py-8 bg-slate-50 rounded-xl border border-slate-200 text-center relative overflow-hidden">
+                <!-- SVG Illustration of a bowl and marble -->
+                <svg class="w-full max-w-lg mx-auto drop-shadow-md" viewBox="0 0 250 150" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Grid Lines (Background) -->
+                    <path d="M 0 100 L 250 100" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4 4" />
+                    <path d="M 125 0 L 125 150" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4 4" />
+                    
+                    <!-- Bowl / Potential Energy Well V(x) -->
+                    <path d="M 25 25 Q 125 180 225 25" fill="none" stroke="#94a3b8" stroke-width="5" stroke-linecap="round"/>
+                    
+                    <!-- Marble / System State x(t) -->
+                    <circle cx="70" cy="85" r="10" fill="#3b82f6" />
+                    <circle cx="67" cy="82" r="3" fill="#60a5fa" /> <!-- highlight -->
+                    
+                    <!-- Arrow showing trajectory pointing downwards -->
+                    <path d="M 80 95 Q 100 110 115 117" fill="none" stroke="#ef4444" stroke-width="3" marker-end="url(#arrowhead)"/>
+                    
+                    <!-- Origin/Equilibrium -->
+                    <circle cx="125" cy="125" r="6" fill="#10b981" />
+                    <circle cx="125" cy="125" r="10" fill="#10b981" opacity="0.3" class="animate-ping" />
+                    
+                    <text x="125" y="145" font-size="12" font-weight="bold" text-anchor="middle" fill="#0f766e">Equilibrium (0,0)</text>
+                    
+                    <!-- Labels -->
+                    <text x="45" y="70" font-size="14" fill="#2563eb" font-weight="bold">State x(t)</text>
+                    <text x="210" y="20" font-size="14" font-weight="bold" fill="#64748b">V(x)</text>
+                    
+                    <defs>
+                        <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                            <polygon points="0 0, 8 3, 0 6" fill="#ef4444" />
+                        </marker>
+                    </defs>
+                </svg>
+                <figcaption class="mt-6 px-6 text-sm md:text-base text-slate-500">
+                    Visualizing a Lyapunov function $V(x)$ as an energy landscape. The system state naturally slides down towards the stable equilibrium.
+                </figcaption>
+            </figure>
+
+            <!-- Formal Condition -->
+            <section class="mb-10 text-lg">
+                <p class="mb-4">
+                    Furthermore, if $V(x)$ is such that 
+                </p>
+
+                <!-- Equation -->
+                <div class="bg-white py-6 text-center text-2xl md:text-3xl text-slate-900 border border-slate-200 rounded-lg shadow-sm my-6">
+                    $$\frac{dV(x)}{dt} < 0$$
+                </div>
+
+                <p class="leading-relaxed">
+                    , then it is called a <strong class="text-slate-900 font-bold bg-yellow-100 px-1 rounded">Lyapunov function</strong>. The origin of the system will be asymptotically stable if there exists a Lyapunov function along the trajectories of the system.
+                </p>
+            </section>
+
+            <!-- Mathematical Expansion -->
+            <section class="bg-slate-800 text-slate-200 p-6 md:p-8 rounded-xl my-10 shadow-lg">
+                <h3 class="text-xl font-bold text-white mb-4">Calculating the Derivative along Trajectories</h3>
+                <p class="mb-6 text-slate-300">
+                    To prove stability, the time derivative of $V(x)$ must be <strong>Negative Definite</strong>. This is calculated using the chain rule and substituting the system's state equations ($\dot{x} = f(x)$):
+                </p>
+                <div class="bg-slate-900 border border-slate-700 rounded-lg text-center py-6 mb-6 overflow-x-auto px-4">
+                    <span class="text-lg md:text-xl text-white">
+                        $$\dot{V}(x) = \frac{\partial V}{\partial x_1}\dot{x_1} + \frac{\partial V}{\partial x_2}\dot{x_2} + \dots + \frac{\partial V}{\partial x_n}\dot{x_n} = \nabla V \cdot f(x)$$
+                    </span>
+                </div>
+                
+                <div class="flex items-start bg-slate-700 p-5 rounded-lg border-l-4 border-amber-500">
+                    <svg class="w-6 h-6 text-amber-400 mr-4 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                    <p class="text-sm md:text-base text-slate-200">
+                        <strong class="text-amber-400">The Catch:</strong> If you find a $V(x)$ that satisfies these conditions, the system is stable. However, if you <em>cannot</em> find such a function, it does <strong>not</strong> mean the system is unstable. It simply means your chosen $V(x)$ wasn't the correct candidate.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Solved Example -->
+            <section class="bg-white border-2 border-indigo-50 p-6 md:p-8 rounded-xl my-10 shadow-md">
+                <div class="flex items-center mb-6">
+                    <svg class="w-8 h-8 text-indigo-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                    <h3 class="text-2xl font-bold text-slate-800 border-b-2 border-indigo-100 pb-2 flex-grow">Solved Example</h3>
+                </div>
+
+                <div class="space-y-6">
+                    <!-- Problem Statement -->
+                    <div class="bg-slate-50 p-5 rounded border border-slate-200">
+                        <p class="font-semibold text-slate-700 mb-4">Problem:</p>
+                        <p class="text-slate-600 mb-4">Use Lyapunov direct method to check the stability of the system described by the state model given below. Comment on the global stability of the system.</p>
+                        <div class="text-center text-xl overflow-x-auto">
+                            $$\dot{X} = \begin{bmatrix} -2 & 5 \\ 0 & -2 \end{bmatrix} X$$
+                        </div>
+                    </div>
+
+                    <!-- Solution -->
+                    <div>
+                        <p class="font-semibold text-slate-700 mb-4">Solution:</p>
+                        <p class="mb-4">This is a linear time-invariant (LTI) system of the form $\dot{X} = AX$. For LTI systems, we use the continuous-time Lyapunov equation:</p>
+                        <div class="text-center bg-indigo-50 py-3 rounded text-lg text-indigo-900 border border-indigo-100 mb-4 shadow-inner">
+                            $$A^T P + PA = -Q$$
+                        </div>
+                        
+                        <p class="mb-2"><strong>Step 1:</strong> Define the system matrix $A$ and choose a positive definite matrix $Q$ (typically the Identity matrix $I$).</p>
+                        <div class="text-center overflow-x-auto mb-4">
+                            $$A = \begin{bmatrix} -2 & 5 \\ 0 & -2 \end{bmatrix}, \quad Q = \begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix}$$
+                        </div>
+
+                        <p class="mb-2"><strong>Step 2:</strong> Let $P$ be a symmetric matrix $P = \begin{bmatrix} p_{11} & p_{12} \\ p_{12} & p_{22} \end{bmatrix}$. Substitute into the Lyapunov equation:</p>
+                        <div class="text-center overflow-x-auto mb-4 text-sm md:text-base">
+                            $$\begin{bmatrix} -2 & 0 \\ 5 & -2 \end{bmatrix} \begin{bmatrix} p_{11} & p_{12} \\ p_{12} & p_{22} \end{bmatrix} + \begin{bmatrix} p_{11} & p_{12} \\ p_{12} & p_{22} \end{bmatrix} \begin{bmatrix} -2 & 5 \\ 0 & -2 \end{bmatrix} = \begin{bmatrix} -1 & 0 \\ 0 & -1 \end{bmatrix}$$
+                        </div>
+
+                        <p class="mb-2"><strong>Step 3:</strong> Multiply and add the matrices on the Left Hand Side (LHS):</p>
+                        <div class="text-center overflow-x-auto mb-4">
+                            $$\begin{bmatrix} -4p_{11} & 5p_{11}-4p_{12} \\ 5p_{11}-4p_{12} & 10p_{12}-4p_{22} \end{bmatrix} = \begin{bmatrix} -1 & 0 \\ 0 & -1 \end{bmatrix}$$
+                        </div>
+
+                        <p class="mb-2"><strong>Step 4:</strong> Equate corresponding elements to solve for $p_{11}, p_{12}, \text{ and } p_{22}$:</p>
+                        <ul class="list-disc pl-8 mb-6 space-y-2">
+                            <li>From $(1,1)$: $-4p_{11} = -1 \implies \mathbf{p_{11} = 1/4}$</li>
+                            <li>From $(1,2)$: $5p_{11} - 4p_{12} = 0 \implies 5(1/4) = 4p_{12} \implies \mathbf{p_{12} = 5/16}$</li>
+                            <li>From $(2,2)$: $10p_{12} - 4p_{22} = -1 \implies 10(5/16) + 1 = 4p_{22} \implies \frac{50}{16} + \frac{16}{16} = 4p_{22} \implies \mathbf{p_{22} = 33/32}$</li>
+                        </ul>
+
+                        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded mb-6 text-center">
+                            $$P = \begin{bmatrix} 1/4 & 5/16 \\ 5/16 & 33/32 \end{bmatrix}$$
+                        </div>
+
+                        <p class="mb-2"><strong>Step 5: Check Positive Definiteness of P (Sylvester's Criterion)</strong></p>
+                        <ul class="list-disc pl-8 mb-6 space-y-2">
+                            <li>First principal minor: $\Delta_1 = p_{11} = 1/4 > 0$</li>
+                            <li>Second principal minor (Determinant): $\Delta_2 = |P| = (1/4)(33/32) - (5/16)^2 = \frac{33}{128} - \frac{25}{256} = \frac{66-25}{256} = \frac{41}{256} > 0$</li>
+                        </ul>
+
+                        <div class="bg-emerald-100 text-emerald-900 p-4 rounded text-center font-medium">
+                            <p>Since both principal minors are positive, matrix $P$ is positive definite.</p>
+                            <p class="mt-2 text-lg">Therefore, the origin of the system is <strong>Asymptotically Stable</strong>.</p>
+                        </div>
+                        
+                        <div class="mt-6 border-t border-slate-200 pt-4">
+                            <p class="text-slate-700"><strong>Comment on Global Stability:</strong></p>
+                            <p class="text-slate-600">For linear systems ($\dot{X} = AX$), if the origin is asymptotically stable, it is inherently <strong>Globally Asymptotically Stable</strong>. The system will return to the origin from any initial state in the entire state space.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Solved Example 2 -->
+            <section class="bg-white border-2 border-indigo-50 p-6 md:p-8 rounded-xl my-10 shadow-md">
+                <div class="flex items-center mb-6">
+                    <svg class="w-8 h-8 text-indigo-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path></svg>
+                    <h3 class="text-2xl font-bold text-slate-800 border-b-2 border-indigo-100 pb-2 flex-grow">Solved Example 2: Finding Equilibrium Points</h3>
+                </div>
+
+                <div class="space-y-6">
+                    <!-- Problem Statement -->
+                    <div class="bg-slate-50 p-5 rounded border border-slate-200">
+                        <p class="font-semibold text-slate-700 mb-4">Problem:</p>
+                        <p class="text-slate-600 mb-4">Identify the equilibrium points for the system:</p>
+                        <div class="text-center text-xl overflow-x-auto">
+                            $$\begin{align*} \dot{x}_1 &= x_2 \\ \dot{x}_2 &= -0.5x_2 - \sin(x_1) \end{align*}$$
+                        </div>
+                    </div>
+
+                    <!-- Solution -->
+                    <div>
+                        <p class="font-semibold text-slate-700 mb-4">Solution:</p>
+                        <p class="mb-4">By definition, a system is at an equilibrium point when its states are not changing over time. Therefore, we must set the state derivatives to zero:</p>
+                        <div class="text-center bg-indigo-50 py-3 rounded text-lg text-indigo-900 border border-indigo-100 mb-4 shadow-inner">
+                            $$\dot{x}_1 = 0 \quad \text{and} \quad \dot{x}_2 = 0$$
+                        </div>
+                        
+                        <p class="mb-2"><strong>Step 1:</strong> From the first equation, setting $\dot{x}_1 = 0$ immediately gives us:</p>
+                        <div class="text-center overflow-x-auto mb-4">
+                            $$x_2 = 0$$
+                        </div>
+
+                        <p class="mb-2"><strong>Step 2:</strong> Substitute $x_2 = 0$ into the second equation and set it to zero:</p>
+                        <div class="text-center overflow-x-auto mb-4 text-sm md:text-base">
+                            $$-0.5(0) - \sin(x_1) = 0 \implies \sin(x_1) = 0$$
+                        </div>
+
+                        <p class="mb-2"><strong>Step 3:</strong> Solve the trigonometric equation for $x_1$. The sine function is zero at integer multiples of $\pi$:</p>
+                        <div class="text-center overflow-x-auto mb-6">
+                            $$x_1 = n\pi, \quad \text{where } n = 0, \pm 1, \pm 2, \dots$$
+                        </div>
+
+                        <div class="bg-emerald-100 text-emerald-900 p-4 rounded text-center font-medium">
+                            <p>The equilibrium points for the system are:</p>
+                            <p class="mt-2 text-xl">$$(n\pi, 0) \quad \text{for } n \in \mathbb{Z}$$</p>
+                        </div>
+                        
+                        <div class="mt-6 border-t border-slate-200 pt-4 flex items-start">
+                            <svg class="w-6 h-6 text-blue-500 mr-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <div>
+                                <p class="text-slate-700 font-semibold mb-1">Physical Insight:</p>
+                                <p class="text-slate-600 text-sm">This system represents the equations of a <strong>damped pendulum</strong>. The state $x_1$ is the angle, and $x_2$ is the angular velocity. The equilibrium points $(0,0), (\pm 2\pi, 0), \dots$ represent the pendulum resting straight down (stable), while $(\pm \pi, 0), (\pm 3\pi, 0), \dots$ represent it balanced perfectly upright (unstable).</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Solved Example 3 -->
+            <section class="bg-white border-2 border-indigo-50 p-6 md:p-8 rounded-xl my-10 shadow-md">
+                <div class="flex items-center mb-6">
+                    <svg class="w-8 h-8 text-indigo-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                    <h3 class="text-2xl font-bold text-slate-800 border-b-2 border-indigo-100 pb-2 flex-grow">Solved Example 3: Nonlinear System Stability</h3>
+                </div>
+
+                <div class="space-y-6">
+                    <!-- Problem Statement -->
+                    <div class="bg-slate-50 p-5 rounded border border-slate-200">
+                        <p class="font-semibold text-slate-700 mb-4">Problem:</p>
+                        <p class="text-slate-600 mb-4">Consider a non linear system described by the following equations. Investigate the stability using Lyapunov's method.</p>
+                        <div class="text-center text-xl overflow-x-auto mb-4">
+                            $$\begin{align*} \dot{x}_1 &= x_2 \\ \dot{x}_2 &= -x_1^3 - x_2 \end{align*}$$
+                        </div>
+                        <p class="text-slate-600 font-medium bg-white inline-block px-3 py-1 border border-slate-300 rounded shadow-sm">
+                            Hint: Candidate $V(x) = x_1^4 + x_1^2 + 2x_1x_2 + 2x_2^2$
+                        </p>
+                    </div>
+
+                    <!-- Solution -->
+                    <div>
+                        <p class="font-semibold text-slate-700 mb-4">Solution:</p>
+                        
+                        <p class="mb-2"><strong>Step 1: Verify $V(x)$ is Positive Definite</strong></p>
+                        <p class="text-slate-600 mb-3 text-sm md:text-base">We must ensure $V(x) > 0$ for all $x \neq 0$. Let's rearrange the terms in the candidate function by splitting $2x_2^2$ into $x_2^2 + x_2^2$ to complete a square:</p>
+                        <div class="text-center overflow-x-auto mb-4 text-sm md:text-base bg-slate-50 py-3 rounded border border-slate-100">
+                            $$\begin{align*} V(x) &= x_1^4 + x_1^2 + 2x_1x_2 + x_2^2 + x_2^2 \\ &= x_1^4 + (x_1^2 + 2x_1x_2 + x_2^2) + x_2^2 \\ &= x_1^4 + (x_1 + x_2)^2 + x_2^2 \end{align*}$$
+                        </div>
+                        <p class="mb-6 text-slate-600">Since $x_1^4 \geq 0$, $(x_1 + x_2)^2 \geq 0$, and $x_2^2 \geq 0$, their sum is strictly greater than zero for any state other than the origin. Thus, $V(x)$ is Positive Definite.</p>
+
+                        <p class="mb-2"><strong>Step 2: Calculate the time derivative $\dot{V}(x)$</strong></p>
+                        <p class="text-slate-600 mb-3 text-sm md:text-base">Using the chain rule: $\dot{V}(x) = \frac{\partial V}{\partial x_1}\dot{x_1} + \frac{\partial V}{\partial x_2}\dot{x_2}$. First, find the partial derivatives:</p>
+                        <div class="text-center overflow-x-auto mb-4">
+                            $$\frac{\partial V}{\partial x_1} = 4x_1^3 + 2x_1 + 2x_2$$
+                            $$\frac{\partial V}{\partial x_2} = 2x_1 + 4x_2$$
+                        </div>
+
+                        <p class="mb-2"><strong>Step 3: Substitute the system equations</strong></p>
+                        <p class="text-slate-600 mb-3 text-sm md:text-base">Substitute $\dot{x}_1 = x_2$ and $\dot{x}_2 = -x_1^3 - x_2$ into the $\dot{V}(x)$ equation:</p>
+                        <div class="text-center overflow-x-auto mb-4 bg-indigo-50 py-3 border border-indigo-100 rounded">
+                            $$\dot{V}(x) = (4x_1^3 + 2x_1 + 2x_2)(x_2) + (2x_1 + 4x_2)(-x_1^3 - x_2)$$
+                        </div>
+
+                        <p class="mb-2"><strong>Step 4: Expand and Simplify</strong></p>
+                        <div class="text-center overflow-x-auto mb-6 text-sm md:text-base">
+                            $$\begin{align*} \dot{V}(x) &= [4x_1^3x_2 + 2x_1x_2 + 2x_2^2] + [-2x_1^4 - 2x_1x_2 - 4x_1^3x_2 - 4x_2^2] \\ &= (4x_1^3x_2 - 4x_1^3x_2) + (2x_1x_2 - 2x_1x_2) + (2x_2^2 - 4x_2^2) - 2x_1^4 \\ &= -2x_2^2 - 2x_1^4 \\ &= -2(x_1^4 + x_2^2) \end{align*}$$
+                        </div>
+
+                        <div class="bg-emerald-100 text-emerald-900 p-4 rounded text-center font-medium">
+                            <p>We obtained $\dot{V}(x) = -2(x_1^4 + x_2^2)$.</p>
+                            <p class="mt-2 text-sm text-emerald-800">Since $x_1^4$ and $x_2^2$ are always positive (for $x \neq 0$), the entire expression is strictly negative. Therefore, $\dot{V}(x)$ is <strong>Negative Definite</strong>.</p>
+                            <p class="mt-4 text-lg">Conclusion: The origin of the system is <strong>Asymptotically Stable</strong>.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Solved Example 4 -->
+            <section class="bg-white border-2 border-indigo-50 p-6 md:p-8 rounded-xl my-10 shadow-md">
+                <div class="flex items-center mb-6">
+                    <svg class="w-8 h-8 text-indigo-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                    <h3 class="text-2xl font-bold text-slate-800 border-b-2 border-indigo-100 pb-2 flex-grow">Solved Example 4: Testing Two Systems</h3>
+                </div>
+
+                <div class="space-y-8">
+                    <!-- Problem Statement -->
+                    <div class="bg-slate-50 p-5 rounded border border-slate-200">
+                        <p class="font-semibold text-slate-700 mb-4">Problem:</p>
+                        <p class="text-slate-600 mb-4">Test the stability of the system using Lyapunov stability theorem</p>
+                        <div class="text-center text-xl overflow-x-auto mb-4 space-y-4">
+                            <p>$(a) \quad \dot{x}_1 = -x_1 + 2x_1^2x_2, \quad \dot{x}_2 = -x_2$</p>
+                            <p>$(b) \quad \dot{x}_1 = x_2, \quad \dot{x}_2 = -\sin(x_1) - x_2$</p>
+                        </div>
+                    </div>
+
+                    <!-- Solution A -->
+                    <div class="border-b border-slate-100 pb-6">
+                        <h4 class="text-xl font-bold text-slate-800 mb-4">Solution for System (a):</h4>
+                        
+                        <p class="mb-2"><strong>Step 1: Choose a Lyapunov Candidate</strong></p>
+                        <p class="text-slate-600 mb-3 text-sm md:text-base">Let's select a standard quadratic function which is clearly positive definite:</p>
+                        <div class="text-center overflow-x-auto mb-4 bg-slate-50 py-3 rounded border border-slate-100">
+                            $$V(x) = \frac{1}{2}x_1^2 + \frac{1}{2}x_2^2$$
+                        </div>
+
+                        <p class="mb-2"><strong>Step 2: Calculate $\dot{V}(x)$</strong></p>
+                        <div class="text-center overflow-x-auto mb-4 text-sm md:text-base">
+                            $$\begin{align*} \dot{V}(x) &= \frac{\partial V}{\partial x_1}\dot{x}_1 + \frac{\partial V}{\partial x_2}\dot{x}_2 \\ &= x_1(-x_1 + 2x_1^2x_2) + x_2(-x_2) \\ &= -x_1^2 + 2x_1^3x_2 - x_2^2 \end{align*}$$
+                        </div>
+
+                        <p class="mb-2"><strong>Step 3: Analyze Definiteness</strong></p>
+                        <p class="text-slate-600 mb-4 text-sm md:text-base">Let's rewrite the derivative to understand its behavior near the origin:</p>
+                        <div class="text-center overflow-x-auto mb-4">
+                            $$\dot{V}(x) = -(x_1^2 + x_2^2) + 2x_1^3x_2$$
+                        </div>
+                        <p class="text-slate-600 mb-4">Near the origin (when $x_1$ and $x_2$ are very small), the quadratic term $-(x_1^2 + x_2^2)$ strongly dominates the higher-order fourth-degree term $2x_1^3x_2$. Therefore, in a sufficiently small neighborhood around the origin, $\dot{V}(x) < 0$.</p>
+
+                        <div class="bg-emerald-100 text-emerald-900 p-4 rounded text-center font-medium">
+                            <p>Conclusion for (a): The origin is <strong>Locally Asymptotically Stable</strong>.</p>
+                        </div>
+                    </div>
+
+                    <!-- Solution B -->
+                    <div>
+                        <h4 class="text-xl font-bold text-slate-800 mb-4">Solution for System (b):</h4>
+                        
+                        <p class="mb-4 text-slate-600">This represents a pendulum with friction. We use the system's physical total energy (Potential + Kinetic) as our candidate.</p>
+                        
+                        <p class="mb-2"><strong>Step 1: Choose a Lyapunov Candidate</strong></p>
+                        <div class="text-center overflow-x-auto mb-4 bg-slate-50 py-3 rounded border border-slate-100">
+                            $$V(x) = (1 - \cos x_1) + \frac{1}{2}x_2^2$$
+                        </div>
+                        <p class="mb-4 text-sm text-slate-500">Note: $V(x) > 0$ for $x \neq 0$ locally (within $-\pi < x_1 < \pi$), so it is Positive Definite.</p>
+
+                        <p class="mb-2"><strong>Step 2: Calculate $\dot{V}(x)$</strong></p>
+                        <div class="text-center overflow-x-auto mb-4 text-sm md:text-base">
+                            $$\begin{align*} \dot{V}(x) &= (\sin x_1)\dot{x}_1 + x_2\dot{x}_2 \\ &= (\sin x_1)(x_2) + x_2(-\sin x_1 - x_2) \\ &= x_2\sin x_1 - x_2\sin x_1 - x_2^2 \\ &= -x_2^2 \end{align*}$$
+                        </div>
+
+                        <p class="mb-2"><strong>Step 3: Analyze Definiteness (LaSalle's Principle)</strong></p>
+                        <p class="text-slate-600 mb-4 text-sm md:text-base">Here, $\dot{V}(x) = -x_2^2 \leq 0$. This makes it <strong>Negative Semi-Definite</strong> (it can be zero even if $x_1 \neq 0$). This guarantees the system is at least <em>Stable</em>.</p>
+                        
+                        <div class="bg-indigo-50 border-l-4 border-indigo-400 p-4 mb-4 text-slate-700 text-sm">
+                            <strong>Applying LaSalle's Invariance Principle:</strong> To prove asymptotic stability, we check the set where $\dot{V}(x) = 0$. This occurs when $x_2 = 0$. If $x_2 = 0$, then $\dot{x}_2 = 0$. Substituting this into the system's second equation: $0 = -\sin(x_1) - 0 \implies \sin(x_1) = 0 \implies x_1 = 0$ (in the local region). Since the only invariant point is the origin itself, the system is forced to settle there.
+                        </div>
+
+                        <div class="bg-emerald-100 text-emerald-900 p-4 rounded text-center font-medium">
+                            <p>Conclusion for (b): The origin is <strong>Asymptotically Stable</strong>.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Conclusion box -->
+            <section class="mt-12 bg-emerald-50 border border-emerald-200 border-l-8 border-l-emerald-500 p-6 md:p-8 rounded-r-xl shadow-sm">
+                <h3 class="text-xl font-extrabold text-emerald-900 mb-3 uppercase tracking-wide text-sm">Conclusion</h3>
+                <p class="text-emerald-800 text-lg leading-relaxed">
+                    We can see that the method hinges on the existence of a Lyapunov function, which is an <strong>energy-like function</strong>, <strong>zero at equilibrium</strong>, <strong>positive definite everywhere else</strong>, and <strong>continuously decreasing</strong> as we approach the equilibrium.
+                </p>
+            </section>
+        </div>
+    </main>
+
+</body>
+</html>
