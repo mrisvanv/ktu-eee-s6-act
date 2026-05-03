@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 3: Advanced Control Theory</title>
+    
+    <!-- MathJax for rendering LaTeX equations -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        :root {
+            --primary: #047857;      /* Emerald 700 */
+            --secondary: #10b981;    /* Emerald 500 */
+            --accent: #f59e0b;       /* Amber 500 */
+            --bg-color: #ecfdf5;     /* Emerald 50 */
+            --text-main: #334155;    /* Slate 700 */
+            --box-bg: #ffffff;
+        }
+
+        body { 
+            font-family: 'Inter', system-ui, -apple-system, sans-serif; 
+            scroll-behavior: smooth; 
+            background-color: var(--bg-color); 
+            color: var(--text-main);
+            line-height: 1.7;
+        }
+        
+        /* Typography & Layout */
+        h1, h2, h3, h4, h5 { color: #064e3b; letter-spacing: -0.025em; font-weight: 700; }
+        h2 { 
+            scroll-margin-top: 6rem; 
+            border-bottom: 3px solid #a7f3d0; 
+            padding-bottom: 0.75rem; 
+            margin-top: 4.5rem; 
+            margin-bottom: 2rem; 
+            display: flex; 
+            align-items: center; 
+            gap: 1rem; 
+        }
+        h3 { 
+            scroll-margin-top: 6rem; 
+            margin-top: 2.5rem; 
+            margin-bottom: 1.25rem; 
+            color: var(--primary); 
+        }
+        
+        /* Mathematical Blocks */
+        .math-block { 
+            overflow-x: auto; 
+            padding: 1.5rem; 
+            background: var(--box-bg); 
+            border: 1px solid #d1fae5; 
+            border-radius: 0.75rem; 
+            box-shadow: inset 0 2px 4px 0 rgb(0 0 0 / 0.02); 
+            margin: 1.5rem 0; 
+            text-align: center; 
+            font-size: 1.1rem;
+        }
+        
+        .equation-box { 
+            background: #f0fdf4; 
+            border-left: 4px solid var(--secondary); 
+            padding: 1.5rem; 
+            margin: 1.5rem 0; 
+            border-radius: 0 0.75rem 0.75rem 0; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05); 
+        }
+
+        .derivation-box { 
+            background: var(--box-bg); 
+            border: 1px dashed #6ee7b7; 
+            padding: 2rem; 
+            border-radius: 0.75rem; 
+            margin-top: 1.5rem; 
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);
+        }
+        
+        /* Diagrams & SVGs */
+        .diagram-container { 
+            border: 1px solid #a7f3d0; 
+            border-radius: 1rem; 
+            padding: 2.5rem; 
+            background: var(--box-bg); 
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.05); 
+            margin: 2.5rem 0; 
+            overflow-x: auto; 
+            position: relative; 
+        }
+        .svg-grid { stroke: #f1f5f9; stroke-width: 1; }
+        .svg-axis { stroke: #475569; stroke-width: 2; }
+        .svg-text { font-family: 'Inter', sans-serif; font-size: 13px; fill: #475569; }
+        .svg-text-bold { font-weight: 700; fill: #064e3b; font-size: 14px; }
+        .svg-wire { stroke: #0f172a; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+        .svg-block { fill: #ffffff; stroke: #047857; stroke-width: 2.5; rx: 6px; }
+        
+        /* Sidebar Navigation */
+        .toc-link { 
+            display: block; 
+            padding: 0.6rem 1.2rem; 
+            color: #475569; 
+            text-decoration: none; 
+            border-radius: 0.5rem; 
+            transition: all 0.2s; 
+            border-left: 3px solid transparent; 
+            font-weight: 500;
+        }
+        .toc-link:hover, .toc-link.active { 
+            background: #d1fae5; 
+            color: var(--primary); 
+            border-left-color: var(--primary); 
+        }
+        
+        /* Badges */
+        .badge-important { 
+            display: inline-flex; 
+            align-items: center; 
+            padding: 0.25rem 0.85rem; 
+            border-radius: 9999px; 
+            font-size: 0.75rem; 
+            font-weight: 800; 
+            background-color: #fef2f2; 
+            color: #e11d48; 
+            border: 1px solid #fecdd3; 
+            margin-bottom: 1rem; 
+            text-transform: uppercase; 
+            letter-spacing: 0.05em; 
+        }
+        .badge-qp { 
+            display: inline-flex; 
+            align-items: center; 
+            padding: 0.25rem 0.75rem; 
+            border-radius: 0.375rem; 
+            font-size: 0.75rem; 
+            font-weight: 700; 
+            background-color: #d1fae5; 
+            color: #047857; 
+            border: 1px solid #6ee7b7; 
+            margin-left: 0.75rem; 
+            margin-bottom: 1rem;
+        }
+
+        .highlight-box {
+            background-color: #f0fdf4;
+            border-left: 4px solid var(--secondary);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+            border: 1px solid #bbf7d0;
+        }
+        
+        /* Table Styling */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .data-table th {
+            background-color: #d1fae5;
+            color: #064e3b;
+            font-weight: 700;
+            text-align: left;
+            padding: 1rem;
+            border: 1px solid #a7f3d0;
+        }
+        .data-table td {
+            padding: 1rem;
+            border: 1px solid #e2e8f0;
+            background-color: #ffffff;
+        }
+        .data-table tr:nth-child(even) td {
+            background-color: #f8fafc;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-emerald-200 selection:text-emerald-900">
+
+    <!-- Top Navigation / Header -->
+    <header class="bg-white/95 border-b border-slate-200 sticky top-0 z-50 shadow-sm backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="bg-emerald-600 p-2 rounded-lg shadow-inner">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-extrabold text-emerald-950 tracking-tight leading-none">ACT: Module 3</h1>
+                    <p class="text-sm text-slate-500 font-medium mt-1">State Space Analysis of Systems</p>
+                </div>
+            </div>
+            <div class="hidden lg:flex space-x-1 text-sm font-semibold">
+                <a href="#intro" class="text-slate-600 hover:text-emerald-700 px-4 py-2.5 rounded-lg hover:bg-emerald-50 transition-all">1. Intro</a>
+                <a href="#representation" class="text-slate-600 hover:text-emerald-700 px-4 py-2.5 rounded-lg hover:bg-emerald-50 transition-all">2. SS Representation</a>
+                <a href="#canonical" class="text-slate-600 hover:text-emerald-700 px-4 py-2.5 rounded-lg hover:bg-emerald-50 transition-all">3. Canonical Forms</a>
+                <a href="#stm" class="text-emerald-700 bg-emerald-50 px-4 py-2.5 rounded-lg transition-all shadow-sm">4. State Transition</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col xl:flex-row gap-12">
+        
+        <!-- Main Content -->
+        <main class="flex-1 w-full max-w-5xl mx-auto">
+            
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 mb-12 relative overflow-hidden">
+                <div class="absolute right-0 top-0 text-emerald-100 opacity-30 transform translate-x-4 -translate-y-4">
+                    <svg class="w-48 h-48" fill="currentColor" viewBox="0 0 24 24"><path d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
+                </div>
+                <h3 class="text-xl font-bold text-slate-800 mb-4 mt-0">Syllabus Covered in this Document</h3>
+                <p class="text-slate-600 mb-4 relative z-10"><strong>Module III:</strong> State space analysis of systems: Introduction to state concept, state equation of linear continuous time systems, matrix representation of state equations. Phase variable and canonical forms of state representation - controllable, observable, diagonal and Jordan canonical forms. Solution of time invariant autonomous systems, forced system - state transition matrix. Relationship between state equations and transfer function. Properties of state transition matrix - Computation of state transition matrix using Laplace transform.</p>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- SECTION 1: INTRODUCTION & DEFINITIONS      -->
+            <!-- ========================================== -->
+            <section id="intro" class="mb-24">
+                <h2>
+                    <span class="bg-gradient-to-br from-emerald-600 to-emerald-800 text-white w-12 h-12 rounded-xl flex items-center justify-center font-extrabold text-2xl shadow-lg shrink-0">1</span>
+                    Introduction to State Space Concepts
+                </h2>
+                
+                <div class="mb-4">
+                    <span class="badge-important">THEORY</span>
+                    <span class="badge-qp">Dec 2019</span><span class="badge-qp">Sep 2020</span>
+                </div>
+
+                <p class="text-lg text-slate-700 mb-6">The methods of analysis and design of feedback control systems such as root locus, Bode, and Nyquist plots require the physical system to be modeled in the form of a transfer function. Though the transfer function approach is simple, it suffers from several severe drawbacks.</p>
+
+                <div class="grid md:grid-cols-2 gap-8 mb-10">
+                    <div class="bg-rose-50 border border-rose-100 p-6 rounded-xl shadow-sm">
+                        <h4 class="font-bold text-rose-900 mb-4 border-b border-rose-200 pb-2">Drawbacks of Transfer Functions</h4>
+                        <ul class="list-disc ml-5 text-sm text-slate-700 space-y-2">
+                            <li>Transfer function models are <strong>only applicable to linear time-invariant (LTI)</strong> systems.</li>
+                            <li>A transfer function is <strong>only defined under zero initial conditions</strong>.</li>
+                            <li>It reveals only the output of the system for a given input, providing <strong>no information regarding the internal states</strong> of the system.</li>
+                            <li>It is restricted to Single-Input Single-Output (SISO) systems (for basic analysis).</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-emerald-50 border border-emerald-200 p-6 rounded-xl shadow-sm">
+                        <h4 class="font-bold text-emerald-900 mb-4 border-b border-emerald-200 pb-2">Advantages of State Space Analysis</h4>
+                        <ul class="list-disc ml-5 text-sm text-slate-700 space-y-2">
+                            <li>It is a <strong>direct time-domain approach</strong>, making it highly suitable for digital computer computations.</li>
+                            <li>It is a powerful technique for the design and analysis of linear, nonlinear, time-variant, time-invariant, SISO, and MIMO systems.</li>
+                            <li>An $n^{th}$ order differential equation is expressed as <strong>$n$ first-order differential equations</strong>, making mathematical solutions easier.</li>
+                            <li>Initial conditions can be easily incorporated into the equations.</li>
+                            <li>Allows for the optimal design of modern controllers.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="highlight-box border-emerald-300">
+                    <h4 class="font-bold text-emerald-900 mb-3">Fundamental Definitions</h4>
+                    <div class="space-y-4">
+                        <div>
+                            <strong class="text-slate-800">1. State:</strong>
+                            <p class="text-sm text-slate-700">The state of a dynamic system is the <em>smallest set of variables</em> (called state variables) such that knowledge of these variables at $t = t_0$, together with knowledge of the input for $t \ge t_0$, completely determines the behavior of the system for any time $t \ge t_0$.</p>
+                        </div>
+                        <div>
+                            <strong class="text-slate-800">2. State Variables:</strong>
+                            <p class="text-sm text-slate-700">The variables making up the smallest set of variables that determine the state of the dynamic system. They need not be physically measurable or observable quantities (e.g., intermediate mathematical derivatives can be state variables).</p>
+                        </div>
+                        <div>
+                            <strong class="text-slate-800">3. State Vector:</strong>
+                            <p class="text-sm text-slate-700">If $n$ state variables are needed to completely describe the behavior of a given system, these $n$ variables can be considered the $n$ components of a vector $X(t)$. This vector uniquely determines the system state.</p>
+                        </div>
+                        <div>
+                            <strong class="text-slate-800">4. State Space:</strong>
+                            <p class="text-sm text-slate-700">The $n$-dimensional space whose coordinate axes consist of the $x_1$ axis, $x_2$ axis, $\dots$, $x_n$ axis is called the state space. Any state can be represented by a point in this state space.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========================================== -->
+            <!-- SECTION 2: STATE SPACE REPRESENTATION      -->
+            <!-- ========================================== -->
+            <section id="representation" class="mb-24">
+                <h2>
+                    <span class="bg-gradient-to-br from-emerald-600 to-emerald-800 text-white w-12 h-12 rounded-xl flex items-center justify-center font-extrabold text-2xl shadow-lg shrink-0">2</span>
+                    State Space Representation & Block Diagram
+                </h2>
+
+                <p class="text-lg text-slate-700 mb-6">In state space analysis, we are concerned with three types of variables: <strong>input variables ($u$)</strong>, <strong>output variables ($y$)</strong>, and <strong>state variables ($x$)</strong>. The state-space representation is not unique; a system can have infinite valid state-space representations, but the <em>number of state variables ($n$) is always the same</em>.</p>
+
+                <div class="bg-white border border-slate-200 rounded-2xl shadow-sm mb-10 overflow-hidden">
+                    <div class="bg-slate-50 border-b border-slate-200 px-8 py-5">
+                        <h3 class="text-xl font-bold text-slate-800 m-0">Linear Time-Invariant (LTI) Systems</h3>
+                    </div>
+                    <div class="p-8">
+                        <p class="text-slate-700 mb-4">If the system equations are linearized about an operating point and do not involve time $t$ explicitly, the system is LTI. The state and output equations are:</p>
+                        
+                        <div class="grid md:grid-cols-2 gap-6 mb-6">
+                            <div class="equation-box !my-0 !border-emerald-500 !bg-emerald-50">
+                                <h4 class="font-bold text-emerald-900 text-sm mb-2 text-center uppercase tracking-wider">State Equation</h4>
+                                $$ \dot{X}(t) = A X(t) + B U(t) $$
+                            </div>
+                            <div class="equation-box !my-0 !border-blue-500 !bg-blue-50">
+                                <h4 class="font-bold text-blue-900 text-sm mb-2 text-center uppercase tracking-wider">Output Equation</h4>
+                                $$ Y(t) = C X(t) + D U(t) $$
+                            </div>
+                        </div>
+
+                        <ul class="grid grid-cols-2 gap-4 text-sm text-slate-700 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                            <li>$X(t)$: State Vector ($n \times 1$)</li>
+                            <li>$U(t)$: Input Vector ($m \times 1$)</li>
+                            <li>$Y(t)$: Output Vector ($p \times 1$)</li>
+                            <li><strong>$A$</strong>: System / State Matrix ($n \times n$)</li>
+                            <li><strong>$B$</strong>: Input Matrix ($n \times m$)</li>
+                            <li><strong>$C$</strong>: Output Matrix ($p \times n$)</li>
+                            <li><strong>$D$</strong>: Feedforward Matrix ($p \times m$)</li>
+                        </ul>
+
+                        <div class="diagram-container mt-8 bg-slate-50">
+                            <h4 class="text-center font-bold text-slate-800 mb-6">Block Diagram of LTI State-Space System</h4>
+                            <svg viewBox="0 0 800 300" class="w-full h-auto max-w-3xl mx-auto">
+                                <defs>
+                                    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+                                        <path d="M0,0 L0,6 L9,3 z" fill="#0f172a"/>
+                                    </marker>
+                                </defs>
+
+                                <!-- Input line -->
+                                <path d="M 50 150 L 140 150" class="svg-wire" marker-end="url(#arrow)"/>
+                                <text x="70" y="140" class="svg-text-bold text-lg">U(t)</text>
+                                
+                                <!-- Node for feedforward -->
+                                <circle cx="100" cy="150" r="4" fill="#0f172a"/>
+                                <path d="M 100 150 L 100 60 L 350 60" class="svg-wire" marker-end="url(#arrow)"/>
+
+                                <!-- B Matrix -->
+                                <rect x="140" y="125" width="80" height="50" class="svg-block"/>
+                                <text x="180" y="155" text-anchor="middle" class="svg-text-bold text-lg">B</text>
+
+                                <!-- State Summing Junction -->
+                                <circle cx="260" cy="150" r="15" fill="#f8fafc" stroke="#047857" stroke-width="2"/>
+                                <text x="260" y="156" text-anchor="middle" font-size="20" font-weight="bold">+</text>
+                                <path d="M 220 150 L 245 150" class="svg-wire" marker-end="url(#arrow)"/>
+
+                                <!-- X dot -->
+                                <path d="M 275 150 L 330 150" class="svg-wire" marker-end="url(#arrow)"/>
+                                <text x="300" y="140" class="svg-text-bold text-lg">Ẋ(t)</text>
+
+                                <!-- Integrator -->
+                                <rect x="330" y="125" width="80" height="50" class="svg-block"/>
+                                <text x="370" y="157" text-anchor="middle" class="svg-text-math">∫ dt</text>
+
+                                <!-- State X -->
+                                <path d="M 410 150 L 510 150" class="svg-wire" marker-end="url(#arrow)"/>
+                                <text x="460" y="140" class="svg-text-bold text-lg">X(t)</text>
+
+                                <!-- Node for state feedback -->
+                                <circle cx="480" cy="150" r="4" fill="#0f172a"/>
+                                <path d="M 480 150 L 480 240 L 390 240" class="svg-wire" marker-end="url(#arrow)"/>
+
+                                <!-- A Matrix -->
+                                <rect x="310" y="215" width="80" height="50" class="svg-block"/>
+                                <text x="350" y="245" text-anchor="middle" class="svg-text-bold text-lg">A</text>
+                                
+                                <!-- Feedback to sum -->
+                                <path d="M 310 240 L 260 240 L 260 165" class="svg-wire" marker-end="url(#arrow)"/>
+                                <text x="270" y="230" class="svg-text-bold">+</text>
+
+                                <!-- C Matrix -->
+                                <rect x="510" y="125" width="80" height="50" class="svg-block"/>
+                                <text x="550" y="155" text-anchor="middle" class="svg-text-bold text-lg">C</text>
+
+                                <!-- D Matrix -->
+                                <rect x="350" y="35" width="80" height="50" class="svg-block"/>
+                                <text x="390" y="65" text-anchor="middle" class="svg-text-bold text-lg">D</text>
+                                <path d="M 430 60 L 660 60 L 660 135" class="svg-wire" marker-end="url(#arrow)"/>
+
+                                <!-- Output Summing Junction -->
+                                <circle cx="660" cy="150" r="15" fill="#f8fafc" stroke="#047857" stroke-width="2"/>
+                                <text x="660" y="156" text-anchor="middle" font-size="20" font-weight="bold">+</text>
+                                <path d="M 590 150 L 645 150" class="svg-wire" marker-end="url(#arrow)"/>
+
+                                <!-- Output Y(t) -->
+                                <path d="M 675 150 L 750 150" class="svg-wire" marker-end="url(#arrow)"/>
+                                <text x="710" y="140" class="svg-text-bold text-lg">Y(t)</text>
+
+                            </svg>
+                            <p class="text-sm text-slate-500 mt-2 text-center italic">Note: The outputs of the integrators are always chosen as the state variables \( X(t) \).</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2.1 Physical Systems Modeling -->
+                <div class="bg-white border-2 border-emerald-200 rounded-3xl overflow-hidden shadow-lg mt-12 relative">
+                    <div class="absolute top-0 right-0 bg-emerald-600 text-white px-5 py-1.5 rounded-bl-xl font-bold tracking-wider text-sm shadow-sm">SOLVED QP (APR 2018 / MAY 2023)</div>
+                    <div class="p-8 md:p-10">
+                        <h3 class="text-2xl font-bold text-emerald-950 mt-0 mb-6 border-none">Physical System Modeling: RLC Circuit</h3>
+                        
+                        <p class="text-slate-800 font-medium mb-6"><strong>Question:</strong> Derive the state space model of the RLC circuit shown below. The input voltage is $u(t)$ and the output is $y(t)$. Select the inductor currents $i_1(t)$ and $i_2(t)$ as state variables.</p>
+                        
+                        <div class="diagram-container bg-slate-50 !py-4">
+                            <svg viewBox="0 0 600 250" class="w-full h-auto max-w-xl mx-auto">
+                                <!-- Source -->
+                                <circle cx="80" cy="125" r="25" fill="none" stroke="#0f172a" stroke-width="2"/>
+                                <text x="80" y="120" text-anchor="middle" font-size="18" font-weight="bold">+</text>
+                                <text x="80" y="140" text-anchor="middle" font-size="20" font-weight="bold">-</text>
+                                <text x="35" y="130" class="svg-text-bold text-lg">u(t)</text>
+                                
+                                <!-- Top Wire & Inductor L1 -->
+                                <path d="M 80 100 L 80 50 L 160 50" class="svg-wire"/>
+                                <path d="M 160 50 C 165 30, 175 30, 180 50 C 185 30, 195 30, 200 50 C 205 30, 215 30, 220 50 C 225 30, 235 30, 240 50" stroke="#0f172a" stroke-width="2" fill="none"/>
+                                <text x="200" y="30" class="svg-text-bold">1H</text>
+                                <path d="M 240 50 L 280 50" class="svg-wire"/>
+                                
+                                <!-- Resistor R1 -->
+                                <rect x="280" y="40" width="60" height="20" fill="none" stroke="#0f172a" stroke-width="2"/>
+                                <text x="310" y="30" text-anchor="middle" class="svg-text-bold">1Ω</text>
+                                <path d="M 340 50 L 460 50" class="svg-wire"/>
+                                
+                                <!-- Current i1 -->
+                                <path d="M 200 70 L 240 70" stroke="#047857" stroke-width="2" marker-end="url(#arrow)"/>
+                                <text x="220" y="90" text-anchor="middle" class="svg-text-bold" fill="#047857">i₁(t)</text>
+
+                                <!-- Middle Branch (L2 + R2) -->
+                                <path d="M 350 50 L 350 80" class="svg-wire"/>
+                                <!-- L2 -->
+                                <path d="M 350 80 C 370 85, 370 95, 350 100 C 370 105, 370 115, 350 120 C 370 125, 370 135, 350 140 C 370 145, 370 155, 350 160" stroke="#0f172a" stroke-width="2" fill="none"/>
+                                <text x="380" y="125" class="svg-text-bold">1H</text>
+                                <path d="M 350 160 L 350 170" class="svg-wire"/>
+                                <!-- R2 -->
+                                <rect x="340" y="170" width="20" height="40" fill="none" stroke="#0f172a" stroke-width="2"/>
+                                <text x="375" y="195" class="svg-text-bold">1Ω</text>
+                                <path d="M 350 210 L 350 230" class="svg-wire"/>
+                                
+                                <!-- Current i2 -->
+                                <path d="M 320 100 L 320 150" stroke="#047857" stroke-width="2" marker-end="url(#arrow)"/>
+                                <text x="300" y="130" class="svg-text-bold" fill="#047857">i₂(t)</text>
+
+                                <!-- Right Branch (R3) -->
+                                <path d="M 460 50 L 460 100" class="svg-wire"/>
+                                <rect x="450" y="100" width="20" height="60" fill="none" stroke="#0f172a" stroke-width="2"/>
+                                <text x="440" y="135" class="svg-text-bold text-right">1Ω</text>
+                                <path d="M 460 160 L 460 230" class="svg-wire"/>
+
+                                <!-- Output y(t) -->
+                                <path d="M 500 50 L 500 230" stroke="#64748b" stroke-width="1.5" stroke-dasharray="4,4"/>
+                                <path d="M 500 60 L 500 50" stroke="#64748b" stroke-width="1.5" marker-start="url(#arrow)"/>
+                                <path d="M 500 220 L 500 230" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow)"/>
+                                <text x="520" y="145" class="svg-text-bold text-lg">y(t)</text>
+
+                                <!-- Bottom Wire -->
+                                <path d="M 80 150 L 80 230 L 460 230" class="svg-wire"/>
+                            </svg>
+                        </div>
+
+                        <div class="space-y-6">
+                            <div class="derivation-box !border-emerald-200 !bg-emerald-50/30">
+                                <h4 class="font-bold text-emerald-900 mb-3">Step 1: Identify States and Apply Kirchhoff's Laws</h4>
+                                <p class="text-sm text-slate-700 mb-2">Let state variables be $x_1 = i_1$ and $x_2 = i_2$.</p>
+                                <p class="text-sm text-slate-700 mb-3">Applying KVL in the first (left) loop:</p>
+                                <div class="math-block !bg-white !py-3">
+                                    $$ u(t) = L_1 \frac{di_1}{dt} + R_1 i_1 + L_2 \frac{di_2}{dt} + R_2 i_2 $$
+                                    <p class="text-sm mt-2 text-slate-500">Substitute values ($L_1=1, L_2=1, R_1=1, R_2=1$):</p>
+                                    $$ u(t) = \frac{di_1}{dt} + i_1 + \frac{di_2}{dt} + i_2 \quad \dots \text{(Eq. 1)} $$
+                                </div>
+
+                                <p class="text-sm text-slate-700 mt-4 mb-3">Applying KVL in the second (right) loop (or analyzing node currents):</p>
+                                <p class="text-sm text-slate-700 mb-3">The current through the output resistor is $i_{out} = i_1 - i_2$. The voltage across the middle branch equals the voltage across the right branch:</p>
+                                <div class="math-block !bg-white !py-3">
+                                    $$ L_2 \frac{di_2}{dt} + R_2 i_2 = R_3 (i_1 - i_2) $$
+                                    <p class="text-sm mt-2 text-slate-500">Substitute values ($L_2=1, R_2=1, R_3=1$):</p>
+                                    $$ \frac{di_2}{dt} + i_2 = 1(i_1 - i_2) \implies \frac{di_2}{dt} = i_1 - 2i_2 \quad \dots \text{(Eq. 2)} $$
+                                </div>
+                            </div>
+
+                            <div class="derivation-box !border-emerald-200 !bg-emerald-50/30">
+                                <h4 class="font-bold text-emerald-900 mb-3">Step 2: Formulate State Equations</h4>
+                                <p class="text-sm text-slate-700 mb-3">From Eq. 2, we directly get the state equation for $x_2$:</p>
+                                <div class="math-block !bg-white !py-2 !text-emerald-800 !font-bold">
+                                    $$ \dot{x}_2 = x_1 - 2x_2 $$
+                                </div>
+                                <p class="text-sm text-slate-700 mt-4 mb-3">Substitute $\frac{di_2}{dt}$ from Eq. 2 into Eq. 1 to find $\dot{x}_1$:</p>
+                                <div class="math-block !bg-white !py-3">
+                                    $$ u(t) = \frac{di_1}{dt} + i_1 + (i_1 - 2i_2) + i_2 $$
+                                    $$ u(t) = \frac{di_1}{dt} + 2i_1 - i_2 $$
+                                    <p class="text-sm mt-2 text-emerald-800 font-bold">$$ \dot{x}_1 = -2x_1 + x_2 + u $$</p>
+                                </div>
+                            </div>
+
+                            <div class="derivation-box !border-emerald-200 !bg-emerald-50/30">
+                                <h4 class="font-bold text-emerald-900 mb-3">Step 3: Final Matrix Representation</h4>
+                                <p class="text-sm text-slate-700 mb-3">The output is the voltage across $R_3$:</p>
+                                <div class="math-block !bg-white !py-2">
+                                    $$ y(t) = R_3(i_1 - i_2) = 1(x_1 - x_2) = x_1 - x_2 $$
+                                </div>
+                                <p class="text-sm text-slate-700 mt-4 mb-2">Matrix form:</p>
+                                <div class="math-block !bg-white !py-4 !border-emerald-500 !border-2">
+                                    $$ \begin{bmatrix} \dot{x}_1 \\ \dot{x}_2 \end{bmatrix} = \begin{bmatrix} -2 & 1 \\ 1 & -2 \end{bmatrix} \begin{bmatrix} x_1 \\ x_2 \end{bmatrix} + \begin{bmatrix} 1 \\ 0 \end{bmatrix} u $$
+                                    <br>
+                                    $$ y = \begin{bmatrix} 1 & -1 \end{bmatrix} \begin{bmatrix} x_1 \\ x_2 \end{bmatrix} $$
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2.2 Transfer Function to State Space -->
+                <div class="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm mt-12 mb-10">
+                    <h3 class="text-2xl font-bold text-emerald-900 mt-0 mb-4 border-b pb-2">Correlation: State Space to Transfer Function</h3>
+                    <p class="text-slate-700 mb-4">Taking the Laplace transform of the state equations assuming zero initial conditions ($X(0)=0$):</p>
+                    <div class="math-block !bg-emerald-50 !border-emerald-200">
+                        $$ s X(s) = A X(s) + B U(s) $$
+                        $$ (sI - A) X(s) = B U(s) \implies X(s) = (sI - A)^{-1} B U(s) $$
+                    </div>
+                    <p class="text-slate-700 mt-4 mb-4">Substitute $X(s)$ into the output equation $Y(s) = C X(s) + D U(s)$:</p>
+                    <div class="math-block !bg-white !font-bold text-lg border-2 border-emerald-400">
+                        $$ G(s) = \frac{Y(s)}{U(s)} = C (sI - A)^{-1} B + D $$
+                    </div>
+                    <p class="text-slate-700 mt-4 text-sm bg-slate-50 p-3 rounded border border-slate-200">Note: The denominator of the transfer function is given by the determinant $|sI - A|$. Setting $|sI - A| = 0$ yields the <strong>characteristic equation</strong> of the system. The roots of this equation are the poles of the transfer function, which are exactly the <strong>eigenvalues</strong> of the system matrix $A$.</p>
+                </div>
+            </section>
+
+            <!-- ========================================== -->
+            <!-- SECTION 3: CANONICAL FORMS                 -->
+            <!-- ========================================== -->
+            <section id="canonical" class="mb-24">
+                <h2>
+                    <span class="bg-gradient-to-br from-emerald-600 to-emerald-800 text-white w-12 h-12 rounded-xl flex items-center justify-center font-extrabold text-2xl shadow-lg shrink-0">3</span>
+                    Canonical Forms of State Representation
+                </h2>
+
+                <div class="mb-4">
+                    <span class="badge-important">HIGHLY EXAMINED</span>
+                    <span class="badge-qp">Dec 2019</span><span class="badge-qp">Sep 2020</span><span class="badge-qp">Jul 2021</span>
+                </div>
+
+                <p class="text-lg text-slate-700 mb-8">The state variable representation is not unique. For a given transfer function, we can define infinite sets of state variables. However, certain standard forms (canonical forms) are highly useful for controller and observer design, or for decoupling states.</p>
+
+                <!-- 3.1 Controllable Canonical Form -->
+                <div class="bg-white border border-slate-200 rounded-2xl shadow-sm mb-12 overflow-hidden">
+                    <div class="bg-slate-50 border-b border-slate-200 px-8 py-5">
+                        <h3 class="text-xl font-bold text-emerald-900 m-0">3.1 Controllable Canonical Form (Phase Variable Form)</h3>
+                    </div>
+                    <div class="p-8">
+                        <p class="text-slate-700 mb-4">This form is structured such that the coefficients of the transfer function's denominator appear directly in the last row of the $A$ matrix, and the numerator coefficients appear in the $C$ matrix. It guarantees the system is state controllable.</p>
+                        
+                        <p class="font-bold text-slate-800 mb-2">For a general transfer function:</p>
+                        <div class="math-block !bg-white !py-3">
+                            $$ \frac{Y(s)}{U(s)} = \frac{b_0 s^n + b_1 s^{n-1} + \dots + b_n}{s^n + a_1 s^{n-1} + \dots + a_n} $$
+                        </div>
+                        
+                        <p class="text-slate-700 mt-4 mb-2">The state matrices are written by inspection:</p>
+                        <div class="math-block !bg-emerald-50 !border-emerald-200">
+                            $$ A = \begin{bmatrix} 0 & 1 & 0 & \dots & 0 \\ 0 & 0 & 1 & \dots & 0 \\ \vdots & \vdots & \vdots & \ddots & \vdots \\ -a_n & -a_{n-1} & -a_{n-2} & \dots & -a_1 \end{bmatrix}, \quad B = \begin{bmatrix} 0 \\ 0 \\ \vdots \\ 1 \end{bmatrix} $$
+                            <br>
+                            $$ C = \begin{bmatrix} (b_n - a_n b_0) & (b_{n-1} - a_{n-1} b_0) & \dots & (b_1 - a_1 b_0) \end{bmatrix} $$
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3.2 Observable Canonical Form -->
+                <div class="bg-white border border-slate-200 rounded-2xl shadow-sm mb-12 overflow-hidden">
+                    <div class="bg-slate-50 border-b border-slate-200 px-8 py-5">
+                        <h3 class="text-xl font-bold text-emerald-900 m-0">3.2 Observable Canonical Form</h3>
+                    </div>
+                    <div class="p-8">
+                        <p class="text-slate-700 mb-4">This form is the mathematical dual of the controllable canonical form. The $A$ matrix is the transpose of the controllable $A$ matrix. The coefficients of the denominator appear in the last column. It guarantees the system is completely observable.</p>
+                        
+                        <div class="math-block !bg-emerald-50 !border-emerald-200">
+                            $$ A = \begin{bmatrix} 0 & 0 & \dots & -a_n \\ 1 & 0 & \dots & -a_{n-1} \\ \vdots & \vdots & \ddots & \vdots \\ 0 & 0 & \dots & -a_1 \end{bmatrix}, \quad B = \begin{bmatrix} b_n - a_n b_0 \\ b_{n-1} - a_{n-1} b_0 \\ \vdots \\ b_1 - a_1 b_0 \end{bmatrix} $$
+                            <br>
+                            $$ C = \begin{bmatrix} 0 & 0 & \dots & 1 \end{bmatrix} $$
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3.3 Diagonal Canonical Form -->
+                <div class="bg-white border border-slate-200 rounded-2xl shadow-sm mb-12 overflow-hidden">
+                    <div class="bg-slate-50 border-b border-slate-200 px-8 py-5">
+                        <h3 class="text-xl font-bold text-emerald-900 m-0">3.3 Diagonal Canonical Form (Modal Form)</h3>
+                    </div>
+                    <div class="p-8">
+                        <p class="text-slate-700 mb-4">Used when the system has <strong>real and distinct poles</strong>. The transfer function is expanded using partial fractions. The resulting state equations are entirely decoupled (each state derivative depends only on itself and the input).</p>
+                        
+                        <div class="math-block !bg-white !py-3">
+                            $$ G(s) = \frac{Y(s)}{U(s)} = \frac{C_1}{s + p_1} + \frac{C_2}{s + p_2} + \dots + \frac{C_n}{s + p_n} $$
+                        </div>
+                        
+                        <div class="math-block !bg-emerald-50 !border-emerald-200">
+                            $$ A = \begin{bmatrix} -p_1 & 0 & \dots & 0 \\ 0 & -p_2 & \dots & 0 \\ \vdots & \vdots & \ddots & \vdots \\ 0 & 0 & \dots & -p_n \end{bmatrix}, \quad B = \begin{bmatrix} 1 \\ 1 \\ \vdots \\ 1 \end{bmatrix}, \quad C = \begin{bmatrix} C_1 & C_2 & \dots & C_n \end{bmatrix} $$
+                        </div>
+
+                        <div class="diagram-container mt-8 bg-slate-50">
+                            <h4 class="text-center font-bold text-slate-800 mb-6">Block Diagram of Diagonal Form</h4>
+                            <svg viewBox="0 0 800 350" class="w-full h-auto max-w-3xl mx-auto">
+                                <defs>
+                                    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+                                        <path d="M0,0 L0,6 L9,3 z" fill="#0f172a"/>
+                                    </marker>
+                                </defs>
+                                
+                                <!-- Input U(s) -->
+                                <text x="50" y="175" class="svg-text-bold text-lg">U(s)</text>
+                                <path d="M 90 170 L 140 170" class="svg-wire"/>
+                                <path d="M 140 50 L 140 290" class="svg-wire"/> <!-- Distribution bus -->
+                                
+                                <!-- Top Branch (State 1) -->
+                                <circle cx="140" cy="50" r="4" fill="#0f172a"/>
+                                <path d="M 140 50 L 220 50" class="svg-wire" marker-end="url(#arrow)"/>
+                                <circle cx="235" cy="50" r="15" fill="white" stroke="#047857" stroke-width="2"/>
+                                <text x="235" y="56" text-anchor="middle" font-size="20">+</text>
+                                <path d="M 250 50 L 320 50" class="svg-wire" marker-end="url(#arrow)"/>
+                                <text x="285" y="40" class="svg-text-bold">sX₁(s)</text>
+                                <rect x="320" y="25" width="60" height="50" class="svg-block"/>
+                                <text x="350" y="55" text-anchor="middle" font-size="16">1/s</text>
+                                <path d="M 380 50 L 520 50" class="svg-wire" marker-end="url(#arrow)"/>
+                                <text x="450" y="40" class="svg-text-bold">X₁(s)</text>
+                                <!-- Feedback -p1 -->
+                                <circle cx="420" cy="50" r="4" fill="#0f172a"/>
+                                <path d="M 420 50 L 420 100 L 380 100" class="svg-wire" marker-end="url(#arrow)"/>
+                                <rect x="320" y="75" width="60" height="50" class="svg-block"/>
+                                <text x="350" y="105" text-anchor="middle" font-size="16" font-weight="bold">-p₁</text>
+                                <path d="M 320 100 L 235 100 L 235 65" class="svg-wire" marker-end="url(#arrow)"/>
+                                <!-- C1 Gain -->
+                                <rect x="520" y="25" width="60" height="50" class="svg-block"/>
+                                <text x="550" y="55" text-anchor="middle" font-size="16" font-weight="bold">C₁</text>
+                                <path d="M 580 50 L 640 50 L 640 155" class="svg-wire" marker-end="url(#arrow)"/>
+
+                                <!-- Middle Branch (State 2) -->
+                                <circle cx="140" cy="170" r="4" fill="#0f172a"/>
+                                <path d="M 140 170 L 220 170" class="svg-wire" marker-end="url(#arrow)"/>
+                                <circle cx="235" cy="170" r="15" fill="white" stroke="#047857" stroke-width="2"/>
+                                <text x="235" y="176" text-anchor="middle" font-size="20">+</text>
+                                <path d="M 250 170 L 320 170" class="svg-wire" marker-end="url(#arrow)"/>
+                                <text x="285" y="160" class="svg-text-bold">sX₂(s)</text>
+                                <rect x="320" y="145" width="60" height="50" class="svg-block"/>
+                                <text x="350" y="175" text-anchor="middle" font-size="16">1/s</text>
+                                <path d="M 380 170 L 520 170" class="svg-wire" marker-end="url(#arrow)"/>
+                                <text x="450" y="160" class="svg-text-bold">X₂(s)</text>
+                                <!-- Feedback -p2 -->
+                                <circle cx="420" cy="170" r="4" fill="#0f172a"/>
+                                <path d="M 420 170 L 420 220 L 380 220" class="svg-wire" marker-end="url(#arrow)"/>
+                                <rect x="320" y="195" width="60" height="50" class="svg-block"/>
+                                <text x="350" y="225" text-anchor="middle" font-size="16" font-weight="bold">-p₂</text>
+                                <path d="M 320 220 L 235 220 L 235 185" class="svg-wire" marker-end="url(#arrow)"/>
+                                <!-- C2 Gain -->
+                                <rect x="520" y="145" width="60" height="50" class="svg-block"/>
+                                <text x="550" y="175" text-anchor="middle" font-size="16" font-weight="bold">C₂</text>
+                                <path d="M 580 170 L 625 170" class="svg-wire" marker-end="url(#arrow)"/>
+
+                                <!-- Bottom Branch (State n) -->
+                                <circle cx="140" cy="290" r="4" fill="#0f172a"/>
+                                <path d="M 140 290 L 220 290" class="svg-wire" marker-end="url(#arrow)"/>
+                                <circle cx="235" cy="290" r="15" fill="white" stroke="#047857" stroke-width="2"/>
+                                <text x="235" y="296" text-anchor="middle" font-size="20">+</text>
+                                <path d="M 250 290 L 320 290" class="svg-wire" marker-end="url(#arrow)"/>
+                                <text x="285" y="280" class="svg-text-bold">sXₙ(s)</text>
+                                <rect x="320" y="265" width="60" height="50" class="svg-block"/>
+                                <text x="350" y="295" text-anchor="middle" font-size="16">1/s</text>
+                                <path d="M 380 290 L 520 290" class="svg-wire" marker-end="url(#arrow)"/>
+                                <text x="450" y="280" class="svg-text-bold">Xₙ(s)</text>
+                                <!-- Feedback -pn -->
+                                <circle cx="420" cy="290" r="4" fill="#0f172a"/>
+                                <path d="M 420 290 L 420 340 L 380 340" class="svg-wire" marker-end="url(#arrow)"/>
+                                <rect x="320" y="315" width="60" height="50" class="svg-block"/>
+                                <text x="350" y="345" text-anchor="middle" font-size="16" font-weight="bold">-pₙ</text>
+                                <path d="M 320 340 L 235 340 L 235 305" class="svg-wire" marker-end="url(#arrow)"/>
+                                <!-- Cn Gain -->
+                                <rect x="520" y="265" width="60" height="50" class="svg-block"/>
+                                <text x="550" y="295" text-anchor="middle" font-size="16" font-weight="bold">Cₙ</text>
+                                <path d="M 580 290 L 640 290 L 640 185" class="svg-wire" marker-end="url(#arrow)"/>
+
+                                <!-- Output Y(s) Summing -->
+                                <circle cx="640" cy="170" r="15" fill="white" stroke="#047857" stroke-width="2"/>
+                                <text x="640" y="176" text-anchor="middle" font-size="20">+</text>
+                                <path d="M 655 170 L 710 170" class="svg-wire" marker-end="url(#arrow)"/>
+                                <text x="720" y="175" class="svg-text-bold text-lg">Y(s)</text>
+                            </svg>
+                            <p class="text-sm text-slate-500 mt-4 text-center italic">Block Diagram representation showing parallel, decoupled state paths.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3.4 Jordan Canonical Form -->
+                <div class="bg-white border border-slate-200 rounded-2xl shadow-sm mb-12 overflow-hidden">
+                    <div class="bg-slate-50 border-b border-slate-200 px-8 py-5">
+                        <h3 class="text-xl font-bold text-emerald-900 m-0">3.4 Jordan Canonical Form</h3>
+                    </div>
+                    <div class="p-8">
+                        <p class="text-slate-700 mb-4">Used when the system has <strong>repeated roots</strong>. A full diagonal matrix is impossible, so a Jordan block is formed with the repeated root on the main diagonal and 1s on the super-diagonal.</p>
+                        
+                        <p class="text-slate-700 mb-2">For a transfer function with a repeated pole $p_1$ of multiplicity 3:</p>
+                        <div class="math-block !bg-white !py-3">
+                            $$ G(s) = \frac{C_1}{(s + p_1)^3} + \frac{C_2}{(s + p_1)^2} + \frac{C_3}{s + p_1} + \dots $$
+                        </div>
+                        
+                        <div class="math-block !bg-emerald-50 !border-emerald-200">
+                            $$ A = \begin{bmatrix} -p_1 & 1 & 0 \\ 0 & -p_1 & 1 \\ 0 & 0 & -p_1 \end{bmatrix}, \quad B = \begin{bmatrix} 0 \\ 0 \\ 1 \end{bmatrix}, \quad C = \begin{bmatrix} C_1 & C_2 & C_3 \end{bmatrix} $$
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========================================== -->
+            <!-- SECTION 4: STATE EQUATION SOLUTION         -->
+            <!-- ========================================== -->
+            <section id="stm" class="mb-24">
+                <h2>
+                    <span class="bg-gradient-to-br from-emerald-600 to-emerald-800 text-white w-12 h-12 rounded-xl flex items-center justify-center font-extrabold text-2xl shadow-lg shrink-0">4</span>
+                    Solution of State Equations & State Transition Matrix
+                </h2>
+
+                <div class="mb-4">
+                    <span class="badge-important">CORE MATHEMATICS</span>
+                    <span class="badge-qp">Apr 2018</span><span class="badge-qp">May 2019</span><span class="badge-qp">Sep 2020</span>
+                </div>
+
+                <p class="text-lg text-slate-700 mb-8">Solving the state equation $\dot{X}(t) = A X(t) + B U(t)$ provides the time response of the internal states of the system.</p>
+
+                <!-- Time Domain Solution -->
+                <div class="bg-white border border-slate-200 rounded-2xl shadow-sm mb-12 p-8">
+                    <h3 class="text-2xl font-bold text-emerald-900 mt-0 mb-4 border-b pb-2">4.1 Time Domain Solution</h3>
+                    <p class="text-slate-700 mb-4">The complete solution consists of two parts: the Zero-Input Response (due to initial conditions) and the Zero-State Response (due to the input).</p>
+                    <div class="math-block !bg-emerald-50 !border-emerald-200 !py-5">
+                        $$ X(t) = \underbrace{e^{At} X(0)}_{\text{Zero-Input Response}} + \underbrace{\int_{0}^{t} e^{A(t-\tau)} B U(\tau) d\tau}_{\text{Zero-State (Forced) Response}} $$
+                    </div>
+                    <p class="text-slate-700 mt-4 mb-2">The matrix exponential $e^{At}$ is known as the <strong>State Transition Matrix (STM)</strong>, denoted by $\Phi(t)$.</p>
+                </div>
+
+                <!-- Properties of STM -->
+                <div class="bg-white border-l-4 border-l-emerald-500 border-y border-r border-slate-200 rounded-r-2xl shadow-sm mb-12 p-8">
+                    <h3 class="text-2xl font-bold text-emerald-900 mt-0 mb-4 border-b pb-2">4.2 Properties of State Transition Matrix $\Phi(t)$</h3>
+                    <ul class="space-y-4 text-slate-700">
+                        <li class="bg-slate-50 p-3 rounded border border-slate-100 flex items-center justify-between">
+                            <span><strong>1. Identity at t=0:</strong></span>
+                            <span class="font-mono font-bold">$\Phi(0) = e^{A \cdot 0} = I$</span>
+                        </li>
+                        <li class="bg-slate-50 p-3 rounded border border-slate-100 flex items-center justify-between">
+                            <span><strong>2. Inverse Property:</strong></span>
+                            <span class="font-mono font-bold">$\Phi(-t) = \Phi^{-1}(t)$</span>
+                        </li>
+                        <li class="bg-slate-50 p-3 rounded border border-slate-100 flex items-center justify-between">
+                            <span><strong>3. Multiplicative Property:</strong></span>
+                            <span class="font-mono font-bold">$\Phi(t_1 + t_2) = \Phi(t_1)\Phi(t_2)$</span>
+                        </li>
+                        <li class="bg-slate-50 p-3 rounded border border-slate-100 flex items-center justify-between">
+                            <span><strong>4. Power Property:</strong></span>
+                            <span class="font-mono font-bold">$[\Phi(t)]^n = \Phi(nt)$</span>
+                        </li>
+                        <li class="bg-slate-50 p-3 rounded border border-slate-100 flex items-center justify-between">
+                            <span><strong>5. State Transition Property:</strong></span>
+                            <span class="font-mono font-bold">$\Phi(t_2 - t_1)\Phi(t_1 - t_0) = \Phi(t_2 - t_0)$</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Laplace Transform Method -->
+                <div class="bg-white border border-slate-200 rounded-2xl shadow-sm mb-12 p-8">
+                    <h3 class="text-2xl font-bold text-emerald-900 mt-0 mb-4 border-b pb-2">4.3 Solution using Laplace Transform</h3>
+                    <p class="text-slate-700 mb-4">Taking the Laplace transform of $\dot{X}(t) = A X(t) + B U(t)$:</p>
+                    <div class="math-block !bg-white !py-3">
+                        $$ s X(s) - X(0) = A X(s) + B U(s) $$
+                        $$ (sI - A) X(s) = X(0) + B U(s) $$
+                        $$ X(s) = (sI - A)^{-1} X(0) + (sI - A)^{-1} B U(s) $$
+                    </div>
+                    <p class="text-slate-700 mt-4 mb-2">Taking the inverse Laplace transform gives the time-domain solution:</p>
+                    <div class="math-block !bg-emerald-50 !border-emerald-200 !py-4 !font-bold">
+                        $$ X(t) = L^{-1}\{(sI - A)^{-1}\} X(0) + L^{-1}\{(sI - A)^{-1} B U(s)\} $$
+                    </div>
+                    <p class="text-slate-700 mt-4 mb-2">From this, it is evident that the State Transition Matrix can be computed using Laplace transforms:</p>
+                    <div class="math-block !bg-white !py-3 !text-lg !font-bold !text-emerald-800 border-2 border-emerald-400">
+                        $$ \Phi(t) = e^{At} = L^{-1}\{(sI - A)^{-1}\} $$
+                    </div>
+                </div>
+
+                <!-- 4.4 Solved QP Problem -->
+                <div class="bg-white border-2 border-rose-200 rounded-3xl overflow-hidden shadow-lg mt-12 relative">
+                    <div class="absolute top-0 right-0 bg-rose-600 text-white px-5 py-1.5 rounded-bl-xl font-bold tracking-wider text-sm shadow-sm">SOLVED UNIVERSITY QP (MAY 2019)</div>
+                    <div class="p-8 md:p-10">
+                        <h3 class="text-2xl font-bold text-rose-950 mt-0 mb-6 border-none">Problem: Complete Response of a System</h3>
+                        
+                        <p class="text-slate-800 font-medium mb-6"><strong>Question:</strong> Find the complete response of the system:<br>
+                        $\dot{X} = \begin{bmatrix} 0 & 1 \\ -2 & -3 \end{bmatrix} X + \begin{bmatrix} 2 & 1 \\ 0 & 1 \end{bmatrix} U(t), \quad X(0) = \begin{bmatrix} 0 \\ 0 \end{bmatrix}$<br>
+                        $Y(t) = \begin{bmatrix} 1 & 0 \\ 1 & 1 \end{bmatrix} X$, for the input $U(t) = \begin{bmatrix} u(t) \\ e^{3t}u(t) \end{bmatrix}$, where $u(t)$ is the unit step input.</p>
+                        
+                        <div class="space-y-6">
+                            <div class="derivation-box !border-rose-200 !bg-rose-50/30">
+                                <h4 class="font-bold text-rose-900 mb-3">Step 1: Identify Matrices and Resolve $(sI-A)^{-1}$</h4>
+                                <div class="math-block !bg-white !py-3 !text-sm">
+                                    $$ A = \begin{bmatrix} 0 & 1 \\ -2 & -3 \end{bmatrix}, B = \begin{bmatrix} 2 & 1 \\ 0 & 1 \end{bmatrix}, C = \begin{bmatrix} 1 & 0 \\ 1 & 1 \end{bmatrix}, U(s) = \begin{bmatrix} 1/s \\ \frac{1}{s-3} \end{bmatrix} $$
+                                </div>
+                                <p class="text-sm text-slate-700 mt-4 mb-2">Find $(sI - A)$:</p>
+                                <div class="math-block !bg-white !py-3 !text-sm">
+                                    $$ sI - A = \begin{bmatrix} s & 0 \\ 0 & s \end{bmatrix} - \begin{bmatrix} 0 & 1 \\ -2 & -3 \end{bmatrix} = \begin{bmatrix} s & -1 \\ 2 & s+3 \end{bmatrix} $$
+                                </div>
+                                <p class="text-sm text-slate-700 mt-4 mb-2">Find the inverse $(sI - A)^{-1} = \frac{\text{Adj}(sI-A)}{|sI-A|}$:</p>
+                                <div class="math-block !bg-white !py-3 !text-sm">
+                                    $$ |sI - A| = s(s+3) - (-2) = s^2 + 3s + 2 = (s+1)(s+2) $$
+                                    <br>
+                                    $$ (sI - A)^{-1} = \frac{1}{(s+1)(s+2)} \begin{bmatrix} s+3 & 1 \\ -2 & s \end{bmatrix} = \begin{bmatrix} \frac{s+3}{(s+1)(s+2)} & \frac{1}{(s+1)(s+2)} \\ \frac{-2}{(s+1)(s+2)} & \frac{s}{(s+1)(s+2)} \end{bmatrix} $$
+                                </div>
+                            </div>
+
+                            <div class="derivation-box !border-rose-200 !bg-rose-50/30">
+                                <h4 class="font-bold text-rose-900 mb-3">Step 2: Calculate State Vector $X(s)$</h4>
+                                <p class="text-sm text-slate-700 mb-3">Since $X(0) = 0$, the zero-input response is 0. The state vector is purely the zero-state response:</p>
+                                <div class="math-block !bg-white !py-3 !text-sm overflow-x-auto">
+                                    $$ X(s) = (sI - A)^{-1} B U(s) $$
+                                    <br>
+                                    $$ X(s) = \begin{bmatrix} \frac{s+3}{(s+1)(s+2)} & \frac{1}{(s+1)(s+2)} \\ \frac{-2}{(s+1)(s+2)} & \frac{s}{(s+1)(s+2)} \end{bmatrix} \begin{bmatrix} 2 & 1 \\ 0 & 1 \end{bmatrix} \begin{bmatrix} 1/s \\ \frac{1}{s-3} \end{bmatrix} $$
+                                </div>
+                                <p class="text-sm text-slate-700 mt-4 mb-2">First, multiply $(sI-A)^{-1}$ and $B$:</p>
+                                <div class="math-block !bg-white !py-3 !text-sm">
+                                    $$ = \begin{bmatrix} \frac{2(s+3)}{(s+1)(s+2)} & \frac{s+4}{(s+1)(s+2)} \\ \frac{-4}{(s+1)(s+2)} & \frac{s-2}{(s+1)(s+2)} \end{bmatrix} \begin{bmatrix} 1/s \\ \frac{1}{s-3} \end{bmatrix} $$
+                                </div>
+                                <p class="text-sm text-slate-700 mt-4 mb-2">Now multiply by $U(s)$:</p>
+                                <div class="math-block !bg-white !py-3 !text-sm">
+                                    $$ X(s) = \begin{bmatrix} \frac{2s+6}{s(s+1)(s+2)} + \frac{s+4}{(s+1)(s+2)(s-3)} \\ \frac{-4}{s(s+1)(s+2)} + \frac{s-2}{(s+1)(s+2)(s-3)} \end{bmatrix} = \begin{bmatrix} X_1(s) \\ X_2(s) \end{bmatrix} $$
+                                </div>
+                            </div>
+
+                            <div class="derivation-box !border-rose-200 !bg-rose-50/30">
+                                <h4 class="font-bold text-rose-900 mb-3">Step 3: Partial Fraction Expansion & Inverse Laplace</h4>
+                                <p class="text-sm text-slate-700 mb-2">Applying partial fractions to each term in $X(s)$:</p>
+                                <div class="math-block !bg-white !py-3 !text-sm text-left px-8">
+                                    $$ X_1(s) = \left( \frac{3}{s} - \frac{4}{s+1} + \frac{1}{s+2} \right) + \left( \frac{-3/4}{s+1} + \frac{1/5}{s+2} + \frac{7/20}{s-3} \right) $$
+                                    <br>
+                                    $$ X_2(s) = \left( \frac{-2}{s} + \frac{4}{s+1} - \frac{2}{s+2} \right) + \left( \frac{3/4}{s+1} - \frac{2/5}{s+2} + \frac{1/20}{s-3} \right) $$
+                                </div>
+                                <p class="text-sm text-slate-700 mt-4 mb-2">Taking $L^{-1}$ yields $X(t)$:</p>
+                                <div class="math-block !bg-white !py-3 !text-sm border-2 border-rose-400">
+                                    $$ X(t) = \begin{bmatrix} 3u(t) - \frac{19}{4}e^{-t} + \frac{6}{5}e^{-2t} + \frac{7}{20}e^{3t} \\ -2u(t) + \frac{19}{4}e^{-t} - \frac{12}{5}e^{-2t} + \frac{1}{20}e^{3t} \end{bmatrix} $$
+                                </div>
+                            </div>
+
+                            <div class="derivation-box !border-rose-200 !bg-rose-50/30">
+                                <h4 class="font-bold text-rose-900 mb-3">Step 4: Calculate Output $Y(t)$</h4>
+                                <p class="text-sm text-slate-700 mb-2">$Y(t) = C X(t)$</p>
+                                <div class="math-block !bg-white !py-3 !text-sm">
+                                    $$ Y(t) = \begin{bmatrix} 1 & 0 \\ 1 & 1 \end{bmatrix} \begin{bmatrix} X_1(t) \\ X_2(t) \end{bmatrix} = \begin{bmatrix} X_1(t) \\ X_1(t) + X_2(t) \end{bmatrix} $$
+                                </div>
+                                <p class="text-sm text-slate-700 mt-4 mb-2">Final Output Matrix:</p>
+                                <div class="math-block !bg-white !py-4 !font-bold text-rose-800 border-2 border-rose-400 shadow-md">
+                                    $$ Y(t) = \begin{bmatrix} 3u(t) - \frac{19}{4}e^{-t} + \frac{6}{5}e^{-2t} + \frac{7}{20}e^{3t} \\ u(t) - \frac{6}{5}e^{-2t} + \frac{2}{5}e^{3t} \end{bmatrix} $$
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+        </main>
+        
+        <!-- Table of Contents Sidebar -->
+        <aside class="hidden xl:block w-72 shrink-0 relative">
+            <div class="sticky top-28 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+                <h4 class="font-extrabold text-slate-900 mb-4 uppercase tracking-widest text-xs border-b border-slate-100 pb-2">Module 3 Contents</h4>
+                <nav class="space-y-2 text-sm font-medium">
+                    <a href="#intro" class="toc-link">1. Intro to State Space</a>
+                    <a href="#representation" class="toc-link">2. SS Representation</a>
+                    <div class="pl-4 space-y-1 mt-1 mb-2 border-l border-slate-200 ml-2">
+                        <a href="#representation" class="block text-slate-500 hover:text-emerald-600 transition-colors py-1 text-xs">Block Diagram</a>
+                        <a href="#representation" class="block text-slate-500 hover:text-emerald-600 transition-colors py-1 text-xs">RLC Modeling (QP)</a>
+                        <a href="#representation" class="block text-slate-500 hover:text-emerald-600 transition-colors py-1 text-xs">TF from State Space</a>
+                    </div>
+                    <a href="#canonical" class="toc-link">3. Canonical Forms</a>
+                    <div class="pl-4 space-y-1 mt-1 mb-2 border-l border-slate-200 ml-2">
+                        <a href="#canonical" class="block text-slate-500 hover:text-emerald-600 transition-colors py-1 text-xs">Controllable</a>
+                        <a href="#canonical" class="block text-slate-500 hover:text-emerald-600 transition-colors py-1 text-xs">Observable</a>
+                        <a href="#canonical" class="block text-slate-500 hover:text-emerald-600 transition-colors py-1 text-xs">Diagonal (Modal)</a>
+                        <a href="#canonical" class="block text-slate-500 hover:text-emerald-600 transition-colors py-1 text-xs">Jordan</a>
+                    </div>
+                    <a href="#stm" class="toc-link">4. Solution & STM</a>
+                    <div class="pl-4 space-y-1 mt-1 mb-2 border-l border-slate-200 ml-2">
+                        <a href="#stm" class="block text-slate-500 hover:text-emerald-600 transition-colors py-1 text-xs font-bold">Solved Matrix QP</a>
+                    </div>
+                </nav>
+            </div>
+        </aside>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-8 text-center mt-12 border-t-4 border-emerald-600">
+        <p class="mb-2 text-lg font-bold text-white">Advanced Control Theory • Module 3 Comprehensive Notes</p>
+        <p class="text-sm">Compiled for Engineering Curriculum Examination Preparation</p>
+    </footer>
+
+    <script>
+        // Active state toggling for sidebar navigation based on scroll position
+        window.addEventListener('DOMContentLoaded', () => {
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    const id = entry.target.getAttribute('id');
+                    if (entry.intersectionRatio > 0) {
+                        document.querySelectorAll('.toc-link').forEach(link => {
+                            link.classList.remove('active');
+                            link.classList.remove('font-bold');
+                            link.classList.remove('text-emerald-600');
+                        });
+                        const activeLink = document.querySelector(`.toc-link[href="#${id}"]`);
+                        if(activeLink) {
+                            activeLink.classList.add('active');
+                            activeLink.classList.add('font-bold');
+                            activeLink.classList.add('text-emerald-600');
+                        }
+                    }
+                });
+            }, { threshold: 0.15 });
+
+            document.querySelectorAll('section[id]').forEach((section) => {
+                observer.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>
