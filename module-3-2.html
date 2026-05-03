@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control Theory Notes & Explanations</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- MathJax for rendering LaTeX math -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .math-block { overflow-x: auto; padding: 1rem 0; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 p-4 md:p-8">
+
+    <div class="max-w-4xl mx-auto bg-white p-6 md:p-10 rounded-xl shadow-md">
+        
+        <!-- ================= SECTION 1: CONTROLLABLE CANONICAL FORM ================= -->
+        <h1 class="text-3xl font-bold text-indigo-700 mb-6 border-b pb-4">Understanding the Controllable Canonical Form</h1>
+        
+        <p class="text-lg mb-6 leading-relaxed">
+            The provided notes demonstrate how to convert a system from a general state-space representation into a standard structure known as the <strong>Controllable Canonical Form (CCF)</strong>. This is done by first finding the system's Transfer Function, extracting its coefficients, and mapping them directly to the CCF matrices. Here is the step-by-step breakdown:
+        </p>
+
+        <!-- Step 1 -->
+        <section class="mb-10">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-3 flex items-center">
+                <span class="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-sm mr-3">Step 1</span> 
+                Identify the Initial State-Space System
+            </h2>
+            <p class="mb-3">The given system is represented by the standard state-space equations \(\dot{x} = Ax + Bu\) and \(y = Cx + Du\). From the notes, we extract the matrices:</p>
+            <div class="math-block bg-gray-50 rounded-lg text-center">
+                $$ A = \begin{bmatrix} -1 & 1 \\ 0 & 2 \end{bmatrix}, \quad B = \begin{bmatrix} 2 \\ 1 \end{bmatrix}, \quad C = \begin{bmatrix} 1 & 2 \end{bmatrix}, \quad D = [0] $$
+            </div>
+        </section>
+
+        <!-- Step 2 -->
+        <section class="mb-10">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-3 flex items-center">
+                <span class="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-sm mr-3">Step 2</span> 
+                Calculate the Transfer Function
+            </h2>
+            <p class="mb-3">To find the canonical form easily, we first convert the system into a transfer function \(G(s)\) using the formula:</p>
+            <div class="math-block text-center">
+                $$ G(s) = C(sI - A)^{-1}B + D $$
+            </div>
+            <p class="mb-3">The term \((sI - A)\) subtracts matrix \(A\) from a diagonal matrix of \(s\) values. Taking its inverse and multiplying by \(C\) and \(B\) yields the transfer function. The notes skip the intermediate matrix multiplication and arrive at the result:</p>
+            <div class="math-block bg-gray-50 rounded-lg text-center">
+                $$ G(s) = \frac{4s - 1}{s^2 - s - 2} $$
+            </div>
+        </section>
+
+        <!-- Step 3 -->
+        <section class="mb-10">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-3 flex items-center">
+                <span class="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-sm mr-3">Step 3</span> 
+                Extract Coefficients by Inspection
+            </h2>
+            <p class="mb-3">A standard second-order transfer function has the form:</p>
+            <div class="math-block text-center">
+                $$ G(s) = \frac{b_0 s^2 + b_1 s + b_2}{s^2 + a_1 s + a_2} $$
+            </div>
+            <p class="mb-3">By comparing our calculated transfer function \( \frac{0 \cdot s^2 + 4s - 1}{s^2 - s - 2} \) with the standard form, we can identify the coefficients:</p>
+            <ul class="list-disc list-inside bg-gray-50 p-4 rounded-lg">
+                <li><strong>Denominator coefficients (poles):</strong> \(a_1 = -1\), \(a_2 = -2\)</li>
+                <li><strong>Numerator coefficients (zeros):</strong> \(b_0 = 0\), \(b_1 = 4\), \(b_2 = -1\)</li>
+            </ul>
+        </section>
+
+        <!-- Step 4 -->
+        <section class="mb-6">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-3 flex items-center">
+                <span class="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-sm mr-3">Step 4</span> 
+                Construct the Controllable Canonical Form
+            </h2>
+            <p class="mb-3">Once we have the coefficients, we can plug them directly into the standard Controllable Canonical Form templates for the new state matrices.</p>
+            
+            <h3 class="font-semibold text-lg mt-4 mb-2">The New State Matrix (\(A_c\)) and Input Matrix (\(B_c\))</h3>
+            <p>The \(A_c\) matrix uses the negative denominator coefficients in the bottom row. The \(B_c\) matrix is always a standard vector ending in 1.</p>
+            <div class="math-block text-center">
+                $$ \begin{bmatrix} \dot{x}_1 \\ \dot{x}_2 \end{bmatrix} = \begin{bmatrix} 0 & 1 \\ -a_2 & -a_1 \end{bmatrix} \begin{bmatrix} x_1 \\ x_2 \end{bmatrix} + \begin{bmatrix} 0 \\ 1 \end{bmatrix} u $$
+            </div>
+            <p class="text-sm text-gray-600 text-center mb-3">Substituting \(a_1 = -1\) and \(a_2 = -2\):</p>
+            <div class="math-block bg-blue-50 border-l-4 border-blue-500 rounded-r-lg text-center font-bold">
+                $$ \begin{bmatrix} \dot{x}_1 \\ \dot{x}_2 \end{bmatrix} = \begin{bmatrix} 0 & 1 \\ 2 & 1 \end{bmatrix} \begin{bmatrix} x_1 \\ x_2 \end{bmatrix} + \begin{bmatrix} 0 \\ 1 \end{bmatrix} u $$
+            </div>
+
+            <h3 class="font-semibold text-lg mt-6 mb-2">The New Output Matrix (\(C_c\))</h3>
+            <p>The \(C_c\) matrix is built using a combination of the numerator and denominator coefficients:</p>
+            <div class="math-block text-center">
+                $$ y = \begin{bmatrix} b_2 - a_2 b_0 & b_1 - a_1 b_0 \end{bmatrix} $$
+            </div>
+            <p class="text-sm text-gray-600 text-center mb-3">Since \(b_0 = 0\), the terms \(a_2 b_0\) and \(a_1 b_0\) become zero, leaving us with just \(b_2\) and \(b_1\):</p>
+            <div class="math-block bg-blue-50 border-l-4 border-blue-500 rounded-r-lg text-center font-bold">
+                $$ y = \begin{bmatrix} -1 & 4 \end{bmatrix} x $$
+            </div>
+        </section>
+
+
+        <!-- ================= SECTION 2: SAMPLING THEOREM ================= -->
+        <div class="mt-16 mb-8 border-t-2 border-gray-200"></div>
+        
+        <h1 class="text-3xl font-bold text-teal-700 mb-6 border-b pb-4">Understanding the Sampling Theorem</h1>
+        
+        <!-- Section 1: Transcription -->
+        <section class="mb-10">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
+                <span class="bg-teal-100 text-teal-800 px-3 py-1 rounded-full text-sm mr-3">1</span> 
+                What Your Notes Say
+            </h2>
+            <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg italic text-gray-700 mb-4">
+                <p class="mb-2"><strong>State and explain sampling theorem (3)</strong></p>
+                <p class="mb-2">"A band limited continuous time signal with highest frequency \(f_m\) hertz can be uniquely recovered from its samples provided that the sampling rate \(F_s\) is greater than or equal to \(2f_m\) samples per seconds."</p>
+                <p class="mb-2">"During sampling process, a continuous-time signal is converted into discrete-time signals by taking samples of continuous-time signal at discrete time intervals."</p>
+                <div class="text-center font-bold not-italic mt-4">
+                    $$ x(nT_s) = x(t) $$
+                    $$ T = \text{Sampling Interval}, \quad x(t) = \text{Analog input signal} $$
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Simple Explanation -->
+        <section class="mb-10">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
+                <span class="bg-teal-100 text-teal-800 px-3 py-1 rounded-full text-sm mr-3">2</span> 
+                The Simple English Explanation
+            </h2>
+            <p class="mb-4 text-lg leading-relaxed">
+                Imagine you are watching a bird flap its wings. In real life, the movement is perfectly smooth and continuous. This is an <strong>analog (continuous-time) signal</strong>.
+            </p>
+            <p class="mb-4 text-lg leading-relaxed">
+                Now, imagine you want to record this bird using a digital camera. The camera doesn't capture smooth reality; it takes a series of rapid photographs (frames). This process of taking snapshots is called <strong>sampling</strong>. You are converting smooth reality into a sequence of dots or pictures (a <strong>discrete-time signal</strong>).
+            </p>
+            
+            <div class="bg-white border-2 border-teal-100 p-6 rounded-lg shadow-sm mb-4">
+                <h3 class="text-xl font-bold text-teal-700 mb-2">The Big Question: How fast do you need to take pictures?</h3>
+                <p class="mb-3">
+                    If the bird flaps its wings 10 times a second (this is \(f_m\), the highest frequency), how many photos do you need to take per second so that when you play them back, the motion looks correct?
+                </p>
+                <ul class="list-disc list-inside space-y-2 text-gray-700 ml-4">
+                    <li>If you take only 5 photos a second, you'll miss wing flaps. When you play it back, it might look like the bird is floating or flying upside down. (This error is called <em>aliasing</em>).</li>
+                    <li><strong>The Sampling Theorem (Nyquist Theorem) gives us the golden rule:</strong> You must take pictures at least <strong>TWICE as fast</strong> as the fastest movement.</li>
+                    <li>So, if the wings flap 10 times a second (\(f_m = 10\)), you must take <em>at least</em> 20 photos per second (\(F_s \ge 20\)).</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Section 3: The Math Breakdown -->
+        <section class="mb-6">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
+                <span class="bg-teal-100 text-teal-800 px-3 py-1 rounded-full text-sm mr-3">3</span> 
+                Breaking Down the Variables
+            </h2>
+            
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h4 class="font-bold text-lg text-indigo-700 mb-1">\( f_m \)</h4>
+                    <p class="text-sm"><strong>Maximum Signal Frequency:</strong> The absolute highest pitch or fastest change occurring in your original analog signal (measured in Hertz).</p>
+                </div>
+                
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h4 class="font-bold text-lg text-indigo-700 mb-1">\( F_s \)</h4>
+                    <p class="text-sm"><strong>Sampling Rate (or Frequency):</strong> How many "snapshots" you are taking per second. The theorem dictates \( F_s \ge 2f_m \).</p>
+                </div>
+
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h4 class="font-bold text-lg text-indigo-700 mb-1">\( T \) (or \( T_s \))</h4>
+                    <p class="text-sm"><strong>Sampling Interval:</strong> The time gap between each snapshot. It is the inverse of the sampling rate (\( T = 1/F_s \)).</p>
+                </div>
+
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h4 class="font-bold text-lg text-indigo-700 mb-1">\( x(nT_s) = x(t) \)</h4>
+                    <p class="text-sm"><strong>The Conversion Equation:</strong> This math simply says "Our digital samples \(x(nT_s)\) are just the exact values of the continuous wave \(x(t)\) captured at specific time steps (\(n\))."</p>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================= SECTION 3: CONTROLLABILITY & OBSERVABILITY ================= -->
+        <div class="mt-16 mb-8 border-t-2 border-gray-200"></div>
+        
+        <h1 class="text-3xl font-bold text-blue-700 mb-6 border-b pb-4">Controllability and Observability</h1>
+        
+        <!-- Section 1: Transcription/Definitions -->
+        <section class="mb-10">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
+                <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm mr-3">1</span> 
+                Formal Definitions
+            </h2>
+            <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg italic text-gray-700 mb-4">
+                <p class="mb-2 font-bold text-gray-900">12.a) Define controllability and observability of a system</p>
+                <p class="mb-2"><strong>Controllability:</strong> A system is said to be completely state controllable if it is possible to transfer the system state from any initial state to any desired final state in a finite time interval by applying an unconstrained control input.</p>
+                <p class="mb-2"><strong>Observability:</strong> A system is said to be completely observable if the initial state can be completely determined from the knowledge of the output and input over a finite time interval.</p>
+            </div>
+        </section>
+
+        <!-- Section 2: Simple Explanation -->
+        <section class="mb-10">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
+                <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm mr-3">2</span> 
+                The Simple English Explanation
+            </h2>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+                <!-- Controllability Simple -->
+                <div class="bg-white border-2 border-blue-100 p-6 rounded-lg shadow-sm">
+                    <h3 class="text-xl font-bold text-blue-700 mb-2">Controllability = "Can I drive it there?"</h3>
+                    <p class="mb-3 text-gray-700">
+                        Imagine you are driving a car. Controllability asks: <em>"Using the steering wheel, gas pedal, and brakes (your inputs), can you steer the car from where it is right now to exactly where you want it to be within a specific amount of time?"</em>
+                    </p>
+                    <p class="text-gray-700">
+                        If the steering wheel is broken, the system is <strong>uncontrollable</strong> because no matter what you do, you can't force the car to go exactly where you want.
+                    </p>
+                </div>
+
+                <!-- Observability Simple -->
+                <div class="bg-white border-2 border-blue-100 p-6 rounded-lg shadow-sm">
+                    <h3 class="text-xl font-bold text-blue-700 mb-2">Observability = "Can I figure out where it started?"</h3>
+                    <p class="mb-3 text-gray-700">
+                        Imagine you are tracking a rocket but you only have a radar measuring its altitude (your output). Observability asks: <em>"Just by looking at the altitude graph over the last few minutes, can I calculate exactly what the rocket's original speed, position, and angle were?"</em>
+                    </p>
+                    <p class="text-gray-700">
+                        If a sensor is broken or doesn't give you enough unique information to figure out the internal workings, the system is <strong>unobservable</strong>.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECTION 4: JURY STABILITY CRITERION ================= -->
+        <div class="mt-16 mb-8 border-t-2 border-gray-200"></div>
+        
+        <h1 class="text-3xl font-bold text-red-700 mb-6 border-b pb-4">Stability of Sampled Data Systems</h1>
+        
+        <!-- Section 1: Problem Statement -->
+        <section class="mb-10">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
+                <span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm mr-3">1</span> 
+                The Problem
+            </h2>
+            <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg italic text-gray-700 mb-4">
+                <p class="mb-2 font-bold text-gray-900">b) Check the stability of the sampled data control system shown below</p>
+                <div class="text-center font-bold not-italic text-xl mt-4">
+                    $$ z^3 - 0.2z^2 - 0.25z + 0.05 = 0 $$
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Explanation & Solution -->
+        <section class="mb-10">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
+                <span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm mr-3">2</span> 
+                Solving with Jury Stability Criterion
+            </h2>
+            <p class="mb-4 text-lg leading-relaxed">
+                To determine if a discrete-time (sampled) system is stable, we check if all the roots of its characteristic equation lie <strong>inside the unit circle</strong> (\(|z| < 1\)). We do this without calculating the actual roots by using the <strong>Jury Stability Test</strong>.
+            </p>
+            
+            <div class="bg-white border-2 border-red-100 p-6 rounded-lg shadow-sm mb-6">
+                <h3 class="text-xl font-bold text-red-700 mb-3">Step 1: Define the Coefficients</h3>
+                <p class="mb-2">For a 3rd-order equation \( P(z) = a_3z^3 + a_2z^2 + a_1z + a_0 = 0 \), our coefficients are:</p>
+                <ul class="list-disc list-inside ml-4 text-gray-700">
+                    <li>\( a_3 = 1 \)</li>
+                    <li>\( a_2 = -0.2 \)</li>
+                    <li>\( a_1 = -0.25 \)</li>
+                    <li>\( a_0 = 0.05 \)</li>
+                </ul>
+            </div>
+
+            <div class="bg-white border-2 border-red-100 p-6 rounded-lg shadow-sm mb-6">
+                <h3 class="text-xl font-bold text-red-700 mb-3">Step 2: Check Initial Conditions</h3>
+                <p class="mb-3 text-gray-700">A stable 3rd-order system must pass these three quick mathematical checks:</p>
+                <ol class="list-decimal list-inside space-y-3 ml-4 text-gray-700">
+                    <li>
+                        <strong>\( P(1) > 0 \)</strong>: 
+                        <br> \( P(1) = 1 - 0.2 - 0.25 + 0.05 = 0.6 \) 
+                        <span class="text-green-600 font-bold ml-2">✓ (0.6 > 0)</span>
+                    </li>
+                    <li>
+                        <strong>\( (-1)^n P(-1) > 0 \)</strong> (Since \(n=3\), this means \( P(-1) < 0 \)):
+                        <br> \( P(-1) = (-1)^3 - 0.2(-1)^2 - 0.25(-1) + 0.05 = -1 - 0.2 + 0.25 + 0.05 = -0.9 \)
+                        <span class="text-green-600 font-bold ml-2">✓ (-0.9 < 0)</span>
+                    </li>
+                    <li>
+                        <strong>\( |a_0| < a_3 \)</strong>:
+                        <br> \( |0.05| < 1 \)
+                        <span class="text-green-600 font-bold ml-2">✓ (0.05 < 1)</span>
+                    </li>
+                </ol>
+            </div>
+
+            <div class="bg-white border-2 border-red-100 p-6 rounded-lg shadow-sm mb-6">
+                <h3 class="text-xl font-bold text-red-700 mb-3">Step 3: The Jury Table</h3>
+                <p class="mb-4 text-gray-700">Since it's a 3rd-order equation, we need to build one set of determinant values (\(b_0\) and \(b_2\)) from the coefficients and check if <strong>\( |b_0| > |b_2| \)</strong>.</p>
+                
+                <div class="overflow-x-auto mb-4">
+                    <table class="min-w-full bg-gray-50 border border-gray-200 text-center">
+                        <thead class="bg-gray-200">
+                            <tr>
+                                <th class="py-2 px-4 border-b">Row</th>
+                                <th class="py-2 px-4 border-b">\(z^0\)</th>
+                                <th class="py-2 px-4 border-b">\(z^1\)</th>
+                                <th class="py-2 px-4 border-b">\(z^2\)</th>
+                                <th class="py-2 px-4 border-b">\(z^3\)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="py-2 px-4 border-b font-bold">1</td>
+                                <td class="py-2 px-4 border-b">0.05 (\(a_0\))</td>
+                                <td class="py-2 px-4 border-b">-0.25 (\(a_1\))</td>
+                                <td class="py-2 px-4 border-b">-0.2 (\(a_2\))</td>
+                                <td class="py-2 px-4 border-b">1 (\(a_3\))</td>
+                            </tr>
+                            <tr>
+                                <td class="py-2 px-4 border-b font-bold">2</td>
+                                <td class="py-2 px-4 border-b">1 (\(a_3\))</td>
+                                <td class="py-2 px-4 border-b">-0.2 (\(a_2\))</td>
+                                <td class="py-2 px-4 border-b">-0.25 (\(a_1\))</td>
+                                <td class="py-2 px-4 border-b">0.05 (\(a_0\))</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <p class="mb-2 font-semibold">Calculating the determinants for Row 3:</p>
+                <div class="math-block bg-gray-50 rounded-lg text-center mb-4">
+                    $$ b_0 = \begin{vmatrix} 0.05 & 1 \\ 1 & 0.05 \end{vmatrix} = (0.05)(0.05) - (1)(1) = 0.0025 - 1 = -0.9975 $$
+                    $$ b_2 = \begin{vmatrix} 0.05 & -0.25 \\ 1 & -0.2 \end{vmatrix} = (0.05)(-0.2) - (1)(-0.25) = -0.01 + 0.25 = 0.24 $$
+                </div>
+                
+                <p class="mb-2 text-gray-700 font-semibold">Checking the final magnitude condition:</p>
+                <p class="font-bold text-lg text-center bg-green-50 text-green-800 p-3 rounded border border-green-200">
+                    \( |-0.9975| > |0.24| \implies 0.9975 > 0.24 \)  <span class="ml-2">✓ Satisfied</span>
+                </p>
+            </div>
+        </section>
+        
+        <!-- Conclusion -->
+        <div class="bg-green-100 border-l-4 border-green-500 p-5 rounded text-green-900 font-bold text-lg text-center shadow-sm">
+            Conclusion: Because all of the Jury Stability conditions are satisfied, all roots lie inside the unit circle. The sampled data control system is STABLE.
+        </div>
+
+        <!-- ================= SECTION 5: STATE EQUATION SOLUTION ================= -->
+        <div class="mt-16 mb-8 border-t-2 border-gray-200"></div>
+        
+        <h1 class="text-3xl font-bold text-purple-700 mb-6 border-b pb-4">Solving a Homogeneous State Equation</h1>
+        
+        <!-- Section 1: Problem Statement -->
+        <section class="mb-10">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
+                <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm mr-3">1</span> 
+                The Problem
+            </h2>
+            <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg italic text-gray-700 mb-4">
+                <p class="mb-2 font-bold text-gray-900">Compute the solution to the state equation:</p>
+                <div class="math-block text-center font-bold not-italic text-xl mt-4">
+                    $$ \dot{x} = \begin{bmatrix} -1 & 0 \\ 0 & -2 \end{bmatrix}x, \quad x(0) = \begin{bmatrix} 1 \\ 1 \end{bmatrix} $$
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Explanation & Solution -->
+        <section class="mb-10">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
+                <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm mr-3">2</span> 
+                Step-by-Step Solution
+            </h2>
+            <p class="mb-4 text-lg leading-relaxed">
+                This is an unforced (homogeneous) state equation of the form \( \dot{x}(t) = Ax(t) \). Because there is no input vector \( u(t) \), the general solution relies entirely on the initial state and the system's natural dynamics. The formula for the solution is:
+            </p>
+            <div class="math-block text-center mb-6">
+                $$ x(t) = e^{At} x(0) $$
+            </div>
+            
+            <div class="bg-white border-2 border-purple-100 p-6 rounded-lg shadow-sm mb-6">
+                <h3 class="text-xl font-bold text-purple-700 mb-3">Step 1: Find the State Transition Matrix (\( e^{At} \))</h3>
+                <p class="mb-3 text-gray-700">
+                    Normally, calculating the matrix exponential \( e^{At} \) requires finding the inverse Laplace transform of \( (sI - A)^{-1} \). However, there is a special shortcut when matrix \(A\) is a <strong>diagonal matrix</strong> (only the main diagonal has non-zero numbers).
+                </p>
+                <p class="mb-3 text-gray-700">
+                    For a diagonal matrix, \( e^{At} \) is simply a new diagonal matrix where you apply \( e^{\lambda t} \) to each diagonal element:
+                </p>
+                <div class="math-block bg-gray-50 rounded-lg text-center mb-4">
+                    $$ A = \begin{bmatrix} -1 & 0 \\ 0 & -2 \end{bmatrix} \implies e^{At} = \begin{bmatrix} e^{-1t} & 0 \\ 0 & e^{-2t} \end{bmatrix} $$
+                </div>
+            </div>
+
+            <div class="bg-white border-2 border-purple-100 p-6 rounded-lg shadow-sm mb-6">
+                <h3 class="text-xl font-bold text-purple-700 mb-3">Step 2: Multiply by Initial Conditions</h3>
+                <p class="mb-4 text-gray-700">Now, we just multiply our State Transition Matrix by the initial state vector \( x(0) \) to find \( x(t) \).</p>
+                
+                <div class="math-block text-center mb-4">
+                    $$ x(t) = \begin{bmatrix} e^{-t} & 0 \\ 0 & e^{-2t} \end{bmatrix} \begin{bmatrix} 1 \\ 1 \end{bmatrix} $$
+                </div>
+                
+                <p class="mb-2 text-gray-700 font-semibold text-center">Performing the row-by-column multiplication:</p>
+                
+                <div class="math-block bg-purple-50 border-l-4 border-purple-500 rounded-r-lg text-center font-bold">
+                    $$ x(t) = \begin{bmatrix} (e^{-t} \cdot 1) + (0 \cdot 1) \\ (0 \cdot 1) + (e^{-2t} \cdot 1) \end{bmatrix} = \begin{bmatrix} e^{-t} \\ e^{-2t} \end{bmatrix} $$
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECTION 6: SIMILARITY TRANSFORMATION ================= -->
+        <div class="mt-16 mb-8 border-t-2 border-gray-200"></div>
+        
+        <h1 class="text-3xl font-bold text-orange-700 mb-6 border-b pb-4">Similarity Transformation to CCF</h1>
+        
+        <section class="mb-10">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
+                <span class="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm mr-3">1</span> 
+                The Problem
+            </h2>
+            <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg italic text-gray-700 mb-4">
+                <p class="mb-2 font-bold text-gray-900">a) Convert the system into controllable canonical form by applying similarity transformation.</p>
+                <div class="math-block text-center font-bold not-italic text-xl mt-4">
+                    $$ \dot{x} = \begin{bmatrix} -1 & 0 \\ 0 & -2 \end{bmatrix}x + \begin{bmatrix} 1 \\ 2 \end{bmatrix}u, \quad y = \begin{bmatrix} 1 & 1 \end{bmatrix}x $$
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-10">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
+                <span class="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm mr-3">2</span> 
+                Step-by-Step Solution
+            </h2>
+            
+            <div class="bg-white border-2 border-orange-100 p-6 rounded-lg shadow-sm mb-6">
+                <h3 class="text-xl font-bold text-orange-700 mb-3">Step 1: Find the Controllability Matrix (\(Q_c\))</h3>
+                <p class="mb-3 text-gray-700">The controllability matrix is defined as \( Q_c = \begin{bmatrix} B & AB \end{bmatrix} \).</p>
+                <div class="math-block text-center mb-4">
+                    $$ AB = \begin{bmatrix} -1 & 0 \\ 0 & -2 \end{bmatrix} \begin{bmatrix} 1 \\ 2 \end{bmatrix} = \begin{bmatrix} -1 \\ -4 \end{bmatrix} $$
+                    $$ Q_c = \begin{bmatrix} 1 & -1 \\ 2 & -4 \end{bmatrix} $$
+                </div>
+            </div>
+
+            <div class="bg-white border-2 border-orange-100 p-6 rounded-lg shadow-sm mb-6">
+                <h3 class="text-xl font-bold text-orange-700 mb-3">Step 2: Find the Transformation Matrix (\(M\))</h3>
+                <p class="mb-3 text-gray-700">First, we need the characteristic equation of \(A\) to find the \(W\) matrix. \( |sI - A| = 0 \):</p>
+                <div class="math-block text-center mb-4">
+                    $$ \begin{vmatrix} s+1 & 0 \\ 0 & s+2 \end{vmatrix} = (s+1)(s+2) = s^2 + 3s + 2 = 0 $$
+                </div>
+                <p class="mb-3 text-gray-700">The coefficients are \(a_1 = 3\) and \(a_2 = 2\). The matrix \(W\) for a 2nd-order system is constructed using \(a_1\):</p>
+                <div class="math-block text-center mb-4">
+                    $$ W = \begin{bmatrix} a_1 & 1 \\ 1 & 0 \end{bmatrix} = \begin{bmatrix} 3 & 1 \\ 1 & 0 \end{bmatrix} $$
+                </div>
+                <p class="mb-3 text-gray-700">Now compute \( M = Q_c W \):</p>
+                <div class="math-block text-center mb-4">
+                    $$ M = \begin{bmatrix} 1 & -1 \\ 2 & -4 \end{bmatrix} \begin{bmatrix} 3 & 1 \\ 1 & 0 \end{bmatrix} = \begin{bmatrix} 2 & 1 \\ 2 & 2 \end{bmatrix} $$
+                </div>
+            </div>
+
+            <div class="bg-white border-2 border-orange-100 p-6 rounded-lg shadow-sm mb-6">
+                <h3 class="text-xl font-bold text-orange-700 mb-3">Step 3: Calculate the New Canonical Matrices</h3>
+                <p class="mb-3 text-gray-700">We need \(M^{-1}\) to transform the system. \( |M| = (2)(2) - (1)(2) = 2 \).</p>
+                <div class="math-block text-center mb-4">
+                    $$ M^{-1} = \frac{1}{2} \begin{bmatrix} 2 & -1 \\ -2 & 2 \end{bmatrix} = \begin{bmatrix} 1 & -0.5 \\ -1 & 1 \end{bmatrix} $$
+                </div>
+                <p class="mb-3 text-gray-700">Now apply the similarity transformations: \( A_c = M^{-1}AM \), \( B_c = M^{-1}B \), and \( C_c = CM \).</p>
+                <div class="math-block bg-orange-50 rounded-lg text-center font-bold">
+                    $$ A_c = \begin{bmatrix} 1 & -0.5 \\ -1 & 1 \end{bmatrix} \begin{bmatrix} -1 & 0 \\ 0 & -2 \end{bmatrix} \begin{bmatrix} 2 & 1 \\ 2 & 2 \end{bmatrix} = \begin{bmatrix} 0 & 1 \\ -2 & -3 \end{bmatrix} $$
+                    $$ B_c = \begin{bmatrix} 1 & -0.5 \\ -1 & 1 \end{bmatrix} \begin{bmatrix} 1 \\ 2 \end{bmatrix} = \begin{bmatrix} 0 \\ 1 \end{bmatrix} $$
+                    $$ C_c = \begin{bmatrix} 1 & 1 \end{bmatrix} \begin{bmatrix} 2 & 1 \\ 2 & 2 \end{bmatrix} = \begin{bmatrix} 4 & 3 \end{bmatrix} $$
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECTION 7: STABILITY (ROUTH-HURWITZ) ================= -->
+        <div class="mt-16 mb-8 border-t-2 border-gray-200"></div>
+        
+        <h1 class="text-3xl font-bold text-rose-700 mb-6 border-b pb-4">Stability via Routh-Hurwitz</h1>
+        
+        <section class="mb-10">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
+                <span class="bg-rose-100 text-rose-800 px-3 py-1 rounded-full text-sm mr-3">1</span> 
+                The Problem
+            </h2>
+            <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg italic text-gray-700 mb-4">
+                <p class="mb-2 font-bold text-gray-900">b) Determine the stability of the system.</p>
+                <div class="math-block text-center font-bold not-italic text-xl mt-4">
+                    $$ \dot{x} = \begin{bmatrix} -3 & 7 & 9 \\ 2 & 1 & 3 \\ -4 & -3 & -8 \end{bmatrix}x + \begin{bmatrix} 1 \\ 2 \\ 3 \end{bmatrix}u, \quad y = \begin{bmatrix} 1 & 1 & 0 \end{bmatrix}x $$
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-10">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
+                <span class="bg-rose-100 text-rose-800 px-3 py-1 rounded-full text-sm mr-3">2</span> 
+                Step-by-Step Solution
+            </h2>
+            
+            <div class="bg-white border-2 border-rose-100 p-6 rounded-lg shadow-sm mb-6">
+                <h3 class="text-xl font-bold text-rose-700 mb-3">Step 1: Find the Characteristic Equation</h3>
+                <p class="mb-3 text-gray-700">Stability is determined by the eigenvalues of the system matrix \(A\), found by solving \( |sI - A| = 0 \).</p>
+                <div class="math-block text-center mb-4">
+                    $$ |sI - A| = \begin{vmatrix} s+3 & -7 & -9 \\ -2 & s-1 & -3 \\ 4 & 3 & s+8 \end{vmatrix} = 0 $$
+                </div>
+                <p class="mb-3 text-gray-700">Expanding the determinant yields the characteristic polynomial:</p>
+                <div class="math-block bg-gray-50 rounded-lg text-center mb-4">
+                    $$ s^3 + 10s^2 + 44s - 7 = 0 $$
+                </div>
+            </div>
+
+            <div class="bg-white border-2 border-rose-100 p-6 rounded-lg shadow-sm mb-6">
+                <h3 class="text-xl font-bold text-rose-700 mb-3">Step 2: Construct the Routh Array</h3>
+                <p class="mb-4 text-gray-700">We use the Routh-Hurwitz criterion to check if any roots lie in the right-half plane (causing instability).</p>
+                
+                <div class="overflow-x-auto mb-4 w-1/2 mx-auto">
+                    <table class="min-w-full bg-white border-2 border-gray-800 text-center text-lg">
+                        <tbody>
+                            <tr><td class="py-2 px-4 border-b border-r border-gray-800 font-bold bg-gray-100">\(s^3\)</td><td class="py-2 px-4 border-b">1</td><td class="py-2 px-4 border-b">44</td></tr>
+                            <tr><td class="py-2 px-4 border-b border-r border-gray-800 font-bold bg-gray-100">\(s^2\)</td><td class="py-2 px-4 border-b">10</td><td class="py-2 px-4 border-b">-7</td></tr>
+                            <tr><td class="py-2 px-4 border-b border-r border-gray-800 font-bold bg-gray-100">\(s^1\)</td><td class="py-2 px-4 border-b text-blue-700 font-bold">44.7</td><td class="py-2 px-4 border-b">0</td></tr>
+                            <tr><td class="py-2 px-4 border-r border-gray-800 font-bold bg-gray-100">\(s^0\)</td><td class="py-2 px-4 text-red-600 font-bold">-7</td><td class="py-2 px-4"></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="text-sm text-gray-600 text-center mb-3">Calculation for \(s^1\) row: \( \frac{(10 \times 44) - (1 \times -7)}{10} = \frac{447}{10} = 44.7 \)</p>
+            </div>
+            
+            <!-- Conclusion -->
+            <div class="bg-red-100 border-l-4 border-red-500 p-5 rounded text-red-900 font-bold text-lg text-center shadow-sm">
+                Conclusion: Looking at the first column of the Routh array (1, 10, 44.7, -7), there is exactly one sign change (from +44.7 to -7). This indicates there is one pole in the right-half s-plane, meaning the system is UNSTABLE.
+            </div>
+        </section>
+
+        <!-- ================= SECTION 8: POLE PLACEMENT ================= -->
+        <div class="mt-16 mb-8 border-t-2 border-gray-200"></div>
+        
+        <h1 class="text-3xl font-bold text-emerald-700 mb-6 border-b pb-4">Pole Placement (State Feedback)</h1>
+        
+        <section class="mb-10">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
+                <span class="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full text-sm mr-3">1</span> 
+                The Problem
+            </h2>
+            <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg italic text-gray-700 mb-4">
+                <p class="mb-2 font-bold text-gray-900">a) Design a state feedback controller for the system to place the eigenvalues of the closed loop system matrix at \(-2 \pm j2\).</p>
+                <div class="math-block text-center font-bold not-italic text-xl mt-4">
+                    $$\dot{x} = \begin{bmatrix} 1 & 1 \\ 2 & 2 \end{bmatrix}x + \begin{bmatrix} 1 \\ 0 \end{bmatrix}u, \quad y = \begin{bmatrix} 0 & 1 \end{bmatrix}x$$
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-10">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
+                <span class="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full text-sm mr-3">2</span> 
+                Step-by-Step Solution
+            </h2>
+            
+            <div class="bg-white border-2 border-emerald-100 p-6 rounded-lg shadow-sm mb-6">
+                <h3 class="text-xl font-bold text-emerald-700 mb-3">Step 1: Find the Desired Characteristic Equation</h3>
+                <p class="mb-3 text-gray-700">The desired closed-loop poles are given as \(s = -2 \pm j2\). The characteristic equation for these poles is \( (s - \mu_1)(s - \mu_2) = 0 \).</p>
+                <div class="math-block text-center mb-4">
+                    $$(s - (-2 + j2))(s - (-2 - j2)) = (s + 2 - j2)(s + 2 + j2) = 0$$
+                    $$(s + 2)^2 - (j2)^2 = s^2 + 4s + 4 - (-4) = 0$$
+                </div>
+                <div class="math-block bg-gray-50 rounded-lg text-center mb-4 font-bold">
+                    $$\text{Desired Eq: } s^2 + 4s + 8 = 0$$
+                </div>
+            </div>
+
+            <div class="bg-white border-2 border-emerald-100 p-6 rounded-lg shadow-sm mb-6">
+                <h3 class="text-xl font-bold text-emerald-700 mb-3">Step 2: Find the Closed-Loop System Equation</h3>
+                <p class="mb-3 text-gray-700">With state feedback \( u = -Kx \) where \( K = \begin{bmatrix} k_1 & k_2 \end{bmatrix} \), the new system matrix becomes \( (A - BK) \).</p>
+                <div class="math-block text-center mb-4">
+                    $$A - BK = \begin{bmatrix} 1 & 1 \\ 2 & 2 \end{bmatrix} - \begin{bmatrix} 1 \\ 0 \end{bmatrix}\begin{bmatrix} k_1 & k_2 \end{bmatrix}$$
+                    $$A - BK = \begin{bmatrix} 1 & 1 \\ 2 & 2 \end{bmatrix} - \begin{bmatrix} k_1 & k_2 \\ 0 & 0 \end{bmatrix} = \begin{bmatrix} 1 - k_1 & 1 - k_2 \\ 2 & 2 \end{bmatrix}$$
+                </div>
+                <p class="mb-3 text-gray-700">Now, find its characteristic equation \( |sI - (A - BK)| = 0 \):</p>
+                <div class="math-block text-center mb-4">
+                    $$\begin{vmatrix} s - 1 + k_1 & -1 + k_2 \\ -2 & s - 2 \end{vmatrix} = 0$$
+                    $$(s - 1 + k_1)(s - 2) - (-2)(-1 + k_2) = 0$$
+                    $$(s^2 - 2s - s + 2 + k_1s - 2k_1) + (-2 + 2k_2) = 0$$
+                </div>
+                <div class="math-block bg-gray-50 rounded-lg text-center mb-4 font-bold">
+                    $$\text{Actual Eq: } s^2 + (k_1 - 3)s + (2k_2 - 2k_1) = 0$$
+                </div>
+            </div>
+
+            <div class="bg-white border-2 border-emerald-100 p-6 rounded-lg shadow-sm mb-6">
+                <h3 class="text-xl font-bold text-emerald-700 mb-3">Step 3: Compare Coefficients & Solve</h3>
+                <p class="mb-3 text-gray-700">Equate the coefficients of the "Desired" and "Actual" characteristic equations:</p>
+                <ul class="list-none space-y-4 text-gray-700 ml-4 mb-6">
+                    <li>
+                        <strong>For \(s^1\):</strong><br>
+                        \( k_1 - 3 = 4 \implies \mathbf{k_1 = 7} \)
+                    </li>
+                    <li>
+                        <strong>For \(s^0\):</strong><br>
+                        \( 2k_2 - 2k_1 = 8 \) <br>
+                        Substituting \(k_1 = 7\): \( 2k_2 - 14 = 8 \implies 2k_2 = 22 \implies \mathbf{k_2 = 11} \)
+                    </li>
+                </ul>
+                <div class="math-block bg-emerald-50 border-l-4 border-emerald-500 rounded-r-lg text-center font-bold">
+                    $$\text{Feedback Gain Matrix } K = \begin{bmatrix} 7 & 11 \end{bmatrix}$$
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECTION 9: TRANSFER FUNCTION FROM STATE SPACE ================= -->
+        <div class="mt-16 mb-8 border-t-2 border-gray-200"></div>
+        
+        <h1 class="text-3xl font-bold text-cyan-700 mb-6 border-b pb-4">State Space to Transfer Function</h1>
+        
+        <section class="mb-10">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
+                <span class="bg-cyan-100 text-cyan-800 px-3 py-1 rounded-full text-sm mr-3">1</span> 
+                The Problem
+            </h2>
+            <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg italic text-gray-700 mb-4">
+                <p class="mb-2 font-bold text-gray-900">b) Derive the transfer function of the system when the initial state is zero.</p>
+                <div class="math-block text-center font-bold not-italic text-xl mt-4">
+                    $$\dot{x} = \begin{bmatrix} -1 & 1 \\ -3 & -2 \end{bmatrix}x + \begin{bmatrix} 1 \\ 0 \end{bmatrix}u, \quad y = \begin{bmatrix} 0 & 1 \end{bmatrix}x$$
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-10">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
+                <span class="bg-cyan-100 text-cyan-800 px-3 py-1 rounded-full text-sm mr-3">2</span> 
+                Step-by-Step Solution
+            </h2>
+            
+            <div class="bg-white border-2 border-cyan-100 p-6 rounded-lg shadow-sm mb-6">
+                <h3 class="text-xl font-bold text-cyan-700 mb-3">Step 1: Use the Transfer Function Formula</h3>
+                <p class="mb-3 text-gray-700">The general formula to convert a state-space model to a transfer function \(G(s)\) is:</p>
+                <div class="math-block text-center mb-4">
+                    $$G(s) = C(sI - A)^{-1}B + D$$
+                </div>
+                <p class="text-gray-700">Here, \(D = 0\), so we just need to calculate \( C(sI - A)^{-1}B \).</p>
+            </div>
+
+            <div class="bg-white border-2 border-cyan-100 p-6 rounded-lg shadow-sm mb-6">
+                <h3 class="text-xl font-bold text-cyan-700 mb-3">Step 2: Find \((sI - A)^{-1}\)</h3>
+                <div class="math-block text-center mb-4">
+                    $$sI - A = \begin{bmatrix} s & 0 \\ 0 & s \end{bmatrix} - \begin{bmatrix} -1 & 1 \\ -3 & -2 \end{bmatrix} = \begin{bmatrix} s+1 & -1 \\ 3 & s+2 \end{bmatrix}$$
+                </div>
+                <p class="mb-3 text-gray-700">To find the inverse, we swap the main diagonal, negate the anti-diagonal, and divide by the determinant:</p>
+                <div class="math-block text-center mb-4">
+                    $$\text{Determinant} = (s+1)(s+2) - (-1)(3) = s^2 + 3s + 2 + 3 = s^2 + 3s + 5$$
+                </div>
+                <div class="math-block bg-gray-50 rounded-lg text-center mb-4">
+                    $$(sI - A)^{-1} = \frac{1}{s^2 + 3s + 5} \begin{bmatrix} s+2 & 1 \\ -3 & s+1 \end{bmatrix}$$
+                </div>
+            </div>
+
+            <div class="bg-white border-2 border-cyan-100 p-6 rounded-lg shadow-sm mb-6">
+                <h3 class="text-xl font-bold text-cyan-700 mb-3">Step 3: Multiply by B and C</h3>
+                <p class="mb-3 text-gray-700">First, multiply the inverse matrix by the input vector \(B\):</p>
+                <div class="math-block text-center mb-4">
+                    $$(sI - A)^{-1}B = \frac{1}{s^2 + 3s + 5} \begin{bmatrix} s+2 & 1 \\ -3 & s+1 \end{bmatrix} \begin{bmatrix} 1 \\ 0 \end{bmatrix} = \frac{1}{s^2 + 3s + 5} \begin{bmatrix} s+2 \\ -3 \end{bmatrix}$$
+                </div>
+                <p class="mb-3 text-gray-700">Finally, multiply the result by the output vector \(C\):</p>
+                <div class="math-block text-center mb-4">
+                    $$G(s) = \begin{bmatrix} 0 & 1 \end{bmatrix} \frac{1}{s^2 + 3s + 5} \begin{bmatrix} s+2 \\ -3 \end{bmatrix}$$
+                </div>
+                <div class="math-block bg-cyan-50 border-l-4 border-cyan-500 rounded-r-lg text-center font-bold">
+                    $$G(s) = \frac{-3}{s^2 + 3s + 5}$$
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECTION 10: TF TO STATE SPACE & EIGENVALUES ================= -->
+        <div class="mt-16 mb-8 border-t-2 border-gray-200"></div>
+        
+        <h1 class="text-3xl font-bold text-fuchsia-700 mb-6 border-b pb-4">Transfer Function to Canonical Form</h1>
+        
+        <section class="mb-10">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
+                <span class="bg-fuchsia-100 text-fuchsia-800 px-3 py-1 rounded-full text-sm mr-3">1</span> 
+                The Problem
+            </h2>
+            <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg italic text-gray-700 mb-4">
+                <p class="mb-2 font-bold text-gray-900">Consider a system with a transfer function:</p>
+                <div class="math-block text-center font-bold not-italic text-xl mt-4">
+                    $$ \frac{Y(s)}{U(s)} = \frac{10}{(s+1)(s+5)} $$
+                </div>
+                <p class="mt-4 font-bold text-gray-900">Obtain the state space model of the system in a canonical form. Find the Eigenvalues of the system matrix.</p>
+            </div>
+        </section>
+
+        <section class="mb-10">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
+                <span class="bg-fuchsia-100 text-fuchsia-800 px-3 py-1 rounded-full text-sm mr-3">2</span> 
+                Step-by-Step Solution
+            </h2>
+            
+            <div class="bg-white border-2 border-fuchsia-100 p-6 rounded-lg shadow-sm mb-6">
+                <h3 class="text-xl font-bold text-fuchsia-700 mb-3">Step 1: Expand the Transfer Function</h3>
+                <p class="mb-3 text-gray-700">First, multiply out the terms in the denominator to get the standard polynomial form:</p>
+                <div class="math-block bg-gray-50 rounded-lg text-center mb-4">
+                    $$ G(s) = \frac{10}{(s+1)(s+5)} = \frac{10}{s^2 + 6s + 5} $$
+                </div>
+            </div>
+
+            <div class="bg-white border-2 border-fuchsia-100 p-6 rounded-lg shadow-sm mb-6">
+                <h3 class="text-xl font-bold text-fuchsia-700 mb-3">Step 2: Map to Controllable Canonical Form</h3>
+                <p class="mb-3 text-gray-700">Compare the expanded transfer function to the standard form \( \frac{b_0s^2 + b_1s + b_2}{s^2 + a_1s + a_2} \):</p>
+                <ul class="list-disc list-inside ml-4 text-gray-700 mb-4">
+                    <li>Denominator coefficients: \( a_1 = 6, \quad a_2 = 5 \)</li>
+                    <li>Numerator coefficients: \( b_0 = 0, \quad b_1 = 0, \quad b_2 = 10 \)</li>
+                </ul>
+                <p class="mb-3 text-gray-700">Using the standard controllable canonical form templates, we construct the state and output matrices:</p>
+                <div class="math-block text-center mb-4 font-bold">
+                    $$ \dot{x} = \begin{bmatrix} 0 & 1 \\ -a_2 & -a_1 \end{bmatrix}x + \begin{bmatrix} 0 \\ 1 \end{bmatrix}u \implies \dot{x} = \begin{bmatrix} 0 & 1 \\ -5 & -6 \end{bmatrix}x + \begin{bmatrix} 0 \\ 1 \end{bmatrix}u $$
+                </div>
+                <div class="math-block text-center font-bold">
+                    $$ y = \begin{bmatrix} b_2 & b_1 \end{bmatrix}x \implies y = \begin{bmatrix} 10 & 0 \end{bmatrix}x $$
+                </div>
+            </div>
+
+            <div class="bg-white border-2 border-fuchsia-100 p-6 rounded-lg shadow-sm mb-6">
+                <h3 class="text-xl font-bold text-fuchsia-700 mb-3">Step 3: Find the Eigenvalues</h3>
+                <p class="mb-3 text-gray-700">The eigenvalues of the system matrix \(A\) are simply the roots of the characteristic equation, which is identical to the denominator of the transfer function.</p>
+                <div class="math-block text-center mb-4">
+                    $$ |sI - A| = s^2 + 6s + 5 = 0 $$
+                    $$ (s + 1)(s + 5) = 0 $$
+                </div>
+                <p class="mb-2 text-gray-700 font-semibold text-center">Solving for \(s\):</p>
+                <div class="math-block bg-fuchsia-50 border-l-4 border-fuchsia-500 rounded-r-lg text-center font-bold">
+                    $$ \lambda_1 = -1, \quad \lambda_2 = -5 $$
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+</body>
+</html>
