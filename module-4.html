@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 4: Advanced Control Theory</title>
+    
+    <!-- MathJax for rendering LaTeX equations -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        :root {
+            --primary: #581c87;      /* Purple 900 */
+            --secondary: #7e22ce;    /* Purple 700 */
+            --accent: #d946ef;       /* Fuchsia 500 */
+            --bg-color: #faf5ff;     /* Purple 50 */
+            --text-main: #334155;    /* Slate 700 */
+            --box-bg: #ffffff;
+        }
+
+        body { 
+            font-family: 'Inter', system-ui, -apple-system, sans-serif; 
+            scroll-behavior: smooth; 
+            background-color: var(--bg-color); 
+            color: var(--text-main);
+            line-height: 1.7;
+        }
+        
+        /* Typography & Layout */
+        h1, h2, h3, h4, h5 { color: #3b0764; letter-spacing: -0.025em; font-weight: 700; }
+        h2 { 
+            scroll-margin-top: 6rem; 
+            border-bottom: 3px solid #e9d5ff; 
+            padding-bottom: 0.75rem; 
+            margin-top: 4.5rem; 
+            margin-bottom: 2rem; 
+            display: flex; 
+            align-items: center; 
+            gap: 1rem; 
+        }
+        h3 { 
+            scroll-margin-top: 6rem; 
+            margin-top: 2.5rem; 
+            margin-bottom: 1.25rem; 
+            color: var(--primary); 
+        }
+        
+        /* Mathematical Blocks */
+        .math-block { 
+            overflow-x: auto; 
+            padding: 1.5rem; 
+            background: var(--box-bg); 
+            border: 1px solid #e9d5ff; 
+            border-radius: 0.75rem; 
+            box-shadow: inset 0 2px 4px 0 rgb(0 0 0 / 0.02); 
+            margin: 1.5rem 0; 
+            text-align: center; 
+            font-size: 1.1rem;
+        }
+        
+        .equation-box { 
+            background: #faf5ff; 
+            border-left: 4px solid var(--secondary); 
+            padding: 1.5rem; 
+            margin: 1.5rem 0; 
+            border-radius: 0 0.75rem 0.75rem 0; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05); 
+        }
+
+        .derivation-box { 
+            background: var(--box-bg); 
+            border: 1px dashed #c084fc; 
+            padding: 2rem; 
+            border-radius: 0.75rem; 
+            margin-top: 1.5rem; 
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);
+        }
+        
+        /* Diagrams & SVGs */
+        .diagram-container { 
+            border: 1px solid #e9d5ff; 
+            border-radius: 1rem; 
+            padding: 2.5rem; 
+            background: var(--box-bg); 
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.05); 
+            margin: 2.5rem 0; 
+            overflow-x: auto; 
+            position: relative; 
+        }
+        .svg-grid { stroke: #f1f5f9; stroke-width: 1; }
+        .svg-axis { stroke: #475569; stroke-width: 2; }
+        .svg-text { font-family: 'Inter', sans-serif; font-size: 13px; fill: #475569; }
+        .svg-text-bold { font-weight: 700; fill: #3b0764; font-size: 14px; }
+        .svg-wire { stroke: #0f172a; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+        .svg-block { fill: #ffffff; stroke: #6b21a8; stroke-width: 2.5; rx: 6px; }
+        .svg-sum { fill: #faf5ff; stroke: #6b21a8; stroke-width: 2; }
+        
+        /* Sidebar Navigation */
+        .toc-link { 
+            display: block; 
+            padding: 0.6rem 1.2rem; 
+            color: #475569; 
+            text-decoration: none; 
+            border-radius: 0.5rem; 
+            transition: all 0.2s; 
+            border-left: 3px solid transparent; 
+            font-weight: 500;
+        }
+        .toc-link:hover, .toc-link.active { 
+            background: #f3e8ff; 
+            color: var(--primary); 
+            border-left-color: var(--primary); 
+        }
+        
+        /* Badges */
+        .badge-important { 
+            display: inline-flex; 
+            align-items: center; 
+            padding: 0.25rem 0.85rem; 
+            border-radius: 9999px; 
+            font-size: 0.75rem; 
+            font-weight: 800; 
+            background-color: #fdf4ff; 
+            color: #c026d3; 
+            border: 1px solid #f0abfc; 
+            margin-bottom: 1rem; 
+            text-transform: uppercase; 
+            letter-spacing: 0.05em; 
+        }
+        .badge-qp { 
+            display: inline-flex; 
+            align-items: center; 
+            padding: 0.25rem 0.75rem; 
+            border-radius: 0.375rem; 
+            font-size: 0.75rem; 
+            font-weight: 700; 
+            background-color: #f3e8ff; 
+            color: #6b21a8; 
+            border: 1px solid #d8b4fe; 
+            margin-left: 0.75rem; 
+            margin-bottom: 1rem;
+        }
+
+        .highlight-box {
+            background-color: #faf5ff;
+            border-left: 4px solid var(--secondary);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+            border: 1px solid #e9d5ff;
+        }
+        
+        /* Table Styling */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .data-table th {
+            background-color: #f3e8ff;
+            color: #4c1d95;
+            font-weight: 700;
+            text-align: center;
+            padding: 1rem;
+            border: 1px solid #d8b4fe;
+        }
+        .data-table td {
+            padding: 1rem;
+            border: 1px solid #e2e8f0;
+            background-color: #ffffff;
+            text-align: center;
+        }
+        .data-table tr:nth-child(even) td {
+            background-color: #f8fafc;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-purple-200 selection:text-purple-900">
+
+    <!-- Top Navigation / Header -->
+    <header class="bg-white/95 border-b border-slate-200 sticky top-0 z-50 shadow-sm backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="bg-purple-700 p-2 rounded-lg shadow-inner">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path></svg>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-extrabold text-purple-950 tracking-tight leading-none">ACT: Module 4</h1>
+                    <p class="text-sm text-slate-500 font-medium mt-1">State Feedback & Sampled Data Systems</p>
+                </div>
+            </div>
+            <div class="hidden lg:flex space-x-1 text-sm font-semibold">
+                <a href="#controllability" class="text-slate-600 hover:text-purple-700 px-4 py-2.5 rounded-lg hover:bg-purple-50 transition-all">1. Controllability</a>
+                <a href="#pole-placement" class="text-slate-600 hover:text-purple-700 px-4 py-2.5 rounded-lg hover:bg-purple-50 transition-all">2. Pole Placement</a>
+                <a href="#digital-control" class="text-slate-600 hover:text-purple-700 px-4 py-2.5 rounded-lg hover:bg-purple-50 transition-all">3. Digital Control</a>
+                <a href="#jury-test" class="text-purple-700 bg-purple-50 px-4 py-2.5 rounded-lg transition-all shadow-sm">4. Jury's Test</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col xl:flex-row gap-12">
+        
+        <!-- Main Content -->
+        <main class="flex-1 w-full max-w-5xl mx-auto">
+            
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 mb-12 relative overflow-hidden">
+                <div class="absolute right-0 top-0 text-purple-100 opacity-30 transform translate-x-4 -translate-y-4">
+                    <svg class="w-48 h-48" fill="currentColor" viewBox="0 0 24 24"><path d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path></svg>
+                </div>
+                <h3 class="text-xl font-bold text-slate-800 mb-4 mt-0">Syllabus Covered in this Document</h3>
+                <p class="text-slate-600 mb-4 relative z-10"><strong>Module IV:</strong> State feedback controller design: Controllability & observability. State feed-back design via pole placement technique. Sampled data control system: Pulse Transfer function - Stability of sampled data system - Routh Hurwitz criterion and Jury's test. Introduction to state-space representation of sampled data systems.</p>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- SECTION 1: CONTROLLABILITY & OBSERVABILITY -->
+            <!-- ========================================== -->
+            <section id="controllability" class="mb-24">
+                <h2>
+                    <span class="bg-gradient-to-br from-purple-600 to-purple-800 text-white w-12 h-12 rounded-xl flex items-center justify-center font-extrabold text-2xl shadow-lg shrink-0">1</span>
+                    Controllability & Observability
+                </h2>
+                
+                <div class="mb-4">
+                    <span class="badge-important">DEFINITIONS & KALMAN'S TEST</span>
+                    <span class="badge-qp">Apr 2018</span><span class="badge-qp">May 2019</span><span class="badge-qp">Dec 2019</span>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8 mb-10">
+                    <div class="bg-white border border-slate-200 p-8 rounded-xl shadow-sm border-t-4 border-t-purple-600">
+                        <h4 class="font-bold text-purple-900 mb-4 text-xl">State Controllability</h4>
+                        <p class="text-sm text-slate-700 mb-4">A system is said to be completely state controllable if it is possible to transfer the system state from any initial state $X(t_0)$ to any other desired state $X(t_f)$ in a specified finite time by applying a finite unconstrained control vector $U(t)$.</p>
+                        <div class="bg-purple-50 p-4 rounded-lg border border-purple-200 mt-4">
+                            <h5 class="font-bold text-purple-800 text-sm mb-2">Kalman's Controllability Test</h5>
+                            <p class="text-xs text-slate-600 mb-2">Construct the composite controllability matrix $Q_c$:</p>
+                            <div class="math-block !bg-white !py-2 !px-1">
+                                $$ Q_c = \begin{bmatrix} B & AB & A^2B & \dots & A^{n-1}B \end{bmatrix} $$
+                            </div>
+                            <p class="text-xs text-slate-700 mt-2 font-bold">Condition: The system is completely controllable if the rank of $Q_c$ is $n$ (i.e., $|Q_c| \neq 0$).</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white border border-slate-200 p-8 rounded-xl shadow-sm border-t-4 border-t-fuchsia-500">
+                        <h4 class="font-bold text-fuchsia-900 mb-4 text-xl">State Observability</h4>
+                        <p class="text-sm text-slate-700 mb-4">A system is said to be completely observable if every state $X(t_0)$ can be uniquely determined from the observation of the output $Y(t)$ over a finite time interval $t_0 \le t \le t_f$, given the control input $U(t)$.</p>
+                        <div class="bg-fuchsia-50 p-4 rounded-lg border border-fuchsia-200 mt-4">
+                            <h5 class="font-bold text-fuchsia-800 text-sm mb-2">Kalman's Observability Test</h5>
+                            <p class="text-xs text-slate-600 mb-2">Construct the composite observability matrix $Q_o$:</p>
+                            <div class="math-block !bg-white !py-2 !px-1">
+                                $$ Q_o = \begin{bmatrix} C^T & A^TC^T & (A^T)^2C^T & \dots & (A^T)^{n-1}C^T \end{bmatrix} $$
+                            </div>
+                            <p class="text-xs text-slate-700 mt-2 font-bold">Condition: The system is completely observable if the rank of $Q_o$ is $n$ (i.e., $|Q_o| \neq 0$).</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 1.1 Solved QP Problem -->
+                <div class="bg-white border-2 border-purple-200 rounded-3xl overflow-hidden shadow-lg mt-12 relative">
+                    <div class="absolute top-0 right-0 bg-purple-600 text-white px-5 py-1.5 rounded-bl-xl font-bold tracking-wider text-sm shadow-sm">SOLVED QP (MAY 2019)</div>
+                    <div class="p-8 md:p-10">
+                        <h3 class="text-2xl font-bold text-purple-950 mt-0 mb-6 border-none">Problem: Checking Controllability from Transfer Function</h3>
+                        
+                        <p class="text-slate-800 font-medium mb-6"><strong>Question:</strong> Define controllability and observability of a system and check whether the system $\frac{Y(s)}{U(s)} = \frac{1}{(s+1)(s+2)}$ is controllable or not.</p>
+                        
+                        <div class="space-y-6">
+                            <div class="derivation-box !border-purple-200 !bg-purple-50/30">
+                                <h4 class="font-bold text-purple-900 mb-3">Step 1: Convert Transfer Function to Differential Equation</h4>
+                                <div class="math-block !bg-white !py-3">
+                                    $$ \frac{Y(s)}{U(s)} = \frac{1}{s^2 + 3s + 2} $$
+                                    $$ Y(s)[s^2 + 3s + 2] = U(s) $$
+                                </div>
+                                <p class="text-sm text-slate-700 mt-4 mb-2">Taking the inverse Laplace transform:</p>
+                                <div class="math-block !bg-white !py-2 !text-purple-800 !font-bold">
+                                    $$ \ddot{y} + 3\dot{y} + 2y = u $$
+                                </div>
+                            </div>
+
+                            <div class="derivation-box !border-purple-200 !bg-purple-50/30">
+                                <h4 class="font-bold text-purple-900 mb-3">Step 2: Define State Variables</h4>
+                                <p class="text-sm text-slate-700 mb-3">Let $x_1 = y$ and $x_2 = \dot{y}$.</p>
+                                <div class="math-block !bg-white !py-3 text-left pl-10">
+                                    <p class="mb-2">1) $\dot{x}_1 = x_2$</p>
+                                    <p class="mb-2">2) $\dot{x}_2 = \ddot{y} = -2y - 3\dot{y} + u = -2x_1 - 3x_2 + u$</p>
+                                </div>
+                                <p class="text-sm text-slate-700 mt-4 mb-2">State Space Model (Phase Variable Form):</p>
+                                <div class="math-block !bg-white !py-3 border-2 border-purple-400">
+                                    $$ \begin{bmatrix} \dot{x}_1 \\ \dot{x}_2 \end{bmatrix} = \begin{bmatrix} 0 & 1 \\ -2 & -3 \end{bmatrix} \begin{bmatrix} x_1 \\ x_2 \end{bmatrix} + \begin{bmatrix} 0 \\ 1 \end{bmatrix} u $$
+                                </div>
+                            </div>
+
+                            <div class="derivation-box !border-purple-200 !bg-purple-50/30">
+                                <h4 class="font-bold text-purple-900 mb-3">Step 3: Kalman's Controllability Test</h4>
+                                <p class="text-sm text-slate-700 mb-3">Identify matrices $A$ and $B$:</p>
+                                <div class="math-block !bg-white !py-2">
+                                    $$ A = \begin{bmatrix} 0 & 1 \\ -2 & -3 \end{bmatrix}, \quad B = \begin{bmatrix} 0 \\ 1 \end{bmatrix} $$
+                                </div>
+                                <p class="text-sm text-slate-700 mt-4 mb-2">Calculate $AB$:</p>
+                                <div class="math-block !bg-white !py-2">
+                                    $$ AB = \begin{bmatrix} 0 & 1 \\ -2 & -3 \end{bmatrix} \begin{bmatrix} 0 \\ 1 \end{bmatrix} = \begin{bmatrix} 1 \\ -3 \end{bmatrix} $$
+                                </div>
+                                <p class="text-sm text-slate-700 mt-4 mb-2">Form the controllability matrix $Q_c = [B \quad AB]$:</p>
+                                <div class="math-block !bg-white !py-3">
+                                    $$ Q_c = \begin{bmatrix} 0 & 1 \\ 1 & -3 \end{bmatrix} $$
+                                </div>
+                                <p class="text-sm text-slate-700 mt-4 mb-2">Calculate the determinant:</p>
+                                <div class="math-block !bg-white !py-2 !font-bold text-purple-800">
+                                    $$ |Q_c| = (0)(-3) - (1)(1) = -1 \neq 0 $$
+                                </div>
+                                <p class="text-sm text-slate-700 mt-3 text-center text-purple-800 font-bold bg-purple-100 py-3 rounded-lg border border-purple-300">
+                                    Since $|Q_c| \neq 0$, the rank of $Q_c$ is 2 ($=n$). Therefore, the system is completely state controllable.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 1.2 Solved QP Problem (Parametric Controllability) -->
+                <div class="bg-white border-2 border-purple-200 rounded-3xl overflow-hidden shadow-lg mt-12 relative">
+                    <div class="absolute top-0 right-0 bg-purple-600 text-white px-5 py-1.5 rounded-bl-xl font-bold tracking-wider text-sm shadow-sm">SOLVED QP</div>
+                    <div class="p-8 md:p-10">
+                        <h3 class="text-2xl font-bold text-purple-950 mt-0 mb-6 border-none">Problem: Parametric Controllability</h3>
+                        <p class="text-slate-800 font-medium mb-6"><strong>Question:</strong> Consider the system given below:<br>
+                        $\dot{X} = \begin{bmatrix} -1 & 0 \\ 0 & -3 \end{bmatrix} x + \begin{bmatrix} 1 & a \\ 0 & b \end{bmatrix} U$.<br>
+                        Find the range of values of "a" and "b" for the system to be controllable.</p>
+                        
+                        <div class="space-y-6">
+                            <div class="derivation-box !border-purple-200 !bg-purple-50/30">
+                                <h4 class="font-bold text-purple-900 mb-3">Step 1: Calculate the Controllability Matrix $Q_c$</h4>
+                                <div class="math-block !bg-white !py-3">
+                                    $$ A = \begin{bmatrix} -1 & 0 \\ 0 & -3 \end{bmatrix}, \quad B = \begin{bmatrix} 1 & a \\ 0 & b \end{bmatrix} $$
+                                </div>
+                                <p class="text-sm text-slate-700 mt-4 mb-2">Calculate $AB$:</p>
+                                <div class="math-block !bg-white !py-3">
+                                    $$ AB = \begin{bmatrix} -1 & 0 \\ 0 & -3 \end{bmatrix} \begin{bmatrix} 1 & a \\ 0 & b \end{bmatrix} = \begin{bmatrix} -1 & -a \\ 0 & -3b \end{bmatrix} $$
+                                </div>
+                                <p class="text-sm text-slate-700 mt-4 mb-2">Form $Q_c = [B \quad AB]$:</p>
+                                <div class="math-block !bg-white !py-3">
+                                    $$ Q_c = \begin{bmatrix} 1 & a & -1 & -a \\ 0 & b & 0 & -3b \end{bmatrix} $$
+                                </div>
+                            </div>
+
+                            <div class="derivation-box !border-purple-200 !bg-purple-50/30">
+                                <h4 class="font-bold text-purple-900 mb-3">Step 2: Determine Rank Condition</h4>
+                                <p class="text-sm text-slate-700 mb-3">For the system to be completely controllable, the rank of the $2 \times 4$ matrix $Q_c$ must be 2. This requires at least one $2 \times 2$ minor to have a non-zero determinant.</p>
+                                <p class="text-sm text-slate-700 mb-2">Let's check the determinants of the $2 \times 2$ submatrices:</p>
+                                <ul class="list-disc ml-6 space-y-2 text-sm text-slate-800 font-medium">
+                                    <li>Cols 1 & 2: $\begin{vmatrix} 1 & a \\ 0 & b \end{vmatrix} = b$</li>
+                                    <li>Cols 1 & 4: $\begin{vmatrix} 1 & -a \\ 0 & -3b \end{vmatrix} = -3b$</li>
+                                    <li>Cols 2 & 4: $\begin{vmatrix} a & -a \\ b & -3b \end{vmatrix} = -3ab - (-ab) = -2ab$</li>
+                                </ul>
+                                <p class="text-sm text-slate-700 mt-4 mb-2">If $b = 0$, the entire second row of $Q_c$ becomes zeros, and the rank becomes 1. As long as $b \neq 0$, there is a non-zero minor.</p>
+                                <div class="math-block !bg-white !py-4 !border-purple-500 !border-2 !font-bold text-lg text-purple-900 shadow-md">
+                                    Range of values: $a \in \mathbb{R}$ (any real value), and $b \neq 0$.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- ========================================== -->
+            <!-- SECTION 3: DIGITAL CONTROL & ZOH           -->
+            <!-- ========================================== -->
+            <section id="digital-control" class="mb-24">
+                <h2>
+                    <span class="bg-gradient-to-br from-purple-600 to-purple-800 text-white w-12 h-12 rounded-xl flex items-center justify-center font-extrabold text-2xl shadow-lg shrink-0">3</span>
+                    Sampled Data Control Systems
+                </h2>
+
+                <div class="mb-4">
+                    <span class="badge-important">CONCEPTS & DERIVATIONS</span>
+                    <span class="badge-qp">May 2019</span><span class="badge-qp">Sep 2020</span>
+                </div>
+
+                <p class="text-lg text-slate-700 mb-6">A sampled-data control system incorporates both continuous-time (analog) and discrete-time (digital) signals. A sampler converts analog signals into discrete pulses, and a hold circuit (usually Zero-Order Hold) reconstructs an analog continuous staircase signal from the digital pulses to drive the plant.</p>
+
+                <!-- Block Diagram of Digital Control System -->
+                <div class="diagram-container bg-white border-purple-200 mb-10">
+                    <h4 class="text-center font-bold text-purple-900 mb-6 text-xl">Block Schematic of a System Controlled by a Digital Controller</h4>
+                    <svg viewBox="0 0 850 150" class="w-full max-w-4xl mx-auto">
+                        <!-- Input -->
+                        <path d="M 10 75 L 50 75" class="svg-wire" marker-end="url(#arrow)"/>
+                        <text x="30" y="65" class="svg-text-bold">r(t)</text>
+                        
+                        <!-- Summing -->
+                        <circle cx="70" cy="75" r="20" class="svg-sum"/>
+                        <text x="70" y="83" text-anchor="middle" font-size="24">+</text>
+                        <text x="70" y="115" text-anchor="middle" font-size="20">-</text>
+
+                        <!-- Error -->
+                        <path d="M 90 75 L 140 75" class="svg-wire" marker-end="url(#arrow)"/>
+                        <text x="115" y="65" text-anchor="middle" class="svg-text-bold">e(t)</text>
+
+                        <!-- ADC -->
+                        <rect x="140" y="50" width="100" height="50" class="svg-block" fill="#f3e8ff"/>
+                        <text x="190" y="75" text-anchor="middle" class="svg-text-bold text-sm">A/D</text>
+                        <text x="190" y="90" text-anchor="middle" class="svg-text-bold text-sm">Converter</text>
+
+                        <!-- Digital Signal -->
+                        <path d="M 240 75 L 300 75" class="svg-wire" marker-end="url(#arrow)"/>
+                        <text x="270" y="65" text-anchor="middle" class="svg-text-bold text-purple-700">e(k)</text>
+
+                        <!-- Digital Computer -->
+                        <rect x="300" y="45" width="120" height="60" class="svg-block" stroke="#4c1d95"/>
+                        <text x="360" y="75" text-anchor="middle" class="svg-text-bold text-sm text-purple-900">Digital</text>
+                        <text x="360" y="90" text-anchor="middle" class="svg-text-bold text-sm text-purple-900">Controller</text>
+
+                        <!-- Digital Control Signal -->
+                        <path d="M 420 75 L 480 75" class="svg-wire" marker-end="url(#arrow)"/>
+                        <text x="450" y="65" text-anchor="middle" class="svg-text-bold text-purple-700">u(k)</text>
+
+                        <!-- DAC -->
+                        <rect x="480" y="50" width="100" height="50" class="svg-block" fill="#f3e8ff"/>
+                        <text x="530" y="75" text-anchor="middle" class="svg-text-bold text-sm">D/A</text>
+                        <text x="530" y="90" text-anchor="middle" class="svg-text-bold text-sm">Converter</text>
+
+                        <!-- Analog Control Signal -->
+                        <path d="M 580 75 L 630 75" class="svg-wire" marker-end="url(#arrow)"/>
+                        <text x="605" y="65" text-anchor="middle" class="svg-text-bold">u(t)</text>
+
+                        <!-- Plant -->
+                        <rect x="630" y="50" width="90" height="50" class="svg-block"/>
+                        <text x="675" y="80" text-anchor="middle" class="svg-text-bold text-lg">Plant</text>
+
+                        <!-- Output -->
+                        <path d="M 720 75 L 820 75" class="svg-wire" marker-end="url(#arrow)"/>
+                        <text x="770" y="65" text-anchor="middle" class="svg-text-bold text-lg">y(t)</text>
+
+                        <!-- Feedback -->
+                        <path d="M 790 75 L 790 140 L 70 140 L 70 95" class="svg-wire" marker-end="url(#arrow)"/>
+                    </svg>
+
+                    <div class="mt-8 bg-purple-50 p-6 rounded-xl border border-purple-200">
+                        <h5 class="font-bold text-purple-900 mb-3">Additional Components in a Digital Control System:</h5>
+                        <ul class="list-decimal ml-6 space-y-2 text-sm text-slate-800">
+                            <li><strong>Analog-to-Digital Converter (ADC):</strong> Samples the continuous-time error signal $e(t)$ at discrete intervals and converts it into a digital/binary format $e(k)$ that the computer can process. It incorporates the sampling (sampler) function.</li>
+                            <li><strong>Digital Controller (Microprocessor/Computer):</strong> Processes the digital error signal according to a programmed control algorithm (like discrete PID) to generate a digital control signal $u(k)$.</li>
+                            <li><strong>Digital-to-Analog Converter (DAC):</strong> Converts the digital control sequence $u(k)$ back into a continuous-time analog signal $u(t)$ to drive the physical plant. It usually holds the signal constant between sampling intervals (acting as a Zero-Order Hold).</li>
+                            <li><strong>Clock (Timer):</strong> Provides synchronization pulses to ensure the ADC, Digital Controller, and DAC operate at precisely timed sampling intervals $T$.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="bg-white border-2 border-fuchsia-200 rounded-3xl overflow-hidden shadow-lg mt-12 mb-12 relative">
+                    <div class="absolute top-0 right-0 bg-fuchsia-600 text-white px-5 py-1.5 rounded-bl-xl font-bold tracking-wider text-sm shadow-sm">THEORY QUESTION</div>
+                    <div class="p-8 md:p-10">
+                        <h3 class="text-xl font-bold text-fuchsia-950 mt-0 mb-4 border-none">Structure of Digital State Space Representation</h3>
+                        <p class="text-sm text-slate-700 mb-4"><strong>Question:</strong> Write the structure of state space representation of an $n^{th}$ ordered SISO system in digital domain and specify the dimensions of each matrix.</p>
+                        
+                        <div class="bg-fuchsia-50 p-6 rounded-xl border border-fuchsia-200">
+                            <p class="text-sm text-slate-700 mb-3">For a discrete-time (digital) Single-Input Single-Output (SISO) system, the state space model is written as difference equations:</p>
+                            <div class="math-block !bg-white !py-3 !font-bold text-fuchsia-900">
+                                $$ X(k+1) = G X(k) + H u(k) \quad \text{(State Equation)} $$
+                                $$ y(k) = C X(k) + D u(k) \quad \text{(Output Equation)} $$
+                            </div>
+                            <p class="text-sm text-slate-700 mt-4 mb-2">Where the dimensions for an $n^{th}$ order SISO system are:</p>
+                            <ul class="list-disc ml-6 space-y-2 text-sm text-slate-800 font-medium">
+                                <li>$X(k)$: State vector of dimension <strong>$n \times 1$</strong></li>
+                                <li>$u(k)$: Control input of dimension <strong>$1 \times 1$</strong> (scalar)</li>
+                                <li>$y(k)$: Output of dimension <strong>$1 \times 1$</strong> (scalar)</li>
+                                <li>$G$: Discrete System matrix of dimension <strong>$n \times n$</strong></li>
+                                <li>$H$: Discrete Input matrix of dimension <strong>$n \times 1$</strong></li>
+                                <li>$C$: Discrete Output matrix of dimension <strong>$1 \times n$</strong></li>
+                                <li>$D$: Feedforward gain of dimension <strong>$1 \times 1$</strong> (scalar)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Block Diagram of Sampled Data System -->
+                <div class="diagram-container bg-slate-50 border-purple-200 mb-10">
+                    <h4 class="text-center font-bold text-slate-800 mb-6">Sampled Data Control System Block Diagram</h4>
+                    <svg viewBox="0 0 800 150" class="w-full max-w-3xl mx-auto">
+                        <!-- Input -->
+                        <path d="M 20 75 L 80 75" class="svg-wire" marker-end="url(#arrow)"/>
+                        <text x="40" y="65" class="svg-text-bold text-lg">r(t)</text>
+                        
+                        <!-- Summing -->
+                        <circle cx="100" cy="75" r="20" class="svg-sum"/>
+                        <text x="100" y="83" text-anchor="middle" font-size="24">+</text>
+                        <text x="100" y="115" text-anchor="middle" font-size="20">-</text>
+
+                        <!-- Error -->
+                        <path d="M 120 75 L 180 75" class="svg-wire" marker-end="url(#arrow)"/>
+                        <text x="150" y="65" text-anchor="middle" class="svg-text-bold">e(t)</text>
+
+                        <!-- Sampler (Switch) -->
+                        <path d="M 180 75 L 200 75" class="svg-wire"/>
+                        <path d="M 200 75 L 230 40" class="svg-wire" stroke="#6b21a8" stroke-width="3" marker-end="url(#arrow-purple)"/>
+                        <path d="M 230 75 L 250 75" class="svg-wire"/>
+                        <text x="215" y="30" class="svg-text-bold text-purple-700">T</text>
+                        <text x="215" y="100" text-anchor="middle" class="svg-text-bold">Sampler</text>
+
+                        <!-- e*(t) -->
+                        <path d="M 250 75 L 320 75" class="svg-wire" marker-end="url(#arrow)"/>
+                        <text x="285" y="65" text-anchor="middle" class="svg-text-bold text-purple-700">e*(t)</text>
+                        <text x="285" y="95" text-anchor="middle" class="svg-text-math text-sm">E(z)</text>
+
+                        <!-- Controller D(z) -->
+                        <rect x="320" y="50" width="80" height="50" class="svg-block"/>
+                        <text x="360" y="80" text-anchor="middle" class="svg-text-bold text-lg">D(z)</text>
+
+                        <!-- u*(t) -->
+                        <path d="M 400 75 L 470 75" class="svg-wire" marker-end="url(#arrow)"/>
+                        <text x="435" y="65" text-anchor="middle" class="svg-text-bold text-purple-700">u*(t)</text>
+
+                        <!-- ZOH -->
+                        <rect x="470" y="50" width="80" height="50" class="svg-block" fill="#f3e8ff"/>
+                        <text x="510" y="80" text-anchor="middle" class="svg-text-bold text-lg text-purple-900">ZOH</text>
+
+                        <!-- u(t) -->
+                        <path d="M 550 75 L 610 75" class="svg-wire" marker-end="url(#arrow)"/>
+                        <text x="580" y="65" text-anchor="middle" class="svg-text-bold">u(t)</text>
+
+                        <!-- Plant -->
+                        <rect x="610" y="50" width="80" height="50" class="svg-block"/>
+                        <text x="650" y="80" text-anchor="middle" class="svg-text-bold text-lg">G(s)</text>
+
+                        <!-- Output -->
+                        <path d="M 690 75 L 780 75" class="svg-wire" marker-end="url(#arrow)"/>
+                        <text x="735" y="65" text-anchor="middle" class="svg-text-bold text-lg">c(t)</text>
+
+                        <!-- Feedback -->
+                        <path d="M 750 75 L 750 140 L 100 140 L 100 95" class="svg-wire" marker-end="url(#arrow)"/>
+
+                        <defs>
+                            <marker id="arrow-purple" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+                                <path d="M0,0 L0,6 L9,3 z" fill="#6b21a8"/>
+                            </marker>
+                        </defs>
+                    </svg>
+                </div>
+
+                <!-- 3.1 Pulse Transfer Function & ZOH -->
+                <div class="bg-white border border-slate-200 p-8 rounded-2xl shadow-sm mb-12">
+                    <h3 class="text-2xl font-bold text-purple-900 mt-0 mb-6 border-b pb-2">3.1 Pulse Transfer Function & Zero Order Hold (ZOH)</h3>
+                    
+                    <div class="mb-10">
+                        <h4 class="font-bold text-xl text-slate-800 mb-4 text-purple-800">What is Pulse Transfer Function?</h4>
+                        <p class="text-slate-700 mb-4">The transfer function of a Linear Discrete System (LDS) is given by the z-transform of its impulse response. The transfer function of LDS is also called the <strong>z-transfer function</strong> or <strong>pulse transfer function</strong>.</p>
+                        
+                        <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 mb-4">
+                            <p class="text-sm text-slate-700 mb-2">Let $h(k) =$ Impulse response of a LDS system.</p>
+                            <p class="text-sm text-slate-700 mb-2">Now, the z-transform of $h(k) = H(z)$.</p>
+                            <p class="text-sm text-slate-700">The transfer function of the LDS system or Pulse transfer function is given by:</p>
+                            <div class="math-block !bg-white !py-3 !mt-2 !mb-0 !border-purple-200">
+                                $$H(z) = \frac{C(z)}{R(z)}$$
+                            </div>
+                        </div>
+
+                        <p class="text-slate-700 mb-4">Alternatively, the pulse transfer function relates the z-transform of the output at the sampling instants to the z-transform of the sampled input. When the same system is subject to a sampled data or digital signal $r^*(t)$, the output of the system is $C(s) = G(s)R^*(s)$.</p>
+                        
+                        <p class="text-slate-700 mb-4">The transfer function of the above system is difficult to manipulate because it contains a mixture of analog and digital components. Thus, it is desirable to express the system characteristics by a transfer function that relates $r^*(t)$ to $c^*(t)$, a fictitious sampler output. Then,</p>
+                        
+                        <div class="math-block !bg-white !py-3">
+                            $$G^*(s) = \frac{C^*(s)}{R^*(s)}$$
+                        </div>
+                        
+                        <p class="text-slate-700 mt-4">is known as the <strong>pulse transfer function</strong>. Sometimes it is also referred to as the starred transfer function. If we now substitute $z = e^{Ts}$ in the previous expression, we will directly get the Z-transfer function $G(z)$ as $G(z) = \frac{C(z)}{R(z)}$.</p>
+                    </div>
+                    
+                    <div class="highlight-box border-purple-300 bg-purple-50">
+                        <h4 class="font-bold text-purple-900 mb-3">Derivation of ZOH Transfer Function</h4>
+                        <p class="text-sm text-slate-700 mb-4">The ZOH reconstructs the signal by holding the sampled value constant until the next sampling instant. Its impulse response $h(t)$ is a rectangular pulse of unit height and width $T$ (the sampling period).</p>
+                        <div class="diagram-container !p-4 !m-0 bg-white">
+                            <svg viewBox="0 0 500 150" class="w-full max-w-lg mx-auto">
+                                <path d="M 50 120 L 450 120" class="svg-axis" marker-end="url(#arrow)"/>
+                                <path d="M 100 140 L 100 20" class="svg-axis" marker-end="url(#arrow)"/>
+                                <text x="430" y="140" class="svg-text-bold">Time (t)</text>
+                                <text x="60" y="30" class="svg-text-bold">h(t)</text>
+
+                                <!-- Pulse -->
+                                <path d="M 50 120 L 100 120 L 100 50 L 250 50 L 250 120 L 400 120" stroke="#c026d3" stroke-width="4" fill="none"/>
+                                
+                                <path d="M 100 120 L 100 130" stroke="#0f172a" stroke-width="2"/>
+                                <path d="M 250 120 L 250 130" stroke="#0f172a" stroke-width="2"/>
+                                <text x="95" y="145" class="svg-text-bold">0</text>
+                                <text x="245" y="145" class="svg-text-bold">T</text>
+                                <text x="80" y="55" class="svg-text-bold">1</text>
+                            </svg>
+                        </div>
+                        <p class="text-sm text-slate-700 mt-4 mb-2">Mathematically, the impulse response is:</p>
+                        <div class="math-block !bg-white !py-2">
+                            $$ h(t) = u(t) - u(t - T) $$
+                        </div>
+                        <p class="text-sm text-slate-700 mt-4 mb-2">Taking the Laplace transform gives the Transfer Function of ZOH ($G_{ZOH}(s)$):</p>
+                        <div class="math-block !bg-white !py-3 !font-bold text-purple-800 border-2 border-purple-300">
+                            $$ G_{ZOH}(s) = \mathcal{L}[u(t)] - \mathcal{L}[u(t - T)] = \frac{1}{s} - \frac{e^{-sT}}{s} = \frac{1 - e^{-sT}}{s} $$
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3.2 Solved QP Problem -->
+                <div class="bg-white border-2 border-purple-200 rounded-3xl overflow-hidden shadow-lg mt-12 relative">
+                    <div class="absolute top-0 right-0 bg-purple-600 text-white px-5 py-1.5 rounded-bl-xl font-bold tracking-wider text-sm shadow-sm">SOLVED QP (MAY 2019)</div>
+                    <div class="p-8 md:p-10">
+                        <h3 class="text-2xl font-bold text-purple-950 mt-0 mb-6 border-none">Problem: Finding Pulse Transfer Function</h3>
+                        
+                        <p class="text-slate-800 font-medium mb-6"><strong>Question:</strong> Determine the pulse transfer function of a discrete-time control system having a ZOH cascaded with a plant $G(s) = \frac{1}{s+1}$. Assume sampling time $T = 1$ sec. Also, find the response to a unit step input.</p>
+                        
+                        <div class="space-y-6">
+                            <div class="derivation-box !border-purple-200 !bg-purple-50/30">
+                                <h4 class="font-bold text-purple-900 mb-3">Step 1: Formulate the Overall Z-Transform</h4>
+                                <p class="text-sm text-slate-700 mb-3">The overall pulse transfer function $G(z)$ is the Z-transform of the cascaded ZOH and plant:</p>
+                                <div class="math-block !bg-white !py-3">
+                                    $$ G(z) = \mathcal{Z}\{G_{ZOH}(s) G(s)\} = \mathcal{Z}\left\{ \frac{1 - e^{-sT}}{s} \cdot \frac{1}{s+1} \right\} $$
+                                </div>
+                                <p class="text-sm text-slate-700 mt-4 mb-2">Since $(1 - e^{-sT})$ represents a delay of 1 sample, its Z-transform equivalent is $(1 - z^{-1})$. We can pull it out of the Z-transform operator:</p>
+                                <div class="math-block !bg-white !py-3 !text-purple-800 font-bold">
+                                    $$ G(z) = (1 - z^{-1}) \mathcal{Z}\left\{ \frac{1}{s(s+1)} \right\} = \frac{z-1}{z} \mathcal{Z}\left\{ \frac{1}{s(s+1)} \right\} $$
+                                </div>
+                            </div>
+
+                            <div class="derivation-box !border-purple-200 !bg-purple-50/30">
+                                <h4 class="font-bold text-purple-900 mb-3">Step 2: Partial Fractions and Z-Transform</h4>
+                                <p class="text-sm text-slate-700 mb-3">Expand the term inside the Z-transform using partial fractions:</p>
+                                <div class="math-block !bg-white !py-3">
+                                    $$ \frac{1}{s(s+1)} = \frac{A}{s} + \frac{B}{s+1} $$
+                                    <p class="text-sm mt-2 text-slate-500">Solving gives $A = 1, B = -1$:</p>
+                                    $$ \frac{1}{s(s+1)} = \frac{1}{s} - \frac{1}{s+1} $$
+                                </div>
+                                <p class="text-sm text-slate-700 mt-4 mb-2">Now take the standard Z-transforms ($\mathcal{Z}\{\frac{1}{s}\} = \frac{z}{z-1}$ and $\mathcal{Z}\{\frac{1}{s+a}\} = \frac{z}{z-e^{-aT}}$):</p>
+                                <div class="math-block !bg-white !py-3">
+                                    $$ \mathcal{Z}\left\{ \frac{1}{s} - \frac{1}{s+1} \right\} = \frac{z}{z-1} - \frac{z}{z - e^{-T}} $$
+                                </div>
+                                <p class="text-sm text-slate-700 mt-4 mb-2">Substitute $T = 1$ sec, $e^{-1} \approx 0.368$:</p>
+                                <div class="math-block !bg-white !py-3">
+                                    $$ \dots = \frac{z}{z-1} - \frac{z}{z-0.368} = \frac{z(z-0.368) - z(z-1)}{(z-1)(z-0.368)} = \frac{z^2 - 0.368z - z^2 + z}{(z-1)(z-0.368)} = \frac{0.632z}{(z-1)(z-0.368)} $$
+                                </div>
+                            </div>
+
+                            <div class="derivation-box !border-purple-200 !bg-purple-50/30">
+                                <h4 class="font-bold text-purple-900 mb-3">Step 3: Final Pulse Transfer Function</h4>
+                                <p class="text-sm text-slate-700 mb-2">Multiply back the $(1 - z^{-1}) = \frac{z-1}{z}$ term:</p>
+                                <div class="math-block !bg-white !py-4 !border-purple-500 !border-2 !font-bold text-lg shadow-sm">
+                                    $$ G(z) = \left( \frac{z-1}{z} \right) \left[ \frac{0.632z}{(z-1)(z-0.368)} \right] = \frac{0.632}{z - 0.368} $$
+                                </div>
+                            </div>
+
+                            <div class="derivation-box !border-purple-200 !bg-purple-50/30">
+                                <h4 class="font-bold text-purple-900 mb-3">Step 4: Response to Unit Step Input</h4>
+                                <p class="text-sm text-slate-700 mb-2">For a unit step input, $r(t) = u(t)$, the Z-transform is $R(z) = \frac{z}{z-1}$.</p>
+                                <p class="text-sm text-slate-700 mb-2">Output $C(z) = G(z) R(z)$:</p>
+                                <div class="math-block !bg-white !py-3">
+                                    $$ C(z) = \left( \frac{0.632}{z - 0.368} \right) \left( \frac{z}{z-1} \right) $$
+                                </div>
+                                <p class="text-sm text-slate-700 mt-4 mb-2">Divide by $z$ to do partial fractions: $\frac{C(z)}{z} = \frac{0.632}{(z-1)(z-0.368)} = \frac{A}{z-1} + \frac{B}{z-0.368}$.</p>
+                                <ul class="list-disc ml-6 space-y-2 text-sm text-slate-800 font-medium">
+                                    <li>$A = \left. \frac{0.632}{z - 0.368} \right|_{z=1} = \frac{0.632}{1 - 0.368} = \frac{0.632}{0.632} = 1$</li>
+                                    <li>$B = \left. \frac{0.632}{z - 1} \right|_{z=0.368} = \frac{0.632}{0.368 - 1} = \frac{0.632}{-0.632} = -1$</li>
+                                </ul>
+                                <div class="math-block !bg-white !py-3">
+                                    $$ \frac{C(z)}{z} = \frac{1}{z-1} - \frac{1}{z-0.368} \implies C(z) = \frac{z}{z-1} - \frac{z}{z-0.368} $$
+                                </div>
+                                <p class="text-sm text-slate-700 mt-4 mb-2">Taking inverse Z-transform ($Z^{-1}\{\frac{z}{z-a}\} = a^k$):</p>
+                                <div class="math-block !bg-white !py-4 !font-bold text-purple-900 border-2 border-purple-400">
+                                    $$ c(kT) = 1^k - (0.368)^k = 1 - (0.368)^k \quad \text{for } k \ge 0 $$
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3.3 Solved QP Problem (Difference Equation) -->
+                <div class="bg-white border-2 border-purple-200 rounded-3xl overflow-hidden shadow-lg mt-12 relative">
+                    <div class="absolute top-0 right-0 bg-purple-600 text-white px-5 py-1.5 rounded-bl-xl font-bold tracking-wider text-sm shadow-sm">SOLVED QP</div>
+                    <div class="p-8 md:p-10">
+                        <h3 class="text-2xl font-bold text-purple-950 mt-0 mb-6 border-none">Problem: Pulse Transfer Function from Difference Eq</h3>
+                        
+                        <p class="text-slate-800 font-medium mb-6"><strong>Question:</strong> A sample data system is described by the following equation:<br>
+                        $y(k) + 3y(k-1) + 2y(k-2) = u(k) + 5u(k-1)$.<br>
+                        Obtain the pulse transfer function.</p>
+                        
+                        <div class="space-y-6">
+                            <div class="derivation-box !border-purple-200 !bg-purple-50/30">
+                                <h4 class="font-bold text-purple-900 mb-3">Step 1: Take the Z-Transform</h4>
+                                <p class="text-sm text-slate-700 mb-3">Take the Z-transform on both sides, assuming zero initial conditions. Recall that the delay property states $\mathcal{Z}\{y(k-n)\} = z^{-n}Y(z)$.</p>
+                                <div class="math-block !bg-white !py-3">
+                                    $$ Y(z) + 3z^{-1}Y(z) + 2z^{-2}Y(z) = U(z) + 5z^{-1}U(z) $$
+                                </div>
+                            </div>
+
+                            <div class="derivation-box !border-purple-200 !bg-purple-50/30">
+                                <h4 class="font-bold text-purple-900 mb-3">Step 2: Factor and Isolate Transfer Function</h4>
+                                <p class="text-sm text-slate-700 mb-3">Factor out $Y(z)$ and $U(z)$:</p>
+                                <div class="math-block !bg-white !py-3">
+                                    $$ Y(z) [1 + 3z^{-1} + 2z^{-2}] = U(z) [1 + 5z^{-1}] $$
+                                </div>
+                                <p class="text-sm text-slate-700 mt-4 mb-2">The pulse transfer function is $H(z) = \frac{Y(z)}{U(z)}$:</p>
+                                <div class="math-block !bg-white !py-3">
+                                    $$ H(z) = \frac{1 + 5z^{-1}}{1 + 3z^{-1} + 2z^{-2}} $$
+                                </div>
+                            </div>
+
+                            <div class="derivation-box !border-purple-200 !bg-purple-50/30">
+                                <h4 class="font-bold text-purple-900 mb-3">Step 3: Convert to Positive Powers of z</h4>
+                                <p class="text-sm text-slate-700 mb-3">Multiply the numerator and denominator by $z^2$ to eliminate negative powers:</p>
+                                <div class="math-block !bg-white !py-4 !border-purple-500 !border-2 !font-bold text-lg shadow-sm text-purple-900">
+                                    $$ H(z) = \frac{z^2 + 5z}{z^2 + 3z + 2} = \frac{z(z+5)}{(z+1)(z+2)} $$
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+                                <p class="text-sm text-slate-700 mt-6 text-center text-fuchsia-800 font-bold bg-fuchsia-100 py-3 rounded-lg border border-fuchsia-300">
+                                    Conclusion: All necessary and sufficient conditions are satisfied. Hence, the system is STABLE.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4.2 Solved QP Problem (Unstable System) -->
+                <div class="bg-white border-2 border-fuchsia-200 rounded-3xl overflow-hidden shadow-lg mt-12 relative">
+                    <div class="absolute top-0 right-0 bg-fuchsia-600 text-white px-5 py-1.5 rounded-bl-xl font-bold tracking-wider text-sm shadow-sm">SOLVED QP</div>
+                    <div class="p-8 md:p-10">
+                        <h3 class="text-2xl font-bold text-fuchsia-950 mt-0 mb-6 border-none">Problem: Stability of $z^4 + 0.6z^3 + 0.63z^2 - 0.37z + 0.065 = 0$</h3>
+                        
+                        <p class="text-slate-800 font-medium mb-6"><strong>Question:</strong> Determine the stability of the system with characteristic equation $z^4 + 0.6z^3 + 0.63z^2 - 0.37z + 0.065 = 0$.</p>
+                        
+                        <div class="space-y-6">
+                            <div class="derivation-box !border-fuchsia-200 !bg-fuchsia-50/30">
+                                <h4 class="font-bold text-fuchsia-900 mb-3">Step 1: Identify Coefficients</h4>
+                                <ul class="grid grid-cols-5 gap-2 text-center text-sm font-bold text-fuchsia-800 bg-white p-3 rounded border border-slate-200">
+                                    <li>$a_0 = 1$</li>
+                                    <li>$a_1 = 0.6$</li>
+                                    <li>$a_2 = 0.63$</li>
+                                    <li>$a_3 = -0.37$</li>
+                                    <li>$a_4 = 0.065$</li>
+                                </ul>
+                            </div>
+
+                            <div class="derivation-box !border-fuchsia-200 !bg-fuchsia-50/30">
+                                <h4 class="font-bold text-fuchsia-900 mb-3">Step 2: Check Necessary Conditions</h4>
+                                <ul class="space-y-4 text-sm text-slate-700">
+                                    <li class="bg-white p-3 rounded border border-slate-200">
+                                        <strong>1. $P(1) > 0$:</strong> <br>
+                                        $P(1) = 1 + 0.6 + 0.63 - 0.37 + 0.065 = 1.925$. Since $1.925 > 0$, condition satisfied.
+                                    </li>
+                                    <li class="bg-white p-3 rounded border border-slate-200">
+                                        <strong>2. $(-1)^n P(-1) > 0$ (here $n=4$):</strong> <br>
+                                        $(-1)^4 P(-1) = 1(1 - 0.6 + 0.63 + 0.37 + 0.065) = 1.465$. Since $1.465 > 0$, condition satisfied.
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="derivation-box !border-fuchsia-200 !bg-fuchsia-50/30">
+                                <h4 class="font-bold text-fuchsia-900 mb-3">Step 3: Construct Jury Array</h4>
+                                <p class="text-sm text-slate-700 mb-2">Calculation for Row 3 elements ($b_k$):</p>
+                                <div class="math-block !bg-white !py-2 !text-xs text-left px-8">
+                                    $$ b_3 = \begin{vmatrix} a_4 & a_3 \\ a_0 & a_1 \end{vmatrix} = \begin{vmatrix} 0.065 & -0.37 \\ 1 & 0.6 \end{vmatrix} = 0.065(0.6) - (-0.37) = 0.039 + 0.37 = 0.409 $$
+                                    <br>
+                                    $$ b_2 = \begin{vmatrix} a_4 & a_2 \\ a_0 & a_2 \end{vmatrix} = \begin{vmatrix} 0.065 & 0.63 \\ 1 & 0.63 \end{vmatrix} = 0.065(0.63) - 0.63 = 0.04095 - 0.63 = -0.58905 $$
+                                    <br>
+                                    $$ b_1 = \begin{vmatrix} a_4 & a_1 \\ a_0 & a_3 \end{vmatrix} = \begin{vmatrix} 0.065 & 0.6 \\ 1 & -0.37 \end{vmatrix} = 0.065(-0.37) - 0.6 = -0.02405 - 0.6 = -0.62405 $$
+                                    <br>
+                                    $$ b_0 = \begin{vmatrix} a_4 & a_0 \\ a_0 & a_4 \end{vmatrix} = \begin{vmatrix} 0.065 & 1 \\ 1 & 0.065 \end{vmatrix} = 0.065^2 - 1 = 0.004225 - 1 = -0.995775 $$
+                                </div>
+                                <p class="text-sm text-slate-700 mt-4 mb-2 font-bold">Calculation for Row 5 elements ($c_k$):</p>
+                                <div class="math-block !bg-white !py-2 !text-xs text-left px-8">
+                                    $$ c_2 = \begin{vmatrix} b_0 & b_1 \\ b_3 & b_2 \end{vmatrix} = \begin{vmatrix} -0.995775 & -0.62405 \\ 0.409 & -0.58905 \end{vmatrix} = 0.58656 - (-0.25523) = 0.8418 $$
+                                    <br>
+                                    $$ c_1 = \begin{vmatrix} b_0 & b_2 \\ b_3 & b_1 \end{vmatrix} = \begin{vmatrix} -0.995775 & -0.58905 \\ 0.409 & -0.62405 \end{vmatrix} = 0.62141 - (-0.24092) = 0.8623 $$
+                                    <br>
+                                    $$ c_0 = \begin{vmatrix} b_0 & b_3 \\ b_3 & b_0 \end{vmatrix} = \begin{vmatrix} -0.995775 & 0.409 \\ 0.409 & -0.995775 \end{vmatrix} = 0.99156 - 0.16728 = 0.8243 $$
+                                </div>
+                            </div>
+
+                            <div class="derivation-box !border-fuchsia-200 !bg-fuchsia-50/30">
+                                <h4 class="font-bold text-fuchsia-900 mb-3">Step 4: Check Sufficient Conditions</h4>
+                                <ul class="space-y-4 text-sm text-slate-800 font-medium">
+                                    <li class="bg-white p-3 rounded border border-slate-200">
+                                        <strong>1. $|a_4| < |a_0|$</strong>: $0.065 < 1$ (Satisfied).
+                                    </li>
+                                    <li class="bg-white p-3 rounded border border-slate-200">
+                                        <strong>2. $|b_0| > |b_3|$</strong>: $|-0.9957| > |0.409|$ (Satisfied).
+                                    </li>
+                                    <li class="bg-red-50 p-3 rounded border border-red-200 text-red-900">
+                                        <strong>3. $|c_0| > |c_2|$</strong>: $|0.8243| > |0.8418|$ <span class="font-bold text-xl ml-2">FALSE!</span>
+                                    </li>
+                                </ul>
+                                <p class="text-sm text-slate-700 mt-6 text-center text-red-800 font-bold bg-red-100 py-3 rounded-lg border border-red-300">
+                                    Conclusion: Since $|c_0| \ngtr |c_2|$, the sufficient conditions are violated. Hence, the system is UNSTABLE.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4.3 Solved QP Problem (Unstable Early Failure) -->
+                <div class="bg-white border-2 border-fuchsia-200 rounded-3xl overflow-hidden shadow-lg mt-12 relative">
+                    <div class="absolute top-0 right-0 bg-fuchsia-600 text-white px-5 py-1.5 rounded-bl-xl font-bold tracking-wider text-sm shadow-sm">SOLVED QP</div>
+                    <div class="p-8 md:p-10">
+                        <h3 class="text-2xl font-bold text-fuchsia-950 mt-0 mb-6 border-none">Problem: Stability of $2z^4 + 7z^3 + 10z^2 + 4z + 1 = 0$</h3>
+                        
+                        <p class="text-slate-800 font-medium mb-6"><strong>Question:</strong> Consider the system with characteristic polynomial $F(z) = 2z^4 + 7z^3 + 10z^2 + 4z + 1$. Investigate the stability of the system using Jury's Test.</p>
+                        
+                        <div class="space-y-6">
+                            <div class="derivation-box !border-fuchsia-200 !bg-fuchsia-50/30">
+                                <h4 class="font-bold text-fuchsia-900 mb-3">Step 1: Check Necessary Conditions</h4>
+                                <p class="text-sm text-slate-700 mb-2">$a_0 = 2, a_1 = 7, a_2 = 10, a_3 = 4, a_4 = 1$.</p>
+                                <ul class="space-y-4 text-sm text-slate-700">
+                                    <li class="bg-white p-3 rounded border border-slate-200">
+                                        <strong>1. $F(1) > 0$:</strong> <br>
+                                        $F(1) = 2 + 7 + 10 + 4 + 1 = 24$. Since $24 > 0$, condition satisfied.
+                                    </li>
+                                    <li class="bg-white p-3 rounded border border-slate-200">
+                                        <strong>2. $(-1)^4 F(-1) > 0$:</strong> <br>
+                                        $(-1)^4 F(-1) = 1(2 - 7 + 10 - 4 + 1) = 2$. Since $2 > 0$, condition satisfied.
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="derivation-box !border-fuchsia-200 !bg-fuchsia-50/30">
+                                <h4 class="font-bold text-fuchsia-900 mb-3">Step 2: Construct Jury Array</h4>
+                                <p class="text-sm text-slate-700 mb-2">Calculation for Row 3 elements ($b_k$):</p>
+                                <div class="math-block !bg-white !py-2 !text-xs text-left px-8">
+                                    $$ b_0 = \begin{vmatrix} a_4 & a_0 \\ a_0 & a_4 \end{vmatrix} = \begin{vmatrix} 1 & 2 \\ 2 & 1 \end{vmatrix} = (1)(1) - (2)(2) = 1 - 4 = -3 $$
+                                    <br>
+                                    $$ b_1 = \begin{vmatrix} a_4 & a_1 \\ a_0 & a_3 \end{vmatrix} = \begin{vmatrix} 1 & 7 \\ 2 & 4 \end{vmatrix} = (1)(4) - (7)(2) = 4 - 14 = -10 $$
+                                    <br>
+                                    $$ b_2 = \begin{vmatrix} a_4 & a_2 \\ a_0 & a_2 \end{vmatrix} = \begin{vmatrix} 1 & 10 \\ 2 & 10 \end{vmatrix} = (1)(10) - (10)(2) = 10 - 20 = -10 $$
+                                    <br>
+                                    $$ b_3 = \begin{vmatrix} a_4 & a_3 \\ a_0 & a_1 \end{vmatrix} = \begin{vmatrix} 1 & 4 \\ 2 & 7 \end{vmatrix} = (1)(7) - (4)(2) = 7 - 8 = -1 $$
+                                </div>
+                            </div>
+
+                            <div class="derivation-box !border-fuchsia-200 !bg-fuchsia-50/30">
+                                <h4 class="font-bold text-fuchsia-900 mb-3">Step 3: Check Sufficient Conditions</h4>
+                                <p class="text-sm text-slate-700 mb-4">We check the magnitude constraints immediately to save time:</p>
+                                <ul class="space-y-4 text-sm text-slate-800 font-medium">
+                                    <li class="bg-white p-3 rounded border border-slate-200">
+                                        <strong>1. $|a_4| < |a_0|$</strong>: $|1| < |2|$ (Satisfied).
+                                    </li>
+                                    <li class="bg-red-50 p-3 rounded border border-red-200 text-red-900">
+                                        <strong>2. $|b_0| > |b_3|$</strong>: $|-3| > |-1| \implies 3 > 1$ <span class="font-bold text-xl ml-2">FALSE!</span>
+                                    </li>
+                                </ul>
+                                <p class="text-sm text-slate-700 mt-6 text-center text-red-800 font-bold bg-red-100 py-3 rounded-lg border border-red-300">
+                                    Conclusion: Since $|b_0| \ngtr |b_3|$, the sufficient condition is violated early. Hence, the system is UNSTABLE.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+        </main>
+        
+        <!-- Table of Contents Sidebar -->
+        <aside class="hidden xl:block w-72 shrink-0 relative">
+            <div class="sticky top-28 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+                <h4 class="font-extrabold text-slate-900 mb-4 uppercase tracking-widest text-xs border-b border-slate-100 pb-2">Module 4 Contents</h4>
+                <nav class="space-y-2 text-sm font-medium">
+                    <a href="#controllability" class="toc-link">1. Controllability & Observability</a>
+                    <div class="pl-4 space-y-1 mt-1 mb-2 border-l border-slate-200 ml-2">
+                        <a href="#controllability" class="block text-slate-500 hover:text-purple-600 transition-colors py-1 text-xs">Kalman's Test</a>
+                        <a href="#controllability" class="block text-slate-500 hover:text-purple-600 transition-colors py-1 text-xs font-bold">Solved QP Example</a>
+                    </div>
+                    <a href="#pole-placement" class="toc-link">2. Pole Placement Design</a>
+                    <div class="pl-4 space-y-1 mt-1 mb-2 border-l border-slate-200 ml-2">
+                        <a href="#pole-placement" class="block text-slate-500 hover:text-purple-600 transition-colors py-1 text-xs">State Feedback Block</a>
+                        <a href="#pole-placement" class="block text-slate-500 hover:text-purple-600 transition-colors py-1 text-xs font-bold">Direct Substitution QP</a>
+                    </div>
+                    <a href="#digital-control" class="toc-link">3. Sampled Data Systems</a>
+                    <div class="pl-4 space-y-1 mt-1 mb-2 border-l border-slate-200 ml-2">
+                        <a href="#digital-control" class="block text-slate-500 hover:text-purple-600 transition-colors py-1 text-xs">Digital Control Block</a>
+                        <a href="#digital-control" class="block text-slate-500 hover:text-purple-600 transition-colors py-1 text-xs">SISO Digital State Space</a>
+                        <a href="#digital-control" class="block text-slate-500 hover:text-purple-600 transition-colors py-1 text-xs">ZOH Transfer Function</a>
+                        <a href="#digital-control" class="block text-slate-500 hover:text-purple-600 transition-colors py-1 text-xs font-bold">Pulse TF Solved QPs</a>
+                    </div>
+                    <a href="#jury-test" class="toc-link">4. Jury's Stability Test</a>
+                    <div class="pl-4 space-y-1 mt-1 mb-2 border-l border-slate-200 ml-2">
+                        <a href="#jury-test" class="block text-slate-500 hover:text-purple-600 transition-colors py-1 text-xs">Necessary & Sufficient</a>
+                        <a href="#jury-test" class="block text-slate-500 hover:text-purple-600 transition-colors py-1 text-xs font-bold">Jury's Table Solved QPs</a>
+                    </div>
+                </nav>
+            </div>
+        </aside>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-8 text-center mt-12 border-t-4 border-purple-600">
+        <p class="mb-2 text-lg font-bold text-white">Advanced Control Theory • Module 4 Comprehensive Notes</p>
+        <p class="text-sm">Compiled for Engineering Curriculum Examination Preparation</p>
+    </footer>
+
+    <script>
+        // Active state toggling for sidebar navigation based on scroll position
+        window.addEventListener('DOMContentLoaded', () => {
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    const id = entry.target.getAttribute('id');
+                    if (entry.intersectionRatio > 0) {
+                        document.querySelectorAll('.toc-link').forEach(link => {
+                            link.classList.remove('active');
+                            link.classList.remove('font-bold');
+                            link.classList.remove('text-purple-600');
+                        });
+                        const activeLink = document.querySelector(`.toc-link[href="#${id}"]`);
+                        if(activeLink) {
+                            activeLink.classList.add('active');
+                            activeLink.classList.add('font-bold');
+                            activeLink.classList.add('text-purple-600');
+                        }
+                    }
+                });
+            }, { threshold: 0.15 });
+
+            document.querySelectorAll('section[id]').forEach((section) => {
+                observer.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>
