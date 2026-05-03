@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ACT: Solved University Question Papers</title>
+    
+    <!-- MathJax for rendering LaTeX equations -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        :root {
+            --primary: #1e3a8a;      /* Blue 900 */
+            --secondary: #3b82f6;    /* Blue 500 */
+            --accent: #ef4444;       /* Rose 500 */
+            --bg-color: #f8fafc;     /* Slate 50 */
+            --text-main: #334155;    /* Slate 700 */
+            --box-bg: #ffffff;
+        }
+
+        body { 
+            font-family: 'Inter', system-ui, -apple-system, sans-serif; 
+            scroll-behavior: smooth; 
+            background-color: var(--bg-color); 
+            color: var(--text-main);
+            line-height: 1.7;
+        }
+        
+        /* Typography & Layout */
+        h1, h2, h3, h4, h5 { color: #0f172a; letter-spacing: -0.025em; font-weight: 700; }
+        h2 { 
+            scroll-margin-top: 6rem; 
+            border-bottom: 3px solid #dbeafe; 
+            padding-bottom: 0.75rem; 
+            margin-top: 4.5rem; 
+            margin-bottom: 2rem; 
+            display: flex; 
+            align-items: center; 
+            gap: 1rem; 
+        }
+        h3 { 
+            scroll-margin-top: 6rem; 
+            margin-top: 2.5rem; 
+            margin-bottom: 1.25rem; 
+            color: var(--primary); 
+        }
+        
+        /* Mathematical Blocks */
+        .math-block { 
+            overflow-x: auto; 
+            padding: 1.5rem; 
+            background: var(--box-bg); 
+            border: 1px solid #bfdbfe; 
+            border-radius: 0.75rem; 
+            box-shadow: inset 0 2px 4px 0 rgb(0 0 0 / 0.02); 
+            margin: 1.5rem 0; 
+            text-align: center; 
+            font-size: 1.1rem;
+        }
+        
+        .derivation-box { 
+            background: var(--box-bg); 
+            border: 1px dashed #93c5fd; 
+            padding: 2rem; 
+            border-radius: 0.75rem; 
+            margin-top: 1.5rem; 
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);
+        }
+
+        .qp-card {
+            border: 2px solid #e2e8f0;
+            border-radius: 1rem;
+            overflow: hidden;
+            margin-bottom: 3rem;
+            background: #ffffff;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
+        }
+        .qp-header {
+            background-color: #f1f5f9;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .qp-badge {
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+        .qp-body { padding: 2rem; }
+        .question-text {
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            padding-left: 1rem;
+            border-left: 4px solid #ef4444;
+        }
+
+        /* Sidebar Navigation */
+        .toc-link { 
+            display: block; 
+            padding: 0.6rem 1.2rem; 
+            color: #475569; 
+            text-decoration: none; 
+            border-radius: 0.5rem; 
+            transition: all 0.2s; 
+            border-left: 3px solid transparent; 
+            font-weight: 500;
+        }
+        .toc-link:hover, .toc-link.active { 
+            background: #eff6ff; 
+            color: var(--primary); 
+            border-left-color: var(--primary); 
+        }
+
+        /* Table Styling */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .data-table th { background-color: #eff6ff; color: #1e3a8a; font-weight: 700; text-align: center; padding: 1rem; border: 1px solid #bfdbfe; }
+        .data-table td { padding: 1rem; border: 1px solid #e2e8f0; text-align: center; }
+    </style>
+</head>
+<body class="antialiased selection:bg-blue-200 selection:text-blue-900">
+
+    <!-- Header -->
+    <header class="bg-white/95 border-b border-slate-200 sticky top-0 z-50 shadow-sm backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="bg-blue-700 p-2 rounded-lg shadow-inner">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight leading-none">ACT: Solved Question Bank</h1>
+                    <p class="text-sm text-slate-500 font-medium mt-1">Comprehensive University Exams Detailed Solutions</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col xl:flex-row gap-12">
+        
+        <!-- Main Content -->
+        <main class="flex-1 w-full max-w-5xl mx-auto">
+
+            <!-- ========================================== -->
+            <!-- MODULE 1 & 2: COMPENSATORS & ZN            -->
+            <!-- ========================================== -->
+            <section id="mod12" class="mb-12">
+                <h2>
+                    <span class="bg-gradient-to-br from-blue-600 to-blue-800 text-white w-12 h-12 rounded-xl flex items-center justify-center font-extrabold text-2xl shadow-lg shrink-0">1</span>
+                    Compensator Design & PID Tuning
+                </h2>
+
+                <!-- Q1: Bode Lag -->
+                <div class="qp-card" id="q1">
+                    <div class="qp-header">
+                        <span class="font-bold text-slate-800">Frequency Domain Design (Lag)</span>
+                        <span class="qp-badge bg-blue-600">MAY 2019 / DEC 2019 | 10 Marks</span>
+                    </div>
+                    <div class="qp-body">
+                        <p class="question-text">Design a suitable lag compensator for a feedback system with open-loop transfer function $G(s) = \frac{K}{s(1+2s)}$ so that Phase Margin is $40^\circ$ and steady-state error for a ramp input $\le 0.2$.</p>
+                        
+                        <div class="derivation-box">
+                            <h4 class="font-bold text-blue-900 mb-3">Step 1: Determine K</h4>
+                            <p class="text-sm text-slate-700">Given $e_{ss} \le 0.2$ for a ramp input, Velocity error constant $K_v = \frac{1}{e_{ss}} = \frac{1}{0.2} = 5$.</p>
+                            <div class="math-block">
+                                $$ K_v = \lim_{s \to 0} s G(s) = \lim_{s \to 0} s \frac{K}{s(1+2s)} = K \implies K = 5 $$
+                            </div>
+
+                            <h4 class="font-bold text-blue-900 mt-6 mb-3">Step 2: Uncompensated Phase Margin</h4>
+                            <p class="text-sm text-slate-700">Let $G(j\omega) = \frac{5}{j\omega(1 + j2\omega)}$. From the Bode plot, gain crossover frequency $\omega_{gc} \approx 1.15$ rad/sec.</p>
+                            <div class="math-block">
+                                $$ \phi_{gc} = -90^\circ - \tan^{-1}(2 \times 1.15) \approx -156^\circ $$
+                                $$ PM_{uncomp} = 180^\circ - 156^\circ = 24^\circ $$
+                            </div>
+
+                            <h4 class="font-bold text-blue-900 mt-6 mb-3">Step 3: New Gain Crossover Frequency</h4>
+                            <p class="text-sm text-slate-700">Desired Phase Margin $\gamma_d = 40^\circ$. Add $\epsilon = 5^\circ$ for safety. New required PM $\gamma_n = 45^\circ$.</p>
+                            <div class="math-block">
+                                $$ \text{Required Phase at new } \omega_{gc}: \phi_{gcn} = -180^\circ + 45^\circ = -135^\circ $$
+                                $$ -90^\circ - \tan^{-1}(2\omega) = -135^\circ \implies \tan^{-1}(2\omega) = 45^\circ \implies \omega_{gcn} = 0.5 \text{ rad/sec} $$
+                            </div>
+
+                            <h4 class="font-bold text-blue-900 mt-6 mb-3">Step 4: Design Compensator Parameters</h4>
+                            <p class="text-sm text-slate-700">Calculate magnitude of uncompensated system at new $\omega_{gcn} = 0.5$ rad/sec:</p>
+                            <div class="math-block">
+                                $$ A_{gcn} = \left| \frac{5}{j0.5(1 + j1)} \right| = \frac{5}{0.5 \sqrt{2}} = \frac{10}{\sqrt{2}} \approx 7.07 \implies 20 \log_{10}(7.07) \approx 17 \text{ dB} $$
+                            </div>
+                            <p class="text-sm text-slate-700">Using the standard QP graphical approximation of $A_{gcn} = 20$ dB:</p>
+                            <div class="math-block">
+                                $$ 20 \log \beta = 20 \implies \beta = 10 $$
+                                $$ \frac{1}{T} = \frac{\omega_{gcn}}{10} = \frac{0.5}{10} = 0.05 \implies T = 20 $$
+                            </div>
+
+                            <h4 class="font-bold text-blue-900 mt-6 mb-3">Step 5: Final Transfer Function</h4>
+                            <div class="math-block !border-blue-500 !border-2 !font-bold">
+                                $$ G_c(s) = \frac{1 + sT}{1 + s\beta T} = \frac{1 + 20s}{1 + 200s} $$
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Q2: Root Locus Lead -->
+                <div class="qp-card" id="q2">
+                    <div class="qp-header">
+                        <span class="font-bold text-slate-800">Root Locus Design (Lead)</span>
+                        <span class="qp-badge bg-blue-600">DEC 2019 / JUL 2021 | 10 Marks</span>
+                    </div>
+                    <div class="qp-body">
+                        <p class="question-text">Design a lead compensator for $G(s) = \frac{K}{s(s+8)}$ to satisfy: (1) %OS = 9.5%, (2) $\omega_n = 12$ rad/sec, (3) $K_v \ge 10$.</p>
+                        
+                        <div class="derivation-box">
+                            <h4 class="font-bold text-blue-900 mb-3">Step 1: Dominant Pole Location</h4>
+                            <div class="math-block">
+                                $$ \%M_p = 9.5\% \implies e^{\frac{-\zeta\pi}{\sqrt{1-\zeta^2}}} = 0.095 \implies \zeta = 0.6 $$
+                                $$ s_d = -\zeta\omega_n \pm j\omega_n\sqrt{1-\zeta^2} = -7.2 \pm j9.6 $$
+                            </div>
+
+                            <h4 class="font-bold text-blue-900 mt-6 mb-3">Step 2: Angle Deficiency</h4>
+                            <p class="text-sm text-slate-700">Poles are at $s=0, s=-8$. Angles to $s_d$:</p>
+                            <div class="math-block">
+                                $$ \theta_1 (\text{from } s=0) = 180^\circ - \tan^{-1}\left(\frac{9.6}{7.2}\right) = 126.9^\circ $$
+                                $$ \theta_2 (\text{from } s=-8) = \tan^{-1}\left(\frac{9.6}{8-7.2}\right) = 85.2^\circ $$
+                                $$ \angle G(s_d) = -(126.9^\circ + 85.2^\circ) = -212.1^\circ $$
+                                $$ \text{Required Phase Lead: } \phi = 180^\circ - 212.1^\circ = 32.1^\circ \approx 32^\circ $$
+                            </div>
+
+                            <h4 class="font-bold text-blue-900 mt-6 mb-3">Step 3: Finding Pole and Zero (Bisector Method)</h4>
+                            <p class="text-sm text-slate-700">Using the geometric bisector method, the angle $APO = 53.1^\circ$. Bisecting it and drawing $\pm 16^\circ$ yields the coordinates on the real axis:</p>
+                            <div class="math-block">
+                                $$ \text{Zero } z_c = -9.1, \quad \text{Pole } p_c = -16.25 \implies G_c(s) = \frac{s + 9.1}{s + 16.25} $$
+                            </div>
+
+                            <h4 class="font-bold text-blue-900 mt-6 mb-3">Step 4: Finding K and Checking $K_v$</h4>
+                            <p class="text-sm text-slate-700">Using Magnitude Condition at $s_d = -7.2 + j9.6$:</p>
+                            <div class="math-block">
+                                $$ K \left| \frac{s_d + 9.1}{s_d(s_d + 8)(s_d + 16.25)} \right| = 1 \implies K \approx 150 $$
+                            </div>
+                            <p class="text-sm text-slate-700">Checking Velocity Error Constant:</p>
+                            <div class="math-block !border-blue-500 !border-2 !font-bold">
+                                $$ K_v = \lim_{s \to 0} s G_c(s)G(s) = \frac{150 \times 9.1}{8 \times 16.25} = 10.5 \ge 10 \quad \text{(Satisfied)} $$
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Q3: Root Locus Lead 2 -->
+                <div class="qp-card" id="q3">
+                    <div class="qp-header">
+                        <span class="font-bold text-slate-800">Root Locus Design (Lead Cascade)</span>
+                        <span class="qp-badge bg-blue-600">APR 2018 | 10 Marks</span>
+                    </div>
+                    <div class="qp-body">
+                        <p class="question-text">Design a suitable compensator for $G(s)H(s) = \frac{1}{s(s+1)(s+2)}$ so that overshoot to a unit step input is limited to 20% and transient settling time within 3s.</p>
+                        
+                        <div class="derivation-box">
+                            <h4 class="font-bold text-blue-900 mb-3">Step 1: Dominant Pole Location</h4>
+                            <div class="math-block">
+                                $$ \%M_p = 20\% \implies e^{\frac{-\zeta\pi}{\sqrt{1-\zeta^2}}} = 0.2 \implies \zeta \approx 0.5 $$
+                                $$ T_s = \frac{4}{\zeta \omega_n} = 3 \implies \omega_n = \frac{4}{0.5 \times 3} = 2.67 \text{ rad/sec} $$
+                                $$ s_d = -\zeta\omega_n \pm j\omega_n\sqrt{1-\zeta^2} = -1.335 \pm j2.31 $$
+                            </div>
+
+                            <h4 class="font-bold text-blue-900 mt-6 mb-3">Step 2: Angle Deficiency</h4>
+                            <p class="text-sm text-slate-700">Uncompensated poles at $s=0, -1, -2$. Sum of angles to $s_d$:</p>
+                            <div class="math-block">
+                                $$ \sum \theta_{poles} = 120^\circ + 98^\circ + 73^\circ = 291^\circ $$
+                                $$ \text{Required Phase Lead } \phi = 291^\circ - 180^\circ = 111^\circ $$
+                            </div>
+                            <p class="text-sm text-slate-700 font-bold text-red-600">Since $\phi > 60^\circ$, a single lead network is insufficient. Use a cascade of two identical lead networks, each providing $111^\circ / 2 = 55.5^\circ \approx 56^\circ$.</p>
+
+                            <h4 class="font-bold text-blue-900 mt-6 mb-3">Step 3: Finding Pole and Zero (Bisector Method)</h4>
+                            <p class="text-sm text-slate-700">Using the bisector method for $56^\circ$ at $s_d$:</p>
+                            <div class="math-block">
+                                $$ \text{Zero } z_c = -1.4, \quad \text{Pole } p_c = -5.1 $$
+                                $$ G_c(s) = \left( \frac{s + 1.4}{s + 5.1} \right)^2 $$
+                            </div>
+
+                            <h4 class="font-bold text-blue-900 mt-6 mb-3">Step 4: Finding K</h4>
+                            <p class="text-sm text-slate-700">Using Magnitude Condition at $s_d$ for the overall system:</p>
+                            <div class="math-block !border-blue-500 !border-2 !font-bold">
+                                $$ K \left| \left( \frac{s_d + 1.4}{s_d + 5.1} \right)^2 \frac{1}{s_d(s_d + 1)(s_d + 2)} \right| = 1 \implies K \approx 29.13 $$
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Q4: Ziegler Nichols -->
+                <div class="qp-card" id="q4">
+                    <div class="qp-header">
+                        <span class="font-bold text-slate-800">Ziegler-Nichols Tuning (Analytical)</span>
+                        <span class="qp-badge bg-blue-600">MAY 2019 | 10 Marks</span>
+                    </div>
+                    <div class="qp-body">
+                        <p class="question-text">A unity feedback system has plant TF $G(s) = \frac{6}{(s+1)(s+2)(s+3)}$. Tune the PID controller using the Ziegler-Nichols method.</p>
+                        
+                        <div class="derivation-box">
+                            <h4 class="font-bold text-blue-900 mb-3">Step 1: Find Critical Gain ($K_{cr}$)</h4>
+                            <p class="text-sm text-slate-700">Set up proportional control only. Characteristic equation is $1 + K_p G(s) = 0$.</p>
+                            <div class="math-block">
+                                $$ 1 + \frac{6 K_p}{(s+1)(s+2)(s+3)} = 0 \implies s^3 + 6s^2 + 11s + 6 + 6K_p = 0 $$
+                            </div>
+                            <p class="text-sm text-slate-700 mt-2">Construct Routh Array:</p>
+                            <table class="w-full max-w-sm mx-auto text-center border-collapse mt-2 mb-4 text-sm bg-white border border-slate-200">
+                                <tr><td class="p-2 border font-bold bg-slate-50">s³</td><td class="p-2 border">1</td><td class="p-2 border">11</td></tr>
+                                <tr><td class="p-2 border font-bold bg-slate-50">s²</td><td class="p-2 border">6</td><td class="p-2 border">$6+6K_p$</td></tr>
+                                <tr><td class="p-2 border font-bold bg-slate-50">s¹</td><td class="p-2 border text-red-600 font-bold">$\frac{66 - (6+6K_p)}{6} = 10 - K_p$</td><td class="p-2 border">0</td></tr>
+                                <tr><td class="p-2 border font-bold bg-slate-50">s⁰</td><td class="p-2 border">$6+6K_p$</td><td class="p-2 border">0</td></tr>
+                            </table>
+                            <div class="math-block font-bold text-blue-800">
+                                $$ \text{Marginal stability: } 10 - K_p = 0 \implies K_{cr} = 10 $$
+                            </div>
+
+                            <h4 class="font-bold text-blue-900 mt-6 mb-3">Step 2: Find Ultimate Period ($P_{cr}$)</h4>
+                            <p class="text-sm text-slate-700">Substitute $K_{cr} = 10$ into the auxiliary equation from the $s^2$ row:</p>
+                            <div class="math-block">
+                                $$ 6s^2 + (6 + 6(10)) = 0 \implies 6s^2 + 66 = 0 \implies s = \pm j\sqrt{11} $$
+                                $$ \omega_{cr} = \sqrt{11} \text{ rad/sec} \implies P_{cr} = \frac{2\pi}{\sqrt{11}} = 1.895 \text{ s} $$
+                            </div>
+
+                            <h4 class="font-bold text-blue-900 mt-6 mb-3">Step 3: Tune PID Controller</h4>
+                            <p class="text-sm text-slate-700">Using standard Z-N rules for PID:</p>
+                            <ul class="list-disc ml-6 text-sm text-slate-700 font-bold mb-4">
+                                <li>$K_p = 0.6 K_{cr} = 6$</li>
+                                <li>$T_i = 0.5 P_{cr} = 0.9475$</li>
+                                <li>$T_d = 0.125 P_{cr} = 0.2368$</li>
+                            </ul>
+                            <div class="math-block !border-blue-500 !border-2 !font-bold text-lg text-blue-900">
+                                $$ G_{PID}(s) = 6 \left[ 1 + \frac{1}{0.9475s} + 0.2368s \right] $$
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Q5: Ziegler Nichols 2 -->
+                <div class="qp-card" id="q5">
+                    <div class="qp-header">
+                        <span class="font-bold text-slate-800">Ziegler-Nichols Tuning</span>
+                        <span class="qp-badge bg-blue-600">JUL 2021 | 10 Marks</span>
+                    </div>
+                    <div class="qp-body">
+                        <p class="question-text">Design a P, PI, and PID controller for the system with transfer function $G(s) = \frac{20}{s(s+2)(s+10)}$ by applying Ziegler-Nichols tuning method.</p>
+                        
+                        <div class="derivation-box">
+                            <h4 class="font-bold text-blue-900 mb-3">Step 1: Find Critical Gain ($K_{cr}$) and Period ($P_{cr}$)</h4>
+                            <div class="math-block">
+                                $$ 1 + K_p \frac{20}{s(s^2 + 12s + 20)} = 0 \implies s^3 + 12s^2 + 20s + 20K_p = 0 $$
+                            </div>
+                            <p class="text-sm text-slate-700 mt-2">Using Routh Hurwitz, the $s^1$ row gives $\frac{240 - 20K_p}{12} = 0 \implies 20K_p = 240 \implies \mathbf{K_{cr} = 12}$.</p>
+                            <p class="text-sm text-slate-700 mt-2">Auxiliary equation: $12s^2 + 20(12) = 0 \implies 12s^2 + 240 = 0 \implies s^2 = -20 \implies \omega_{cr} = \sqrt{20} = 4.47$ rad/sec.</p>
+                            <div class="math-block">
+                                $$ P_{cr} = \frac{2\pi}{\omega_{cr}} = \frac{2\pi}{4.47} = 1.40 \text{ sec} $$
+                            </div>
+
+                            <h4 class="font-bold text-blue-900 mt-6 mb-3">Step 2: Z-N Rule Calculations</h4>
+                            <table class="data-table !my-2">
+                                <thead><tr><th>Controller</th><th>$K_p$</th><th>$T_i$</th><th>$T_d$</th></tr></thead>
+                                <tbody>
+                                    <tr><td>P</td><td>$0.5 K_{cr} = 6$</td><td>$\infty$</td><td>0</td></tr>
+                                    <tr><td>PI</td><td>$0.45 K_{cr} = 5.4$</td><td>$P_{cr}/1.2 = 1.16$</td><td>0</td></tr>
+                                    <tr><td>PID</td><td>$0.6 K_{cr} = 7.2$</td><td>$0.5 P_{cr} = 0.7$</td><td>$0.125 P_{cr} = 0.175$</td></tr>
+                                </tbody>
+                            </table>
+                            <div class="math-block !border-blue-500 !border-2 !font-bold text-lg text-blue-900">
+                                $$ G_P(s) = 6, \quad G_{PI}(s) = 5.4\left(1 + \frac{1}{1.16s}\right), \quad G_{PID}(s) = 7.2\left(1 + \frac{1}{0.7s} + 0.175s\right) $$
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========================================== -->
+            <!-- MODULE 3 & 4: STATE SPACE & DIGITAL        -->
+            <!-- ========================================== -->
+            <section id="mod34" class="mb-12">
+                <h2>
+                    <span class="bg-gradient-to-br from-indigo-600 to-indigo-800 text-white w-12 h-12 rounded-xl flex items-center justify-center font-extrabold text-2xl shadow-lg shrink-0">2</span>
+                    State Space & Digital Systems
+                </h2>
+
+                <!-- Q6: Controllability -->
+                <div class="qp-card" id="q6">
+                    <div class="qp-header">
+                        <span class="font-bold text-slate-800">Controllability Test from Transfer Function</span>
+                        <span class="qp-badge bg-indigo-600">MAY 2019 | 5 Marks</span>
+                    </div>
+                    <div class="qp-body">
+                        <p class="question-text">Define controllability and observability of a system and check whether the system $\frac{Y(s)}{U(s)} = \frac{1}{(s+1)(s+2)}$ is controllable or not.</p>
+                        
+                        <div class="derivation-box">
+                            <h4 class="font-bold text-indigo-900 mb-3">Step 1: Convert to State Space (Phase Variable Form)</h4>
+                            <div class="math-block">
+                                $$ \frac{Y(s)}{U(s)} = \frac{1}{s^2 + 3s + 2} \implies \ddot{y} + 3\dot{y} + 2y = u $$
+                            </div>
+                            <p class="text-sm text-slate-700">Let $x_1 = y$, $x_2 = \dot{y}$. Then $\dot{x}_1 = x_2$ and $\dot{x}_2 = -2x_1 - 3x_2 + u$.</p>
+                            <div class="math-block">
+                                $$ \begin{bmatrix} \dot{x}_1 \\ \dot{x}_2 \end{bmatrix} = \begin{bmatrix} 0 & 1 \\ -2 & -3 \end{bmatrix} \begin{bmatrix} x_1 \\ x_2 \end{bmatrix} + \begin{bmatrix} 0 \\ 1 \end{bmatrix} u $$
+                            </div>
+
+                            <h4 class="font-bold text-indigo-900 mt-6 mb-3">Step 2: Kalman's Test</h4>
+                            <div class="math-block">
+                                $$ A = \begin{bmatrix} 0 & 1 \\ -2 & -3 \end{bmatrix}, \quad B = \begin{bmatrix} 0 \\ 1 \end{bmatrix} \implies AB = \begin{bmatrix} 1 \\ -3 \end{bmatrix} $$
+                                $$ Q_c = [B \quad AB] = \begin{bmatrix} 0 & 1 \\ 1 & -3 \end{bmatrix} \implies |Q_c| = -1 \neq 0 $$
+                            </div>
+                            <div class="math-block !border-indigo-500 !border-2 !font-bold text-indigo-900">
+                                Since $|Q_c| \neq 0$, the system is completely state controllable.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Q7: Parametric Controllability -->
+                <div class="qp-card" id="q7">
+                    <div class="qp-header">
+                        <span class="font-bold text-slate-800">Parametric Controllability Test</span>
+                        <span class="qp-badge bg-indigo-600">MAY 2023 | 5 Marks</span>
+                    </div>
+                    <div class="qp-body">
+                        <p class="question-text">System is $\dot{X} = \begin{bmatrix} -1 & 0 \\ 0 & -3 \end{bmatrix} X + \begin{bmatrix} 1 & a \\ 0 & b \end{bmatrix} U$. Find the range of 'a' and 'b' for the system to be controllable.</p>
+                        
+                        <div class="derivation-box">
+                            <h4 class="font-bold text-indigo-900 mb-3">Step 1: Kalman's Matrix</h4>
+                            <div class="math-block">
+                                $$ AB = \begin{bmatrix} -1 & 0 \\ 0 & -3 \end{bmatrix} \begin{bmatrix} 1 & a \\ 0 & b \end{bmatrix} = \begin{bmatrix} -1 & -a \\ 0 & -3b \end{bmatrix} $$
+                                $$ Q_c = [B \quad AB] = \begin{bmatrix} 1 & a & -1 & -a \\ 0 & b & 0 & -3b \end{bmatrix} $$
+                            </div>
+                            <p class="text-sm text-slate-700 mt-4 mb-2">For controllability, the rank of the $2 \times 4$ matrix $Q_c$ must be 2. There must be at least one $2 \times 2$ minor that is non-zero.</p>
+                            <p class="text-sm text-slate-700">Looking at columns 1 & 2: $\begin{vmatrix} 1 & a \\ 0 & b \end{vmatrix} = b$. Looking at cols 1 & 4: $\begin{vmatrix} 1 & -a \\ 0 & -3b \end{vmatrix} = -3b$.</p>
+                            <div class="math-block !border-indigo-500 !border-2 !font-bold text-indigo-900">
+                                As long as $b \neq 0$, the rank is 2. The variable $a$ can be any real number.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Q8: State Feedback Pole Placement -->
+                <div class="qp-card" id="q8">
+                    <div class="qp-header">
+                        <span class="font-bold text-slate-800">State Feedback Pole Placement</span>
+                        <span class="qp-badge bg-indigo-600">APR 2018 / MAY 2019 | 10 Marks</span>
+                    </div>
+                    <div class="qp-body">
+                        <p class="question-text">Consider the system $\dot{X} = \begin{bmatrix} 0 & 1 \\ -3 & 1 \end{bmatrix} X + \begin{bmatrix} 0 \\ 2 \end{bmatrix} U$. Find the state feedback gain $K$ so that the closed-loop poles are at $s = -3, -4$.</p>
+                        
+                        <div class="derivation-box">
+                            <h4 class="font-bold text-indigo-900 mb-3">Step 1: Desired Characteristic Equation</h4>
+                            <div class="math-block">
+                                $$ (s + 3)(s + 4) = s^2 + 7s + 12 = 0 \quad \text{--- (1)} $$
+                            </div>
+
+                            <h4 class="font-bold text-indigo-900 mt-6 mb-3">Step 2: Actual Characteristic Equation with Feedback</h4>
+                            <p class="text-sm text-slate-700">Let $K = \begin{bmatrix} k_1 & k_2 \end{bmatrix}$. The closed-loop system matrix is $(A - BK)$.</p>
+                            <div class="math-block">
+                                $$ A - BK = \begin{bmatrix} 0 & 1 \\ -3 & 1 \end{bmatrix} - \begin{bmatrix} 0 \\ 2 \end{bmatrix} \begin{bmatrix} k_1 & k_2 \end{bmatrix} = \begin{bmatrix} 0 & 1 \\ -3 - 2k_1 & 1 - 2k_2 \end{bmatrix} $$
+                                $$ |sI - (A - BK)| = \begin{vmatrix} s & -1 \\ 3 + 2k_1 & s - 1 + 2k_2 \end{vmatrix} = s(s - 1 + 2k_2) + (3 + 2k_1) = 0 $$
+                                $$ s^2 + (2k_2 - 1)s + (2k_1 + 3) = 0 \quad \text{--- (2)} $$
+                            </div>
+
+                            <h4 class="font-bold text-indigo-900 mt-6 mb-3">Step 3: Equate Coefficients</h4>
+                            <div class="math-block">
+                                $$ 2k_2 - 1 = 7 \implies 2k_2 = 8 \implies k_2 = 4 $$
+                                $$ 2k_1 + 3 = 12 \implies 2k_1 = 9 \implies k_1 = 4.5 $$
+                            </div>
+                            <div class="math-block !border-indigo-500 !border-2 !font-bold text-lg text-indigo-900">
+                                $$ K = \begin{bmatrix} 4.5 & 4 \end{bmatrix} $$
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Q9: Canonical Forms -->
+                <div class="qp-card" id="q9">
+                    <div class="qp-header">
+                        <span class="font-bold text-slate-800">Canonical Forms Generation</span>
+                        <span class="qp-badge bg-indigo-600">DEC 2019 | 10 Marks</span>
+                    </div>
+                    <div class="qp-body">
+                        <p class="question-text">Derive the state model for $\frac{Y(s)}{U(s)} = \frac{5(s+2)}{s(s+1)(s+3)}$ in (i) Controllable canonical form, (ii) Diagonal canonical form.</p>
+                        
+                        <div class="derivation-box">
+                            <h4 class="font-bold text-indigo-900 mb-3">(i) Controllable Canonical Form</h4>
+                            <div class="math-block">
+                                $$ G(s) = \frac{5s+10}{s(s^2+4s+3)} = \frac{5s+10}{s^3+4s^2+3s+0} $$
+                            </div>
+                            <p class="text-sm text-slate-700">By inspection ($a_1=4, a_2=3, a_3=0$ and $b_0=0, b_1=0, b_2=5, b_3=10$):</p>
+                            <div class="math-block !border-indigo-500 !border-2 !font-bold text-indigo-900">
+                                $$ \begin{bmatrix} \dot{x}_1 \\ \dot{x}_2 \\ \dot{x}_3 \end{bmatrix} = \begin{bmatrix} 0 & 1 & 0 \\ 0 & 0 & 1 \\ 0 & -3 & -4 \end{bmatrix} \begin{bmatrix} x_1 \\ x_2 \\ x_3 \end{bmatrix} + \begin{bmatrix} 0 \\ 0 \\ 1 \end{bmatrix} u $$
+                                $$ y = \begin{bmatrix} 10 & 5 & 0 \end{bmatrix} \begin{bmatrix} x_1 \\ x_2 \\ x_3 \end{bmatrix} $$
+                            </div>
+
+                            <h4 class="font-bold text-indigo-900 mt-6 mb-3">(ii) Diagonal Canonical Form</h4>
+                            <p class="text-sm text-slate-700">Use partial fraction expansion:</p>
+                            <div class="math-block">
+                                $$ \frac{5s+10}{s(s+1)(s+3)} = \frac{A}{s} + \frac{B}{s+1} + \frac{C}{s+3} $$
+                                $$ A = \left. \frac{5s+10}{(s+1)(s+3)} \right|_{s=0} = \frac{10}{3} $$
+                                $$ B = \left. \frac{5s+10}{s(s+3)} \right|_{s=-1} = \frac{5}{-1(2)} = -2.5 $$
+                                $$ C = \left. \frac{5s+10}{s(s+1)} \right|_{s=-3} = \frac{-5}{-3(-2)} = \frac{-5}{6} $$
+                            </div>
+                            <div class="math-block !border-indigo-500 !border-2 !font-bold text-indigo-900">
+                                $$ \begin{bmatrix} \dot{x}_1 \\ \dot{x}_2 \\ \dot{x}_3 \end{bmatrix} = \begin{bmatrix} 0 & 0 & 0 \\ 0 & -1 & 0 \\ 0 & 0 & -3 \end{bmatrix} \begin{bmatrix} x_1 \\ x_2 \\ x_3 \end{bmatrix} + \begin{bmatrix} 1 \\ 1 \\ 1 \end{bmatrix} u $$
+                                $$ y = \begin{bmatrix} 10/3 & -2.5 & -5/6 \end{bmatrix} \begin{bmatrix} x_1 \\ x_2 \\ x_3 \end{bmatrix} $$
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Q10: RLC State Model -->
+                <div class="qp-card" id="q10">
+                    <div class="qp-header">
+                        <span class="font-bold text-slate-800">Physical System Modeling (RLC)</span>
+                        <span class="qp-badge bg-indigo-600">MAY 2023 | 5 Marks</span>
+                    </div>
+                    <div class="qp-body">
+                        <p class="question-text">Obtain state space model for a two-loop circuit (Inductor $L_1$ and $R_1$ in series, parallel with $L_2, R_2$ and $R_3$). Given $R_1=R_2=R_3=1\Omega$, $L_1=L_2=1H$, and specific loop configurations. Output is voltage across $R_3$. States are inductor currents $i_1, i_2$.</p>
+                        
+                        <div class="derivation-box">
+                            <p class="text-sm text-slate-700">Applying KVL in loop 1:</p>
+                            <div class="math-block">
+                                $$ u(t) = L_1 \frac{di_1}{dt} + R_1 i_1 + R_3 (i_1 - i_2) \implies \frac{di_1}{dt} = \frac{1}{L_1}[-(R_1+R_3)i_1 + R_3 i_2 + u] $$
+                            </div>
+                            <p class="text-sm text-slate-700">Applying KVL in loop 2 (assuming $L_2, R_2$ branch is parallel to $R_3$):</p>
+                            <div class="math-block">
+                                $$ L_2 \frac{di_2}{dt} + R_2 i_2 = R_3(i_1 - i_2) \implies \frac{di_2}{dt} = \frac{1}{L_2}[R_3 i_1 - (R_2+R_3)i_2] $$
+                            </div>
+                            <p class="text-sm text-slate-700">Substitute values ($R=1, L=1$):</p>
+                            <div class="math-block !border-indigo-500 !border-2 !font-bold text-indigo-900">
+                                $$ \begin{bmatrix} \dot{x}_1 \\ \dot{x}_2 \end{bmatrix} = \begin{bmatrix} -2 & 1 \\ 1 & -2 \end{bmatrix} \begin{bmatrix} x_1 \\ x_2 \end{bmatrix} + \begin{bmatrix} 1 \\ 0 \end{bmatrix} u $$
+                                $$ y(t) = R_3(i_1 - i_2) \implies y = \begin{bmatrix} 1 & -1 \end{bmatrix} \begin{bmatrix} x_1 \\ x_2 \end{bmatrix} $$
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Q11: Complete Response STM -->
+                <div class="qp-card" id="q11">
+                    <div class="qp-header">
+                        <span class="font-bold text-slate-800">State Transition Matrix & Complete Response</span>
+                        <span class="qp-badge bg-indigo-600">APR 2018 | 10 Marks</span>
+                    </div>
+                    <div class="qp-body">
+                        <p class="question-text">Find the complete response of $\dot{X} = \begin{bmatrix} 0 & 1 \\ -2 & -3 \end{bmatrix} X + \begin{bmatrix} 2 & 1 \\ 0 & 1 \end{bmatrix} U(t)$ with $X(0) = \begin{bmatrix} 0 \\ 0 \end{bmatrix}$ and $Y = \begin{bmatrix} 1 & 0 \\ 1 & 1 \end{bmatrix} X$ for $U(t) = \begin{bmatrix} u(t) \\ e^{3t}u(t) \end{bmatrix}$.</p>
+                        
+                        <div class="derivation-box">
+                            <p class="text-sm text-slate-700 mb-2">Since $X(0) = 0$, $X(s) = (sI - A)^{-1} B U(s)$.</p>
+                            <div class="math-block">
+                                $$ (sI - A) = \begin{bmatrix} s & -1 \\ 2 & s+3 \end{bmatrix} \implies (sI - A)^{-1} = \frac{1}{(s+1)(s+2)} \begin{bmatrix} s+3 & 1 \\ -2 & s \end{bmatrix} $$
+                            </div>
+                            <div class="math-block">
+                                $$ X(s) = \frac{1}{(s+1)(s+2)} \begin{bmatrix} s+3 & 1 \\ -2 & s \end{bmatrix} \begin{bmatrix} 2 & 1 \\ 0 & 1 \end{bmatrix} \begin{bmatrix} 1/s \\ \frac{1}{s-3} \end{bmatrix} $$
+                            </div>
+                            <p class="text-sm text-slate-700 mt-4 mb-2">Matrix Multiplication and Partial Fractions:</p>
+                            <div class="math-block">
+                                $$ X_1(s) = \frac{2s+6}{s(s+1)(s+2)} + \frac{s+4}{(s+1)(s+2)(s-3)} $$
+                                $$ X_2(s) = \frac{-4}{s(s+1)(s+2)} + \frac{s-2}{(s+1)(s+2)(s-3)} $$
+                            </div>
+                            <p class="text-sm text-slate-700 mt-4 mb-2">Taking inverse Laplace transform and applying $Y = CX$ (Final Result):</p>
+                            <div class="math-block !border-indigo-500 !border-2 !font-bold text-indigo-900 shadow-md">
+                                $$ Y(t) = \begin{bmatrix} 3u(t) - \frac{19}{4}e^{-t} + \frac{6}{5}e^{-2t} + \frac{7}{20}e^{3t} \\ u(t) - \frac{6}{5}e^{-2t} + \frac{2}{5}e^{3t} \end{bmatrix} $$
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Q12: Pulse TF from Diff Eq -->
+                <div class="qp-card" id="q12">
+                    <div class="qp-header">
+                        <span class="font-bold text-slate-800">Pulse TF from Difference Equation</span>
+                        <span class="qp-badge bg-indigo-600">DEC 2019 / SEP 2020 | 5 Marks</span>
+                    </div>
+                    <div class="qp-body">
+                        <p class="question-text">A system is described by $y(k) + 3y(k-1) + 2y(k-2) = u(k) + 5u(k-1)$. Obtain the pulse transfer function.</p>
+                        
+                        <div class="derivation-box">
+                            <p class="text-sm text-slate-700 mb-2">Taking the Z-transform (assuming zero initial conditions):</p>
+                            <div class="math-block">
+                                $$ Y(z) + 3z^{-1}Y(z) + 2z^{-2}Y(z) = U(z) + 5z^{-1}U(z) $$
+                            </div>
+                            <p class="text-sm text-slate-700 mt-4 mb-2">Factoring and finding $H(z) = Y(z)/U(z)$:</p>
+                            <div class="math-block !border-indigo-500 !border-2 !font-bold text-lg text-indigo-900">
+                                $$ H(z) = \frac{1 + 5z^{-1}}{1 + 3z^{-1} + 2z^{-2}} = \frac{z^2 + 5z}{z^2 + 3z + 2} = \frac{z(z+5)}{(z+1)(z+2)} $$
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Q13: Pulse TF with ZOH -->
+                <div class="qp-card" id="q13">
+                    <div class="qp-header">
+                        <span class="font-bold text-slate-800">Pulse TF with ZOH</span>
+                        <span class="qp-badge bg-indigo-600">MAY 2019 | 10 Marks</span>
+                    </div>
+                    <div class="qp-body">
+                        <p class="question-text">Determine the pulse transfer function of a discrete-time control system having a ZOH cascaded with a plant $G(s) = \frac{1}{s+1}$. Assume sampling time $T = 1$ sec. Also find response to unit step input.</p>
+                        
+                        <div class="derivation-box">
+                            <div class="math-block">
+                                $$ G(z) = \mathcal{Z}\{G_{ZOH}(s) G(s)\} = \mathcal{Z}\left\{ \frac{1 - e^{-sT}}{s} \cdot \frac{1}{s+1} \right\} $$
+                                $$ G(z) = (1 - z^{-1}) \mathcal{Z}\left\{ \frac{1}{s(s+1)} \right\} = \frac{z-1}{z} \mathcal{Z}\left\{ \frac{1}{s} - \frac{1}{s+1} \right\} $$
+                            </div>
+                            <p class="text-sm text-slate-700 mt-4 mb-2">Taking Z-transforms with $T=1$ ($e^{-1} = 0.368$):</p>
+                            <div class="math-block">
+                                $$ G(z) = \frac{z-1}{z} \left[ \frac{z}{z-1} - \frac{z}{z-0.368} \right] = 1 - \frac{z-1}{z-0.368} = \frac{0.632}{z-0.368} $$
+                            </div>
+                            <p class="text-sm text-slate-700 mt-4 mb-2">For a unit step input, $R(z) = \frac{z}{z-1}$:</p>
+                            <div class="math-block !border-indigo-500 !border-2 !font-bold text-indigo-900">
+                                $$ C(z) = G(z)R(z) = \frac{0.632 z}{(z-1)(z-0.368)} \implies \frac{C(z)}{z} = \frac{1}{z-1} - \frac{1}{z-0.368} $$
+                                $$ c(kT) = 1^k - (0.368)^k \quad \text{for } k \ge 0 $$
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Q14: Jury Test -->
+                <div class="qp-card" id="q14">
+                    <div class="qp-header">
+                        <span class="font-bold text-slate-800">Jury's Stability Test 1</span>
+                        <span class="qp-badge bg-indigo-600">JUL 2021 / DEC 2019 | 10 Marks</span>
+                    </div>
+                    <div class="qp-body">
+                        <p class="question-text">Test stability: $P(z) = z^4 + 0.6z^3 + 0.63z^2 - 0.37z + 0.065 = 0$.</p>
+                        
+                        <div class="derivation-box">
+                            <h4 class="font-bold text-indigo-900 mb-3">Step 1: Necessary Conditions</h4>
+                            <div class="math-block">
+                                $$ P(1) = 1 + 0.6 + 0.63 - 0.37 + 0.065 = 1.925 > 0 \quad \text{(Passed)} $$
+                                $$ (-1)^4 P(-1) = 1 - 0.6 + 0.63 + 0.37 + 0.065 = 1.465 > 0 \quad \text{(Passed)} $$
+                            </div>
+
+                            <h4 class="font-bold text-indigo-900 mt-6 mb-3">Step 2: Jury Array</h4>
+                            <p class="text-sm text-slate-700">Calculate $b_3 = \begin{vmatrix} 0.065 & -0.37 \\ 1 & 0.6 \end{vmatrix} = 0.409$, $b_0 = \begin{vmatrix} 0.065 & 1 \\ 1 & 0.065 \end{vmatrix} = -0.995$.</p>
+                            <p class="text-sm text-slate-700 mt-2">Check constraint: $|b_0| > |b_3| \implies |-0.995| > |0.409|$ (Passed).</p>
+                            <p class="text-sm text-slate-700 mt-2">Proceed to $c_k$: $c_0 = 0.824$, $c_2 = 0.841$.</p>
+                            <div class="math-block !border-red-500 !border-2 !font-bold text-red-900 bg-red-50">
+                                $$ \text{Check constraint: } |c_0| > |c_2| \implies 0.824 \ngtr 0.841 \quad \text{(FAILED!)} $$
+                                $$ \text{System is UNSTABLE.} $$
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Q15: Jury Test Unstable -->
+                <div class="qp-card" id="q15">
+                    <div class="qp-header">
+                        <span class="font-bold text-slate-800">Jury's Stability Test 2</span>
+                        <span class="qp-badge bg-indigo-600">MAY 2023 | 5 Marks</span>
+                    </div>
+                    <div class="qp-body">
+                        <p class="question-text">Investigate stability: $F(z) = 2z^4 + 7z^3 + 10z^2 + 4z + 1 = 0$.</p>
+                        
+                        <div class="derivation-box">
+                            <h4 class="font-bold text-indigo-900 mb-3">Step 1: Necessary Conditions</h4>
+                            <div class="math-block">
+                                $$ F(1) = 24 > 0 \quad \text{(Passed)} $$
+                                $$ (-1)^4 F(-1) = 2 - 7 + 10 - 4 + 1 = 2 > 0 \quad \text{(Passed)} $$
+                            </div>
+
+                            <h4 class="font-bold text-indigo-900 mt-6 mb-3">Step 2: Check Sufficient Constraints Early</h4>
+                            <p class="text-sm text-slate-700">Constraint 1: $|a_4| < |a_0| \implies 1 < 2$ (Passed).</p>
+                            <p class="text-sm text-slate-700 mt-2">Calculate $b_0 = \begin{vmatrix} 1 & 2 \\ 2 & 1 \end{vmatrix} = -3$. Calculate $b_3 = \begin{vmatrix} 1 & 4 \\ 2 & 7 \end{vmatrix} = -1$.</p>
+                            <div class="math-block !border-red-500 !border-2 !font-bold text-red-900 bg-red-50">
+                                $$ \text{Constraint 2: } |b_0| > |b_3| \implies |-3| > |-1| \implies 3 \ngtr 1 \quad \text{(Wait, } 3 > 1 \text{ is True!)} $$
+                                $$ \text{Ah, let's look closer: } |b_0| = 3, |b_3| = 1 \implies 3 > 1 \text{ is Satisfied.} $$
+                            </div>
+                            <p class="text-sm text-slate-700 mt-2">Calculate full row 3 ($b_k$): $b_0 = -3, b_1 = -10, b_2 = -10, b_3 = -1$.</p>
+                            <p class="text-sm text-slate-700 mt-2">Calculate $c_0 = \begin{vmatrix} -3 & -1 \\ -1 & -3 \end{vmatrix} = 9 - 1 = 8$. Calculate $c_2 = \begin{vmatrix} -3 & -10 \\ -1 & -10 \end{vmatrix} = 30 - 10 = 20$.</p>
+                            <div class="math-block !border-red-500 !border-2 !font-bold text-red-900 bg-red-50">
+                                $$ \text{Constraint 3: } |c_0| > |c_2| \implies 8 \ngtr 20 \quad \text{(FAILED!)} $$
+                                $$ \text{System is UNSTABLE.} $$
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- ========================================== -->
+            <!-- MODULE 5 & 6: NONLINEAR & LYAPUNOV         -->
+            <!-- ========================================== -->
+            <section id="mod56" class="mb-12">
+                <h2>
+                    <span class="bg-gradient-to-br from-rose-600 to-rose-800 text-white w-12 h-12 rounded-xl flex items-center justify-center font-extrabold text-2xl shadow-lg shrink-0">3</span>
+                    Nonlinear Systems & Lyapunov Stability
+                </h2>
+
+                <!-- Q16: Limit Cycle & Stability -->
+                <div class="qp-card" id="q16">
+                    <div class="qp-header">
+                        <span class="font-bold text-slate-800">Stability & Limit Cycles via Describing Function</span>
+                        <span class="qp-badge bg-rose-600">APR 2018 / MAY 2019 | 10 Marks</span>
+                    </div>
+                    <div class="qp-body">
+                        <p class="question-text">System with saturation amplifier (gain K, limit S=1) and linear plant $G(s) = \frac{1}{s(1+0.5s)(1+4s)}$. <br>(a) Find max K for stability. (b) If K=2.5, find frequency and nature of the limit cycle.</p>
+                        
+                        <div class="derivation-box">
+                            <h4 class="font-bold text-rose-900 mb-3">Part (a): Maximum K for Stability</h4>
+                            <p class="text-sm text-slate-700">The intersection of $G(j\omega)$ and $-1/K_N$ locus defines stability boundary. Since $-1/K_N$ lies on the negative real axis starting from $-1/K$, marginal stability occurs when $\angle G(j\omega) = -180^\circ$ and $|G(j\omega)| = 1/K_N(max) = 1/K$.</p>
+                            <div class="math-block">
+                                $$ \angle G(j\omega) = -90^\circ - \tan^{-1}(0.5\omega) - \tan^{-1}(4\omega) = -180^\circ \implies \tan^{-1}(0.5\omega) + \tan^{-1}(4\omega) = 90^\circ $$
+                            </div>
+                            <p class="text-sm text-slate-700">Taking tangent on both sides:</p>
+                            <div class="math-block">
+                                $$ \frac{0.5\omega + 4\omega}{1 - 2\omega^2} = \infty \implies 1 - 2\omega^2 = 0 \implies \omega_{pc} = \frac{1}{\sqrt{2}} \approx 0.707 \text{ rad/s} $$
+                            </div>
+                            <p class="text-sm text-slate-700">At this frequency, magnitude equals 1:</p>
+                            <div class="math-block">
+                                $$ \frac{K}{\omega \sqrt{1+0.25\omega^2} \sqrt{1+16\omega^2}} = 1 \implies K = \frac{1}{\sqrt{2}} \sqrt{1.125} \sqrt{9} = 2.25 $$
+                                $$ \text{Maximum gain for stability: } \mathbf{K < 2.25} $$
+                            </div>
+
+                            <h4 class="font-bold text-rose-900 mt-6 mb-3">Part (b): Limit Cycle at K=2.5</h4>
+                            <p class="text-sm text-slate-700">Since $K=2.5 > 2.25$, the linear system is unstable. The loci intersect, creating a <strong>stable limit cycle</strong>.</p>
+                            <div class="math-block !border-rose-500 !border-2 !font-bold text-rose-900">
+                                $$ \text{Frequency of Limit Cycle: } \omega = \omega_{pc} = 0.707 \text{ rad/sec} $$
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Q17: Describing Function Derivation -->
+                <div class="qp-card" id="q17">
+                    <div class="qp-header">
+                        <span class="font-bold text-slate-800">Describing Function Derivation</span>
+                        <span class="qp-badge bg-rose-600">DEC 2019 / SEP 2020 | 10 Marks</span>
+                    </div>
+                    <div class="qp-body">
+                        <p class="question-text">Derive the describing function of saturation with dead-zone nonlinearity.</p>
+                        
+                        <div class="derivation-box">
+                            <p class="text-sm text-slate-700 mb-3">Let dead-zone limit be $D/2$ and saturation start at $S$. Given input $x(t) = X \sin(\omega t)$.</p>
+                            <div class="math-block">
+                                $$ y(t) = \begin{cases} 0 & 0 \le \omega t \le \alpha_1 \\ K(X\sin\omega t - D/2) & \alpha_1 \le \omega t \le \alpha_2 \\ K(S - D/2) & \alpha_2 \le \omega t \le \pi/2 \end{cases} $$
+                            </div>
+                            <p class="text-sm text-slate-700 mt-2">Where $\alpha_1 = \sin^{-1}(D/2X)$ and $\alpha_2 = \sin^{-1}(S/X)$.</p>
+                            <p class="text-sm text-slate-700 mt-2">Using quarter-wave symmetry, $B_1 = 0$ and $A_1 = \frac{4}{\pi} \int_{0}^{\pi/2} y(t) \sin\omega t d(\omega t)$:</p>
+                            <div class="math-block !border-rose-500 !border-2 !font-bold text-rose-900">
+                                $$ K_N(X) = \frac{2K}{\pi} \left[ \alpha_2 - \alpha_1 + \frac{\sin 2\alpha_2}{2} - \frac{\sin 2\alpha_1}{2} \right] $$
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Q18: Lyapunov Equation Q=I -->
+                <div class="qp-card" id="q18">
+                    <div class="qp-header">
+                        <span class="font-bold text-slate-800">Lyapunov Equation $A^T P + P A = -Q$</span>
+                        <span class="qp-badge bg-rose-600">APR 2018 | 10 Marks</span>
+                    </div>
+                    <div class="qp-body">
+                        <p class="question-text">System $\dot{x} = Ax$ with $A = \begin{bmatrix} 0 & 1 \\ -1 & -1 \end{bmatrix}$. Solve for $P$ using $Q=I$. Determine stability and write Lyapunov function.</p>
+                        
+                        <div class="derivation-box">
+                            <h4 class="font-bold text-rose-900 mb-3">Step 1: Set up Lyapunov Equation</h4>
+                            <div class="math-block">
+                                $$ \begin{bmatrix} 0 & -1 \\ 1 & -1 \end{bmatrix} \begin{bmatrix} p_{11} & p_{12} \\ p_{12} & p_{22} \end{bmatrix} + \begin{bmatrix} p_{11} & p_{12} \\ p_{12} & p_{22} \end{bmatrix} \begin{bmatrix} 0 & 1 \\ -1 & -1 \end{bmatrix} = \begin{bmatrix} -1 & 0 \\ 0 & -1 \end{bmatrix} $$
+                            </div>
+                            <p class="text-sm text-slate-700 mt-4 mb-2">Multiplying and expanding gives three equations:</p>
+                            <div class="math-block">
+                                $$ -2p_{12} = -1 \implies \mathbf{p_{12} = 0.5} $$
+                                $$ -p_{22} + p_{11} - p_{12} = 0 \implies p_{11} - p_{22} = 0.5 $$
+                                $$ 2p_{12} - 2p_{22} = -1 \implies 1 - 2p_{22} = -1 \implies \mathbf{p_{22} = 1} \implies \mathbf{p_{11} = 1.5} $$
+                            </div>
+
+                            <h4 class="font-bold text-rose-900 mt-6 mb-3">Step 2: Check Definiteness & Final Function</h4>
+                            <div class="math-block !border-rose-500 !border-2 !font-bold text-lg text-rose-900">
+                                $$ P = \begin{bmatrix} 1.5 & 0.5 \\ 0.5 & 1 \end{bmatrix} \quad (\Delta_1 = 1.5 > 0, \Delta_2 = 1.25 > 0) \implies \text{Stable} $$
+                                $$ V(x) = x^T P x = 1.5x_1^2 + x_1 x_2 + x_2^2 $$
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Q19: Lyapunov Matrix -->
+                <div class="qp-card" id="q19">
+                    <div class="qp-header">
+                        <span class="font-bold text-slate-800">Lyapunov Stability Theorem</span>
+                        <span class="qp-badge bg-rose-600">JUL 2021 | 10 Marks</span>
+                    </div>
+                    <div class="qp-body">
+                        <p class="question-text">Apply Lyapunov stability to determine the stability of $\dot{x} = \begin{bmatrix} 5 & -12 \\ 7 & -14 \end{bmatrix} x$.</p>
+                        
+                        <div class="derivation-box">
+                            <p class="text-sm text-slate-700 mb-3">Use $A^T P + P A = -I$:</p>
+                            <div class="math-block">
+                                $$ \begin{bmatrix} 5 & 7 \\ -12 & -14 \end{bmatrix} \begin{bmatrix} p_{11} & p_{12} \\ p_{12} & p_{22} \end{bmatrix} + \begin{bmatrix} p_{11} & p_{12} \\ p_{12} & p_{22} \end{bmatrix} \begin{bmatrix} 5 & -12 \\ 7 & -14 \end{bmatrix} = \begin{bmatrix} -1 & 0 \\ 0 & -1 \end{bmatrix} $$
+                            </div>
+                            <p class="text-sm text-slate-700 mt-2">Solving the 3 linear equations yields:</p>
+                            <div class="math-block">
+                                $$ p_{11} = 37/36, \quad p_{12} = -29/36, \quad p_{22} = 61/84 $$
+                            </div>
+                            <p class="text-sm text-slate-700 mt-2">Checking Sylvester's criterion: $\Delta_1 = 37/36 > 0$. $\Delta_2 = (37/36)(61/84) - (-29/36)^2 \approx 0.097 > 0$.</p>
+                            <div class="math-block !border-rose-500 !border-2 !font-bold text-rose-900">
+                                Since P is positive definite, the system is Asymptotically Stable.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Q20: Lyapunov Direct Method -->
+                <div class="qp-card" id="q20">
+                    <div class="qp-header">
+                        <span class="font-bold text-slate-800">Lyapunov Direct Method (Nonlinear)</span>
+                        <span class="qp-badge bg-rose-600">DEC 2019 / SEP 2020 | 10 Marks</span>
+                    </div>
+                    <div class="qp-body">
+                        <p class="question-text">Investigate stability: $\dot{x}_1 = x_2$, $\dot{x}_2 = -x_1 - x_1^2 x_2$.</p>
+                        
+                        <div class="derivation-box">
+                            <p class="text-sm text-slate-700 mb-3">Choose a positive definite Lyapunov function candidate $V(x) = x_1^2 + x_2^2$ (or $0.5x_1^2 + 0.5x_2^2$).</p>
+                            <div class="math-block">
+                                $$ \dot{V} = 2x_1 \dot{x}_1 + 2x_2 \dot{x}_2 = 2x_1 (x_2) + 2x_2 (-x_1 - x_1^2 x_2) $$
+                                $$ \dot{V} = 2x_1 x_2 - 2x_1 x_2 - 2x_1^2 x_2^2 = -2x_1^2 x_2^2 $$
+                            </div>
+                            <p class="text-sm text-slate-700 mt-2">Since $\dot{V} \le 0$, the origin is stable. $\dot{V} = 0$ only along the axes $x_1=0$ or $x_2=0$, and trajectories cross the axes, so it is Asymptotically Stable.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+        </main>
+        
+        <!-- Sidebar Navigation -->
+        <aside class="hidden xl:block w-72 shrink-0 relative">
+            <div class="sticky top-28 bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+                <h4 class="font-extrabold text-slate-900 mb-4 uppercase tracking-widest text-xs border-b border-slate-100 pb-2">Jump to Section</h4>
+                <nav class="space-y-2 text-sm font-medium">
+                    <a href="#mod12" class="toc-link">1. Compensators & ZN</a>
+                    <div class="pl-4 space-y-1 mt-1 mb-2 border-l border-slate-200 ml-2">
+                        <a href="#q1" class="block text-slate-500 hover:text-blue-600 transition-colors py-1 text-xs">Bode Lag Design</a>
+                        <a href="#q2" class="block text-slate-500 hover:text-blue-600 transition-colors py-1 text-xs">Root Locus Lead 1</a>
+                        <a href="#q3" class="block text-slate-500 hover:text-blue-600 transition-colors py-1 text-xs">Root Locus Lead 2</a>
+                        <a href="#q4" class="block text-slate-500 hover:text-blue-600 transition-colors py-1 text-xs">Ziegler Nichols (Eqn)</a>
+                        <a href="#q5" class="block text-slate-500 hover:text-blue-600 transition-colors py-1 text-xs">Ziegler Nichols (RH)</a>
+                    </div>
+                    <a href="#mod34" class="toc-link">2. State Space & Digital</a>
+                    <div class="pl-4 space-y-1 mt-1 mb-2 border-l border-slate-200 ml-2">
+                        <a href="#q6" class="block text-slate-500 hover:text-indigo-600 transition-colors py-1 text-xs">Controllability (TF)</a>
+                        <a href="#q7" class="block text-slate-500 hover:text-indigo-600 transition-colors py-1 text-xs">Parametric Control</a>
+                        <a href="#q8" class="block text-slate-500 hover:text-indigo-600 transition-colors py-1 text-xs">Pole Placement</a>
+                        <a href="#q9" class="block text-slate-500 hover:text-indigo-600 transition-colors py-1 text-xs">Canonical Forms</a>
+                        <a href="#q10" class="block text-slate-500 hover:text-indigo-600 transition-colors py-1 text-xs">RLC State Model</a>
+                        <a href="#q11" class="block text-slate-500 hover:text-indigo-600 transition-colors py-1 text-xs">State Trans Matrix</a>
+                        <a href="#q12" class="block text-slate-500 hover:text-indigo-600 transition-colors py-1 text-xs">Pulse TF (Diff Eq)</a>
+                        <a href="#q13" class="block text-slate-500 hover:text-indigo-600 transition-colors py-1 text-xs">Pulse TF (ZOH)</a>
+                        <a href="#q14" class="block text-slate-500 hover:text-indigo-600 transition-colors py-1 text-xs">Jury's Test 1</a>
+                        <a href="#q15" class="block text-slate-500 hover:text-indigo-600 transition-colors py-1 text-xs">Jury's Test 2</a>
+                    </div>
+                    <a href="#mod56" class="toc-link">3. Nonlinear & Lyapunov</a>
+                    <div class="pl-4 space-y-1 mt-1 mb-2 border-l border-slate-200 ml-2">
+                        <a href="#q16" class="block text-slate-500 hover:text-rose-600 transition-colors py-1 text-xs">Limit Cycle / DF</a>
+                        <a href="#q17" class="block text-slate-500 hover:text-rose-600 transition-colors py-1 text-xs">DF Derivation</a>
+                        <a href="#q18" class="block text-slate-500 hover:text-rose-600 transition-colors py-1 text-xs">Lyapunov Eqn 1</a>
+                        <a href="#q19" class="block text-slate-500 hover:text-rose-600 transition-colors py-1 text-xs">Lyapunov Eqn 2</a>
+                        <a href="#q20" class="block text-slate-500 hover:text-rose-600 transition-colors py-1 text-xs">Direct Method</a>
+                    </div>
+                </nav>
+            </div>
+        </aside>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-8 text-center mt-12 border-t-4 border-blue-600">
+        <p class="mb-2 text-lg font-bold text-white">ACT Solved Question Bank</p>
+        <p class="text-sm">Consolidated Solutions for University Exams</p>
+    </footer>
+
+    <script>
+        // Active state toggling for sidebar navigation based on scroll position
+        window.addEventListener('DOMContentLoaded', () => {
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    const id = entry.target.getAttribute('id');
+                    if (entry.intersectionRatio > 0) {
+                        document.querySelectorAll('.toc-link').forEach(link => {
+                            link.classList.remove('active');
+                            link.classList.remove('font-bold');
+                            link.classList.remove('text-blue-600');
+                        });
+                        const activeLink = document.querySelector(`.toc-link[href="#${id}"]`);
+                        if(activeLink) {
+                            activeLink.classList.add('active');
+                            activeLink.classList.add('font-bold');
+                            activeLink.classList.add('text-blue-600');
+                        }
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('section[id]').forEach((section) => {
+                observer.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>
